@@ -1,0 +1,762 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN">
+
+
+<head><meta name="generator" content="Hexo 3.9.0">
+    <meta charset="utf-8">
+    <meta name="keywords" content="我写的第一个WebGame--2048, DangoSky">
+    <meta name="description" content=" &amp;emsp;&amp;emsp;这是一个到2048空间的传送门。
+&amp;emsp;&amp;emsp;记录下2048的制作思路，emmm，其实是有一段时间没有更新博客了，写一篇来充充数。（说明我是有更新blog的！）
+&amp;emsp;&amp;emsp;好像也没啥好写的">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="renderer" content="webkit|ie-stand|ie-comp">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>我写的第一个WebGame--2048 | DangoSky</title>
+    <link rel="icon" type="image/jpeg" href="/favicon.jpg">
+
+    <link rel="stylesheet" type="text/css" href="/libs/awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="/libs/materialize/materialize.min.css">
+    <link rel="stylesheet" type="text/css" href="/libs/aos/aos.css">
+    <link rel="stylesheet" type="text/css" href="/libs/animate/animate.min.css">
+    <link rel="stylesheet" type="text/css" href="/libs/lightGallery/css/lightgallery.min.css">
+    <link rel="stylesheet" type="text/css" href="/css/matery.css">
+    <link rel="stylesheet" type="text/css" href="/css/my.css">
+    <style type="text/css">
+        
+    </style>
+
+    <script src="/libs/jquery/jquery-2.2.0.min.js"></script>
+<link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css"></head>
+
+
+<body>
+
+<header class="navbar-fixed">
+    <nav id="headNav" class="bg-color nav-transparent">
+        <div id="navContainer" class="nav-wrapper container">
+            <div class="brand-logo">
+                <a href="/" class="waves-effect waves-light">
+                    
+                    <span class="logo-span">DangoSky</span>
+                </a>
+            </div>
+            
+
+<a href="#" data-target="mobile-nav" class="sidenav-trigger button-collapse"><i class="fa fa-navicon"></i></a>
+<ul class="right">
+    
+    <li class="hide-on-med-and-down">
+        <a href="/" class="waves-effect waves-light">
+            
+            <i class="fa fa-home"></i>
+            
+            <span>首页</span>
+        </a>
+    </li>
+    
+    <li class="hide-on-med-and-down">
+        <a href="/tags" class="waves-effect waves-light">
+            
+            <i class="fa fa-tags"></i>
+            
+            <span>标签</span>
+        </a>
+    </li>
+    
+    <li class="hide-on-med-and-down">
+        <a href="/categories" class="waves-effect waves-light">
+            
+            <i class="fa fa-bookmark"></i>
+            
+            <span>分类</span>
+        </a>
+    </li>
+    
+    <li class="hide-on-med-and-down">
+        <a href="/archives" class="waves-effect waves-light">
+            
+            <i class="fa fa-archive"></i>
+            
+            <span>归档</span>
+        </a>
+    </li>
+    
+    <li class="hide-on-med-and-down">
+        <a href="/about" class="waves-effect waves-light">
+            
+            <i class="fa fa-user-circle-o"></i>
+            
+            <span>关于</span>
+        </a>
+    </li>
+    
+    <li class="hide-on-med-and-down">
+        <a href="/friends" class="waves-effect waves-light">
+            
+            <i class="fa fa-address-book"></i>
+            
+            <span>友情链接</span>
+        </a>
+    </li>
+    
+    <li>
+        <a href="#searchModal" class="modal-trigger waves-effect waves-light">
+            <i id="searchIcon" class="fa fa-search" title="搜索"></i>
+        </a>
+    </li>
+</ul>
+
+<div id="mobile-nav" class="side-nav sidenav">
+
+    <div class="mobile-head bg-color">
+        
+        <div class="logo-name">DangoSky</div>
+        <div class="logo-desc">
+            
+            但愿日子清净，抬头遇见的都是柔情。
+            
+        </div>
+    </div>
+
+    
+
+    <ul class="menu-list mobile-menu-list">
+        
+        <li>
+            <a href="/" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-home"></i>
+                
+                首页
+            </a>
+        </li>
+        
+        <li>
+            <a href="/tags" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-tags"></i>
+                
+                标签
+            </a>
+        </li>
+        
+        <li>
+            <a href="/categories" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-bookmark"></i>
+                
+                分类
+            </a>
+        </li>
+        
+        <li>
+            <a href="/archives" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-archive"></i>
+                
+                归档
+            </a>
+        </li>
+        
+        <li>
+            <a href="/about" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-user-circle-o"></i>
+                
+                关于
+            </a>
+        </li>
+        
+        <li>
+            <a href="/friends" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-address-book"></i>
+                
+                友情链接
+            </a>
+        </li>
+        
+        
+    </ul>
+</div>
+
+        </div>
+
+        
+    </nav>
+
+</header>
+
+
+
+
+
+<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/22.jpg')">
+    <div class="container">
+        <div class="row">
+            <div class="col s12 m12 l12">
+                <div class="brand">
+                    <div class="description center-align post-title">
+                        我写的第一个WebGame--2048
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<main class="post-container content">
+
+    
+    <link rel="stylesheet" href="/libs/tocbot/tocbot.css">
+<style>
+    #articleContent h1::before,
+    #articleContent h2::before,
+    #articleContent h3::before,
+    #articleContent h4::before,
+    #articleContent h5::before,
+    #articleContent h6::before {
+        display: block;
+        content: " ";
+        height: 100px;
+        margin-top: -100px;
+        visibility: hidden;
+    }
+
+    #articleContent :focus {
+        outline: none;
+    }
+
+    .toc-fixed {
+        position: fixed;
+        top: 64px;
+    }
+
+    .toc-widget {
+        padding-left: 20px;
+    }
+
+    .toc-widget .toc-title {
+        margin: 35px 0 15px 0;
+        padding-left: 17px;
+        font-size: 1.5rem;
+        font-weight: bold;
+        line-height: 1.5rem;
+    }
+
+    .toc-widget ol {
+        padding: 0;
+        list-style: none;
+    }
+
+    #toc-content ol {
+        padding-left: 10px;
+    }
+
+    #toc-content ol li {
+        padding-left: 10px;
+    }
+
+    #toc-content .toc-link:hover {
+        color: #42b983;
+        font-weight: 700;
+        text-decoration: underline;
+    }
+
+    #toc-content .toc-link::before {
+        background-color: transparent;
+        max-height: 25px;
+    }
+
+    #toc-content .is-active-link {
+        color: #42b983;
+    }
+
+    #toc-content .is-active-link::before {
+        background-color: #42b983;
+    }
+
+    #floating-toc-btn {
+        position: fixed;
+        right: 20px;
+        bottom: 76px;
+        padding-top: 15px;
+        margin-bottom: 0;
+        z-index: 998;
+    }
+
+    #floating-toc-btn .btn-floating {
+        width: 48px;
+        height: 48px;
+    }
+
+    #floating-toc-btn .btn-floating i {
+        line-height: 48px;
+        font-size: 1.4rem;
+    }
+</style>
+<div class="row">
+    <div id="main-content" class="col s12 m12 l9">
+        <!-- 文章内容详情 -->
+<div id="artDetail">
+    <div class="card">
+        <div class="card-content article-info">
+            <div class="row tag-cate">
+                <div class="col s7">
+                    
+                    <div class="article-tag">
+                        
+                            <a href="/tags/JavaScript/" target="_blank">
+                                <span class="chip bg-color">JavaScript</span>
+                            </a>
+                        
+                            <a href="/tags/Web-Project/" target="_blank">
+                                <span class="chip bg-color">Web Project</span>
+                            </a>
+                        
+                            <a href="/tags/jQuery/" target="_blank">
+                                <span class="chip bg-color">jQuery</span>
+                            </a>
+                        
+                    </div>
+                    
+                </div>
+                <div class="col s5 right-align">
+                    
+                    <div class="post-cate">
+                        <i class="fa fa-bookmark fa-fw icon-category"></i>
+                        
+                            <a href="/categories/Web-Project/" class="post-category" target="_blank">
+                                Web Project
+                            </a>
+                        
+                    </div>
+                    
+                </div>
+            </div>
+
+            <div class="post-info">
+                <div class="post-date info-break-policy">
+                    <i class="fa fa-calendar-minus-o fa-fw"></i>发布日期:&nbsp;&nbsp;
+                    2018-10-27
+                </div>
+
+                
+                    
+                    <div class="info-break-policy">
+                        <i class="fa fa-file-word-o fa-fw"></i>文章字数:&nbsp;&nbsp;
+                        1.5k
+                    </div>
+                    
+
+                    
+                    <div class="info-break-policy">
+                        <i class="fa fa-clock-o fa-fw"></i>阅读时长:&nbsp;&nbsp;
+                        5 分
+                    </div>
+                    
+                
+				
+				
+            </div>
+        </div>
+        <hr class="clearfix">
+        <div class="card-content article-card-content">
+            <div id="articleContent">
+                <script src="/assets/js/APlayer.min.js"> </script><p>&emsp;&emsp;<a href="http://dangosky.com/2048/index.html" target="_blank" rel="noopener">这是一个到2048空间的传送门。</a></p>
+<p>&emsp;&emsp;记录下2048的制作思路，emmm，其实是有一段时间没有更新博客了，写一篇来充充数。（说明我是有更新blog的！）</p>
+<p>&emsp;&emsp;好像也没啥好写的，2048也不怎么难做，没啥算法含量的里面。只要把过程理清，就是css+js的事而已了。还是写写监听键盘从而决定格子的移动状态好了，当作理理思路。以向左移动为例，向右向上向下类同。</p>
+<p>&emsp;&emsp;当event.keyCode=37时调用moveLeft()：</p>
+<p>&emsp;&emsp;1.首先得先判断是否可以向左移动，得满足两个格子之间存有空格或者中间的格子有与其相同数值的格子，才能进行向左移动。</p>
+<p>&emsp;&emsp;2.两个for循环遍历所有的行列，对于一个有数值的格子a，对其所在行的第一个格子到a自身进行遍历（如果是向右移动的话，则从所在行的最后一个格子到a自身进行遍历。向上向下移动亦是如此，这个顺序很关键），遍历过程出现以下三种情况则进行移动：</p>
+<p>&emsp;&emsp;（1）遍历到的格子b还没有数值（空格），而且两个格子之间没有障碍物（即有数值的格子）存在。则把a移动到b的位置（引用jQuery的animate函数，所以说已经有jQuery了为什么还要自己再去封装一个缓动动画函数呢？就当作是了解怎么用js原生态语句做缓动动画了，这就是原理？）<br><img src="/2018/10/27/我写的第一个WebGame--2048/2048.1.png" alt="The requested content cannot be loaded."></p>
+<p>&emsp;&emsp;（2） 遍历到的格子b和a有相同的数值，而且两个格子之间没有障碍物。如果b已经是合并过了的，那a和b不合并，a移动到b的右手边相邻空格处。<br><img src="/2018/10/27/我写的第一个WebGame--2048/2048.2.png" alt="The requested content cannot be loaded."><br><img src="/2018/10/27/我写的第一个WebGame--2048/2048.3.png" alt="The requested content cannot be loaded."></p>
+<p>&emsp;&emsp;如图，如果不去判断格子是否已经合并过了的话，结果则会是8 0 0 0，但是游戏规则是同一次移动中不能有合并</p>
+<p>&emsp;&emsp;（3）遍历到的格子b和a有相同的数值，而且两个格子之间没有障碍物。如果b还没有合并过，则a移动到b的位置，a和b合并，两者数值相加。因为遍历的顺序是从其所在行的第一个格子到a自身，所以左边的格子2会先左移到第一列，随后右边的格子2再左移与其合并。</p>
+<p>&emsp;&emsp;大致就这些了吧，其他的比如产生随机数、动态布局、缓动动画这些就纯js操作了，不是啥大问题，详情就戳<a href="https://github.com/DangoSky/2048" target="_blank" rel="noopener">Github</a>看源码吧。</p>
+<p>&emsp;&emsp;还有就是，之前学js都是静态地直接在.html里添加class和id属性，但这确实太固定不灵活了，可以先写好class的样式，再在js里面动态给div增加class和id。用jQuery的addClass（）或$().attr(“id”，“idName”)，位置布局和各种属性也是动态用jQuery已经封装好了的方法去修改。就一句话，能放.css和.js的就别放.html里，jQuery里已经封装好了的就别多此一举去用js原生的。</p>
+<p>&emsp;&emsp;以上。</p>
+<hr>
+<p>&emsp;&emsp;这应该算是自己做的第一个游戏了吧（如果不算上大一用橙光做的仙剑四的话），挺有趣的（还能给你想给的人玩哦），而且在做的过程中又学到了许多新的东西，算做是学js的一个阶段性总结了。接下来就先搁置下js了，虽然《JavaScript高级程序设计》《css揭秘》这几本书还没看（也都还没借到书耶，愈发不想买专业书了，贵啊，而且也渐渐习惯了用网上资源学习，网易云课堂慕课网w3c菜鸟教程等等）。打算先把Ajax学了，之后还有canvas，至于vue框架（所以是选择vue而不是react了是吧？）就等学期末或是寒假了，还有node.js、PHP、MySQL在排队，Linux就默默排最后去好了。有些想学Python耶，爬取数据也很好玩的，可惜lightyear说微信的聊天数据爬不了，不然以后我就不用去备份和某人的聊天记录了，以及来比力和网易云这些聊天记录，一张张截图挺麻烦的好吗QWQ。</p>
+<p>&emsp;&emsp;噢对，这个2048固定了宽高是475px，电脑上没问题，在手机上就gg了。不过加个媒体查询给手机屏幕指定另一个宽高应该就可以解决了，但又是一件费时的工作;( 算了不管这个了，反正也只能用电脑玩，手机怎么监听滑动我也不会，做成响应式的也没多大用处，一起等以后会监听手机滑动事件了再改好了（现在其实也可以先学了的，但还是先学Ajax吧，你们是要排队的不能随便插队）。</p>
+<p>&emsp;&emsp;前两天还想着等学会了Ajax后就尝试看看微信小程序是怎么开发的，也想做个小程序出来玩玩（也可以直接把2048做成小程序吼）。但小程序的工作量估计要大得多了，不知道有没有那个时间。哎，明天都第九周了，期末考试也不远了啊orz。这学期是真的没学那物理数学了，但求考前两周的临阵磨枪能让我不挂了。</p>
+<p>&emsp;&emsp;还有个想法，想自己构思个网页版的小游戏，emmm，还想着这个游戏还是只有我们俩才能玩的，Js给我一种在前端上无所不能的感觉，应该可以成吧。但问题在于要做什么游戏，现在都没想到什么ideas啊。哎，估计又是拖拖拖了，等N天后或许就有ideas了。</p>
+<p>&emsp;&emsp;对了，最后还要鸣谢lightyear提的issues和PullRequests :）</p>
+
+            </div>
+            <hr/>
+
+            
+
+            <link rel="stylesheet" type="text/css" href="/libs/share/css/share.min.css">
+
+<div id="article-share">
+    
+    <div class="social-share" data-disabled="qzone" data-wechat-qrcode-helper="<p>微信里点“发现”->“扫一扫”二维码便可查看分享。</p>"></div>
+    
+</div>
+
+<script src="/libs/share/js/social-share.min.js"></script>
+
+            <div class="reprint">
+                <p>
+                    <span class="reprint-tip">
+                        <i class="fa fa-exclamation-circle"></i>&nbsp;&nbsp;转载请注明:
+                    </span>
+                    <a href="http://blog.dangosky.com" class="b-link-green">DangoSky</a>
+                    <i class="fa fa-angle-right fa-lg fa-fw text-color"></i>
+                    <a href="/2018/10/27/我写的第一个WebGame--2048/" class="b-link-green">我写的第一个WebGame--2048</a>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    
+
+    
+
+    
+        <div class="disqus-card card" data-aos="fade-up">
+    <div id="disqus_thread" class="card-content">
+        <noscript>Please enable JavaScript to view the
+            <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+    </div>
+</div>
+
+<script type="text/javascript">
+    disqus_config = function () {
+        this.page.url = 'http://blog.dangosky.com/2018/10/27/我写的第一个WebGame--2048/';
+        this.page.identifier = '/2018/10/27/我写的第一个WebGame--2048/';
+        this.page.title = '我写的第一个WebGame--2048';
+    };
+    let disqus_shortname = 'dangosky';
+
+    (function () { // DON'T EDIT BELOW THIS LINE
+        let d = document, s = d.createElement('script');
+        // 如：s.src = 'https://blinkfox.disqus.com/embed.js';
+        s.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+    
+
+    
+
+    
+
+    
+
+<article id="prenext-posts" class="prev-next articles">
+    <div class="row article-row">
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge left-badge text-color">
+                <i class="fa fa-chevron-left"></i>&nbsp;上一篇</div>
+            <div class="card">
+                <a href="/2018/11/04/还是小白/">
+                    <div class="card-image">
+                        
+                        
+                        <img src="/medias/featureimages/21.jpg" class="responsive-img" alt="还是小白">
+                        
+                        <span class="card-title">还是小白</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary"> &emsp;&emsp;今天发现了许多前端的学习资源，各位大牛的博客、Github，各处前端的学习社区以及腾讯百度等的前端团队······然后，越发觉得自己好菜啊，到现在还只是小白入门。哎，谁说前端技术含量不如后端的，我给他丢几个前端社区</div>
+                    <div class="publish-info">
+                        <span class="publish-date">
+                            <i class="fa fa-clock-o fa-fw icon-date"></i>2018-11-04
+                        </span>
+                        <span class="publish-author">
+                            
+                            <i class="fa fa-bookmark fa-fw icon-category"></i>
+                            
+                            <a href="/categories/生活日记/" class="post-category" target="_blank">
+                                    生活日记
+                                </a>
+                            
+                            
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/生活日记/" target="_blank">
+                        <span class="chip bg-color">生活日记</span>
+                    </a>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge right-badge text-color">
+                下一篇&nbsp;<i class="fa fa-chevron-right"></i>
+            </div>
+            <div class="card">
+                <a href="/2018/10/12/皮一下很开心/">
+                    <div class="card-image">
+                        
+                        
+                        <img src="/medias/featureimages/14.jpg" class="responsive-img" alt="皮一下很开心">
+                        
+                        <span class="card-title">皮一下很开心</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary"> 
+
+等32号我有空了一定来换个皮肤
+明明什么都还没做就已经
+                                                                
+了
+QAQ
+</div>
+                    <div class="publish-info">
+                            <span class="publish-date">
+                                <i class="fa fa-clock-o fa-fw icon-date"></i>2018-10-12
+                            </span>
+                        <span class="publish-author">
+                            
+                            <i class="fa fa-bookmark fa-fw icon-category"></i>
+                            
+                            <a href="/categories/JavaScript/" class="post-category" target="_blank">
+                                    JavaScript
+                                </a>
+                            
+                            
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/JavaScript/" target="_blank">
+                        <span class="chip bg-color">JavaScript</span>
+                    </a>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+    </div>
+</article>
+</div>
+
+
+    </div>
+    <div id="toc-aside" class="expanded col l3 hide-on-med-and-down">
+        <div class="toc-widget">
+            <div class="toc-title"><i class="fa fa-list-alt"></i>&nbsp;&nbsp;目录</div>
+            <div id="toc-content"></div>
+        </div>
+    </div>
+</div>
+
+<!-- TOC 悬浮按钮. -->
+
+<div id="floating-toc-btn" class="hide-on-med-and-down">
+    <a class="btn-floating btn-large bg-color">
+        <i class="fa fa-list"></i>
+    </a>
+</div>
+
+
+<script src="/libs/tocbot/tocbot.min.js"></script>
+<script>
+    $(function () {
+        tocbot.init({
+            tocSelector: '#toc-content',
+            contentSelector: '#articleContent',
+            headingsOffset: -($(window).height() * 0.4 - 45),
+            // headingsOffset: -205,
+            headingSelector: 'h1, h2, h3'
+        });
+
+        // modify the toc link href to support Chinese.
+        let i = 0;
+        let tocHeading = 'toc-heading-';
+        $('#toc-content a').each(function () {
+            $(this).attr('href', '#' + tocHeading + (++i));
+        });
+
+        // modify the heading title id to support Chinese.
+        i = 0;
+        $('#articleContent').children('h1, h2, h3').each(function () {
+            $(this).attr('id', tocHeading + (++i));
+        });
+
+        // Set scroll toc fixed.
+        let tocHeight = parseInt($(window).height() * 0.4 - 64);
+        let $tocWidget = $('.toc-widget');
+        $(window).scroll(function () {
+            let scroll = $(window).scrollTop();
+            /* add post toc fixed. */
+            if (scroll > tocHeight) {
+                $tocWidget.addClass('toc-fixed');
+            } else {
+                $tocWidget.removeClass('toc-fixed');
+            }
+        });
+
+        
+        /* 修复文章卡片 div 的宽度. */
+        let fixPostCardWidth = function (srcId, targetId) {
+            let srcDiv = $('#' + srcId);
+            if (srcDiv.length === 0) {
+                return;
+            }
+
+            let w = srcDiv.width();
+            if (w >= 450) {
+                w = w + 21;
+            } else if (w >= 350 && w < 450) {
+                w = w + 18;
+            } else if (w >= 300 && w < 350) {
+                w = w + 16;
+            } else {
+                w = w + 14;
+            }
+            $('#' + targetId).width(w);
+        };
+
+        // 切换TOC目录展开收缩的相关操作.
+        const expandedClass = 'expanded';
+        let $tocAside = $('#toc-aside');
+        let $mainContent = $('#main-content');
+        $('#floating-toc-btn .btn-floating').click(function () {
+            if ($tocAside.hasClass(expandedClass)) {
+                $tocAside.removeClass(expandedClass).slideUp(500);
+                $mainContent.removeClass('l9');
+            } else {
+                $tocAside.addClass(expandedClass).slideDown(500);
+                $mainContent.addClass('l9');
+            }
+            fixPostCardWidth('artDetail', 'prenext-posts');
+        });
+        
+    });
+</script>
+    
+
+</main>
+
+
+<footer class="page-footer bg-color">
+    <div class="container row center-align">
+        <div class="col s12 m8 l8 copy-right">
+            本站由&copy;<a href="https://blinkfox.github.io/" target="_blank">Blinkfox</a>基于
+            <a href="https://hexo.io/" target="_blank">Hexo</a> 的
+            <a href="https://github.com/blinkfox/hexo-theme-matery" target="_blank">hexo-theme-matery</a>主题搭建.
+
+            
+                &nbsp;<i class="fa fa-area-chart"></i>&nbsp;站点总字数:&nbsp;
+                <span class="white-color">68.8k</span>
+            
+
+            <!-- <p id="timeDate">DangoSky的博客诞生已经</p><p id="times">载入时分秒...</p> -->
+            <!-- <p>DangoSky的博客已经诞生<strong><i><span id="day"></span><span id="hour"></span></span><span id="minutes"></span><span id="seconds"></span> </strong><i></p> -->
+                <p id="timeDate"></p>
+
+            <!-- 
+			 -->
+        </div>
+        <div class="col s12 m4 l4 social-link ">
+
+    <a href="mailto:1341514988@qq.com" class="tooltipped" target="_blank" data-tooltip="邮件联系我" data-position="top" data-delay="50">
+        <i class="fa fa-envelope-open"></i>
+    </a>
+
+
+
+    <a href="/atom.xml" class="tooltipped" target="_blank" data-tooltip="RSS 订阅" data-position="top" data-delay="50">
+        <i class="fa fa-rss"></i>
+    </a>
+
+
+
+   <a href="https://github.com/DangoSky" class="tooltipped" target="_blank" data-tooltip="访问我的GitHub" data-position="top" data-delay="50">
+    <i class="fa fa-github"></i>
+</a>
+
+</div>
+    </div>
+</footer>
+
+<div class="progress-bar"></div>
+
+<script type="text/javascript">
+    function computed(){
+        let sum = new Date()-new Date(2018,9,3,23,3,38)
+        sum = parseInt(sum / 1000);
+        let d = zero(parseInt(sum / 3600 / 24));
+        let h = zero(parseInt(sum / 3600 % 24));
+        let m = zero(parseInt(sum / 60 % 60));
+        let s = zero(parseInt(sum % 60));
+        document.getElementById("timeDate").innerHTML = "DangoSky的博客已经诞生<strong>" + d + "</strong>天<strong>" + h + "</strong>小时<strong>" + m + "</strong>分钟<strong>" + s + "</strong>秒了。"; 
+    }
+    function zero(i){
+        if(i < 10)  {
+            i = "0" + i;
+        }
+        return i;
+    }
+    setInterval("computed();",1000);
+</script>
+
+<!-- 搜索遮罩框 -->
+<div id="searchModal" class="modal">
+    <div class="modal-content">
+        <div class="search-header">
+            <span class="title"><i class="fa fa-search"></i>&nbsp;&nbsp;搜索</span>
+            <input type="search" id="searchInput" name="s" placeholder="请输入搜索的关键字"
+                   class="search-input">
+        </div>
+        <div id="searchResult"></div>
+    </div>
+</div>
+
+<script src="/js/search.js"></script>
+<script type="text/javascript">
+$(function () {
+    searchFunc("/" + "search.xml", 'searchInput', 'searchResult');
+});
+</script>
+<!-- 回到顶部按钮 -->
+<div id="backTop" class="top-scroll">
+    <a class="btn-floating btn-large waves-effect waves-light" href="#!">
+        <i class="fa fa-angle-up"></i>
+    </a>
+</div>
+
+
+<script src="/libs/materialize/materialize.min.js"></script>
+<script src="/libs/masonry/masonry.pkgd.min.js"></script>
+<script src="/libs/aos/aos.js"></script>
+<script src="/libs/scrollprogress/scrollProgress.min.js"></script>
+<script src="/libs/lightGallery/js/lightgallery-all.min.js"></script>
+<script src="/js/matery.js"></script>
+
+<!-- Global site tag (gtag.js) - Google Analytics -->
+
+
+
+    <script src="/libs/others/clicklove.js"></script>
+
+
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"debug":false,"model":{"jsonPath":"live2d-widget-model-shizuku"},"display":{"position":"right","width":200,"height":400},"mobile":{"show":false},"log":false});</script></body>
+</html>

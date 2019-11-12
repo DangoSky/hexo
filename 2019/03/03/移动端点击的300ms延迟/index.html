@@ -1,0 +1,745 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN">
+
+
+<head><meta name="generator" content="Hexo 3.9.0">
+    <meta charset="utf-8">
+    <meta name="keywords" content="移动端点击的300ms延迟, DangoSky">
+    <meta name="description" content=" 有300ms延迟的原因&amp;emsp;&amp;emsp;之所以移动端click会有300ms的延迟，主要是为了让用户在双击屏幕时可以对视图进行放大缩小，而这300ms就是用于判断在这时间范围之内是否有第二次点击，有则双击，否则就是单击。若每次单击屏">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="renderer" content="webkit|ie-stand|ie-comp">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>移动端点击的300ms延迟 | DangoSky</title>
+    <link rel="icon" type="image/jpeg" href="/favicon.jpg">
+
+    <link rel="stylesheet" type="text/css" href="/libs/awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="/libs/materialize/materialize.min.css">
+    <link rel="stylesheet" type="text/css" href="/libs/aos/aos.css">
+    <link rel="stylesheet" type="text/css" href="/libs/animate/animate.min.css">
+    <link rel="stylesheet" type="text/css" href="/libs/lightGallery/css/lightgallery.min.css">
+    <link rel="stylesheet" type="text/css" href="/css/matery.css">
+    <link rel="stylesheet" type="text/css" href="/css/my.css">
+    <style type="text/css">
+        
+    </style>
+
+    <script src="/libs/jquery/jquery-2.2.0.min.js"></script>
+<link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css"></head>
+
+
+<body>
+
+<header class="navbar-fixed">
+    <nav id="headNav" class="bg-color nav-transparent">
+        <div id="navContainer" class="nav-wrapper container">
+            <div class="brand-logo">
+                <a href="/" class="waves-effect waves-light">
+                    
+                    <span class="logo-span">DangoSky</span>
+                </a>
+            </div>
+            
+
+<a href="#" data-target="mobile-nav" class="sidenav-trigger button-collapse"><i class="fa fa-navicon"></i></a>
+<ul class="right">
+    
+    <li class="hide-on-med-and-down">
+        <a href="/" class="waves-effect waves-light">
+            
+            <i class="fa fa-home"></i>
+            
+            <span>首页</span>
+        </a>
+    </li>
+    
+    <li class="hide-on-med-and-down">
+        <a href="/tags" class="waves-effect waves-light">
+            
+            <i class="fa fa-tags"></i>
+            
+            <span>标签</span>
+        </a>
+    </li>
+    
+    <li class="hide-on-med-and-down">
+        <a href="/categories" class="waves-effect waves-light">
+            
+            <i class="fa fa-bookmark"></i>
+            
+            <span>分类</span>
+        </a>
+    </li>
+    
+    <li class="hide-on-med-and-down">
+        <a href="/archives" class="waves-effect waves-light">
+            
+            <i class="fa fa-archive"></i>
+            
+            <span>归档</span>
+        </a>
+    </li>
+    
+    <li class="hide-on-med-and-down">
+        <a href="/about" class="waves-effect waves-light">
+            
+            <i class="fa fa-user-circle-o"></i>
+            
+            <span>关于</span>
+        </a>
+    </li>
+    
+    <li class="hide-on-med-and-down">
+        <a href="/friends" class="waves-effect waves-light">
+            
+            <i class="fa fa-address-book"></i>
+            
+            <span>友情链接</span>
+        </a>
+    </li>
+    
+    <li>
+        <a href="#searchModal" class="modal-trigger waves-effect waves-light">
+            <i id="searchIcon" class="fa fa-search" title="搜索"></i>
+        </a>
+    </li>
+</ul>
+
+<div id="mobile-nav" class="side-nav sidenav">
+
+    <div class="mobile-head bg-color">
+        
+        <div class="logo-name">DangoSky</div>
+        <div class="logo-desc">
+            
+            但愿日子清净，抬头遇见的都是柔情。
+            
+        </div>
+    </div>
+
+    
+
+    <ul class="menu-list mobile-menu-list">
+        
+        <li>
+            <a href="/" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-home"></i>
+                
+                首页
+            </a>
+        </li>
+        
+        <li>
+            <a href="/tags" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-tags"></i>
+                
+                标签
+            </a>
+        </li>
+        
+        <li>
+            <a href="/categories" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-bookmark"></i>
+                
+                分类
+            </a>
+        </li>
+        
+        <li>
+            <a href="/archives" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-archive"></i>
+                
+                归档
+            </a>
+        </li>
+        
+        <li>
+            <a href="/about" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-user-circle-o"></i>
+                
+                关于
+            </a>
+        </li>
+        
+        <li>
+            <a href="/friends" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-address-book"></i>
+                
+                友情链接
+            </a>
+        </li>
+        
+        
+    </ul>
+</div>
+
+        </div>
+
+        
+    </nav>
+
+</header>
+
+
+
+
+
+<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/22.jpg')">
+    <div class="container">
+        <div class="row">
+            <div class="col s12 m12 l12">
+                <div class="brand">
+                    <div class="description center-align post-title">
+                        移动端点击的300ms延迟
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<main class="post-container content">
+
+    
+    <link rel="stylesheet" href="/libs/tocbot/tocbot.css">
+<style>
+    #articleContent h1::before,
+    #articleContent h2::before,
+    #articleContent h3::before,
+    #articleContent h4::before,
+    #articleContent h5::before,
+    #articleContent h6::before {
+        display: block;
+        content: " ";
+        height: 100px;
+        margin-top: -100px;
+        visibility: hidden;
+    }
+
+    #articleContent :focus {
+        outline: none;
+    }
+
+    .toc-fixed {
+        position: fixed;
+        top: 64px;
+    }
+
+    .toc-widget {
+        padding-left: 20px;
+    }
+
+    .toc-widget .toc-title {
+        margin: 35px 0 15px 0;
+        padding-left: 17px;
+        font-size: 1.5rem;
+        font-weight: bold;
+        line-height: 1.5rem;
+    }
+
+    .toc-widget ol {
+        padding: 0;
+        list-style: none;
+    }
+
+    #toc-content ol {
+        padding-left: 10px;
+    }
+
+    #toc-content ol li {
+        padding-left: 10px;
+    }
+
+    #toc-content .toc-link:hover {
+        color: #42b983;
+        font-weight: 700;
+        text-decoration: underline;
+    }
+
+    #toc-content .toc-link::before {
+        background-color: transparent;
+        max-height: 25px;
+    }
+
+    #toc-content .is-active-link {
+        color: #42b983;
+    }
+
+    #toc-content .is-active-link::before {
+        background-color: #42b983;
+    }
+
+    #floating-toc-btn {
+        position: fixed;
+        right: 20px;
+        bottom: 76px;
+        padding-top: 15px;
+        margin-bottom: 0;
+        z-index: 998;
+    }
+
+    #floating-toc-btn .btn-floating {
+        width: 48px;
+        height: 48px;
+    }
+
+    #floating-toc-btn .btn-floating i {
+        line-height: 48px;
+        font-size: 1.4rem;
+    }
+</style>
+<div class="row">
+    <div id="main-content" class="col s12 m12 l9">
+        <!-- 文章内容详情 -->
+<div id="artDetail">
+    <div class="card">
+        <div class="card-content article-info">
+            <div class="row tag-cate">
+                <div class="col s7">
+                    
+                    <div class="article-tag">
+                        
+                            <a href="/tags/踩坑指南/" target="_blank">
+                                <span class="chip bg-color">踩坑指南</span>
+                            </a>
+                        
+                    </div>
+                    
+                </div>
+                <div class="col s5 right-align">
+                    
+                    <div class="post-cate">
+                        <i class="fa fa-bookmark fa-fw icon-category"></i>
+                        
+                            <a href="/categories/踩坑指南/" class="post-category" target="_blank">
+                                踩坑指南
+                            </a>
+                        
+                    </div>
+                    
+                </div>
+            </div>
+
+            <div class="post-info">
+                <div class="post-date info-break-policy">
+                    <i class="fa fa-calendar-minus-o fa-fw"></i>发布日期:&nbsp;&nbsp;
+                    2019-03-03
+                </div>
+
+                
+                    
+                    <div class="info-break-policy">
+                        <i class="fa fa-file-word-o fa-fw"></i>文章字数:&nbsp;&nbsp;
+                        782
+                    </div>
+                    
+
+                    
+                    <div class="info-break-policy">
+                        <i class="fa fa-clock-o fa-fw"></i>阅读时长:&nbsp;&nbsp;
+                        2 分
+                    </div>
+                    
+                
+				
+				
+            </div>
+        </div>
+        <hr class="clearfix">
+        <div class="card-content article-card-content">
+            <div id="articleContent">
+                <script src="/assets/js/APlayer.min.js"> </script><h1 id="有300ms延迟的原因"><a href="#有300ms延迟的原因" class="headerlink" title="有300ms延迟的原因"></a>有300ms延迟的原因</h1><p>&emsp;&emsp;之所以移动端click会有300ms的延迟，主要是为了让用户在双击屏幕时可以对视图进行放大缩小，而这300ms就是用于判断在这时间范围之内是否有第二次点击，有则双击，否则就是单击。若每次单击屏幕都会延迟300ms才触发事件，很明显这对于用户体验来说是极其不友好的。</p>
+<h1 id="解决300ms延迟的办法"><a href="#解决300ms延迟的办法" class="headerlink" title="解决300ms延迟的办法"></a>解决300ms延迟的办法</h1><h2 id="zepto-js"><a href="#zepto-js" class="headerlink" title="zepto.js"></a>zepto.js</h2><p>&emsp;&emsp;在zepto.js这个JavaScript库里，使用touch事件封装了tap事件，模仿了click的实现，并且不会有300ms的延迟。实现思路是：给目标元素添加touch监听事件，只要满足touch的时间不超过规定的超时时间(防止长按)，并且touch过程不发生移动则在touchend时触发tap事件。(touchend事件是冒泡到document时才触发目标元素绑定的tap事件的)</p>
+<p> <img src="/2019/03/03/移动端点击的300ms延迟/2.png" alt> </p>
+<h3 id="zepto-js的穿透bug"><a href="#zepto-js的穿透bug" class="headerlink" title="zepto.js的穿透bug"></a>zepto.js的穿透bug</h3><p>&emsp;&emsp;zepto.js虽然使用tap事件模拟click避开了300ms延迟，但存在一个bug，即点击穿透。这里需要先说明的是，当用户手指触摸到屏幕的时候，系统会生成两个事件，一个是touch，另一个是click，<strong>执行顺序依次为：touchstart、touchmove、touchend、click</strong>。其中touch事件会优先处理，经过捕获、处理,、冒泡一系列流程完成后才回去触发click事件。</p>
+<p>&emsp;&emsp;所谓的点击穿透，是指当用户在上层有一个模态框或覆盖层（诸如蒙版）时，当触发tap事件关闭掉模态框或覆盖层后，此时事件只进行到touchend阶段，而300ms后将会触发的click事件在上层失去了目标元素，若此时下层的位置上恰好有元素绑定了click事件或是click时会触发事件，诸如input输入框在focus时会弹出键盘，a标签会跳转链接等的元素时，则会触发其绑定的click事件。</p>
+<h3 id="解决穿透的办法"><a href="#解决穿透的办法" class="headerlink" title="解决穿透的办法"></a>解决穿透的办法</h3><p>&emsp;&emsp;1：在touch事件里面，调用<strong>e.preventDefault()</strong>可以阻止本次点击触发的click事件，而且不会阻止后续的touch事件。<br>&emsp;&emsp;2： 对tap事件做一下延迟，加一个setTimeout来使上层的模态框或覆盖层等click事件触发后再消失，这样下层的元素就不会被暴露出来了，click事件自然也不会作用到下层元素上去。<br>&emsp;&emsp;3：使用css的<a href="https://developer.mozilla.org/zh-CN/docs/Web/CSS/pointer-events#%E8%AF%AD%E6%B3%95" target="_blank" rel="noopener">pointer-events</a>给下层那个会触发到click的元素添加<strong>pointer-events:none</strong>属性，这会使得该元素永远不会成为click事件的目标。需要的话可以再添加一个setTimeout再把 pointer-event 的值设回auto。</p>
+<h2 id="fastclick"><a href="#fastclick" class="headerlink" title="fastclick"></a>fastclick</h2><h3 id="实现原理："><a href="#实现原理：" class="headerlink" title="实现原理："></a>实现原理：</h3><p>   &emsp;&emsp;监听touchstart事件获取目标元素。监听到touchend事件后，使用e.preventDefault()取消掉300ms后的click，合成相应的click事件并立即触发达到fastclick的目的。(合成事件的三步骤：<a href="https://developer.mozilla.org/zh-CN/docs/Web/API/Document/createEvent" target="_blank" rel="noopener">创建事件</a>，<a href="https://developer.mozilla.org/zh-CN/docs/Web/API/MouseEvent/initMouseEvent" target="_blank" rel="noopener">初始化鼠标事件</a>，<a href="https://developer.mozilla.org/zh-CN/docs/Web/API/EventTarget/dispatchEvent" target="_blank" rel="noopener">给目标元素分发事件</a>)<br><img src="/2019/03/03/移动端点击的300ms延迟/3.png" alt></p>
+<h3 id="不需要使用fastclick的场景"><a href="#不需要使用fastclick的场景" class="headerlink" title="不需要使用fastclick的场景"></a>不需要使用fastclick的场景</h3><h2 id><a href="#" class="headerlink" title></a><img src="/2019/03/03/移动端点击的300ms延迟/1.png" alt></h2><p>(上述图片来源于网络)</p>
+
+            </div>
+            <hr/>
+
+            
+
+            <link rel="stylesheet" type="text/css" href="/libs/share/css/share.min.css">
+
+<div id="article-share">
+    
+    <div class="social-share" data-disabled="qzone" data-wechat-qrcode-helper="<p>微信里点“发现”->“扫一扫”二维码便可查看分享。</p>"></div>
+    
+</div>
+
+<script src="/libs/share/js/social-share.min.js"></script>
+
+            <div class="reprint">
+                <p>
+                    <span class="reprint-tip">
+                        <i class="fa fa-exclamation-circle"></i>&nbsp;&nbsp;转载请注明:
+                    </span>
+                    <a href="http://blog.dangosky.com" class="b-link-green">DangoSky</a>
+                    <i class="fa fa-angle-right fa-lg fa-fw text-color"></i>
+                    <a href="/2019/03/03/移动端点击的300ms延迟/" class="b-link-green">移动端点击的300ms延迟</a>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    
+
+    
+
+    
+        <div class="disqus-card card" data-aos="fade-up">
+    <div id="disqus_thread" class="card-content">
+        <noscript>Please enable JavaScript to view the
+            <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+    </div>
+</div>
+
+<script type="text/javascript">
+    disqus_config = function () {
+        this.page.url = 'http://blog.dangosky.com/2019/03/03/移动端点击的300ms延迟/';
+        this.page.identifier = '/2019/03/03/移动端点击的300ms延迟/';
+        this.page.title = '移动端点击的300ms延迟';
+    };
+    let disqus_shortname = 'dangosky';
+
+    (function () { // DON'T EDIT BELOW THIS LINE
+        let d = document, s = d.createElement('script');
+        // 如：s.src = 'https://blinkfox.disqus.com/embed.js';
+        s.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+    
+
+    
+
+    
+
+    
+
+<article id="prenext-posts" class="prev-next articles">
+    <div class="row article-row">
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge left-badge text-color">
+                <i class="fa fa-chevron-left"></i>&nbsp;上一篇</div>
+            <div class="card">
+                <a href="/2019/03/07/未知宽高元素的水平垂直居中布局/">
+                    <div class="card-image">
+                        
+                        <img src="https://github.com/DangoSky/practices-for-web/blob/master/images/10.jpg?raw=true" class="responsive-img" alt="CSS常见的几种布局方式">
+                        
+                        <span class="card-title">CSS常见的几种布局方式</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary"> 未知宽高元素的水平垂直居中&lt;div class="container">
+  &lt;div class="ele">hello world&lt;/div>
+&lt;/div>
+
+/* 为了便于观察，先设置一些css样式:  */</div>
+                    <div class="publish-info">
+                        <span class="publish-date">
+                            <i class="fa fa-clock-o fa-fw icon-date"></i>2019-03-07
+                        </span>
+                        <span class="publish-author">
+                            
+                            <i class="fa fa-bookmark fa-fw icon-category"></i>
+                            
+                            <a href="/categories/CSS/" class="post-category" target="_blank">
+                                    CSS
+                                </a>
+                            
+                            
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/前端基础/" target="_blank">
+                        <span class="chip bg-color">前端基础</span>
+                    </a>
+                    
+                    <a href="/tags/CSS/" target="_blank">
+                        <span class="chip bg-color">CSS</span>
+                    </a>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge right-badge text-color">
+                下一篇&nbsp;<i class="fa fa-chevron-right"></i>
+            </div>
+            <div class="card">
+                <a href="/2019/03/02/0-1-0-2-0-3/">
+                    <div class="card-image">
+                        
+                        
+                        <img src="/medias/featureimages/16.jpg" class="responsive-img" alt="0.1 + 0.2 !== 0.3">
+                        
+                        <span class="card-title">0.1 + 0.2 !== 0.3</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary"> &emsp;&emsp;众所周知的是，计算机中对十进制数字的运算是先把十进制数字转换为二进制再进行运算的（至于为什么，呃，如果我没记错的话，大致是因为早期计算机只支持二进制？正如之前看到的一句话，二进制是世界的本源）。对于二进制浮点数的转</div>
+                    <div class="publish-info">
+                            <span class="publish-date">
+                                <i class="fa fa-clock-o fa-fw icon-date"></i>2019-03-02
+                            </span>
+                        <span class="publish-author">
+                            
+                            <i class="fa fa-bookmark fa-fw icon-category"></i>
+                            
+                            <a href="/categories/JavaScript/" class="post-category" target="_blank">
+                                    JavaScript
+                                </a>
+                            
+                            
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/JavaScript/" target="_blank">
+                        <span class="chip bg-color">JavaScript</span>
+                    </a>
+                    
+                    <a href="/tags/前端基础/" target="_blank">
+                        <span class="chip bg-color">前端基础</span>
+                    </a>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+    </div>
+</article>
+</div>
+
+
+    </div>
+    <div id="toc-aside" class="expanded col l3 hide-on-med-and-down">
+        <div class="toc-widget">
+            <div class="toc-title"><i class="fa fa-list-alt"></i>&nbsp;&nbsp;目录</div>
+            <div id="toc-content"></div>
+        </div>
+    </div>
+</div>
+
+<!-- TOC 悬浮按钮. -->
+
+<div id="floating-toc-btn" class="hide-on-med-and-down">
+    <a class="btn-floating btn-large bg-color">
+        <i class="fa fa-list"></i>
+    </a>
+</div>
+
+
+<script src="/libs/tocbot/tocbot.min.js"></script>
+<script>
+    $(function () {
+        tocbot.init({
+            tocSelector: '#toc-content',
+            contentSelector: '#articleContent',
+            headingsOffset: -($(window).height() * 0.4 - 45),
+            // headingsOffset: -205,
+            headingSelector: 'h1, h2, h3'
+        });
+
+        // modify the toc link href to support Chinese.
+        let i = 0;
+        let tocHeading = 'toc-heading-';
+        $('#toc-content a').each(function () {
+            $(this).attr('href', '#' + tocHeading + (++i));
+        });
+
+        // modify the heading title id to support Chinese.
+        i = 0;
+        $('#articleContent').children('h1, h2, h3').each(function () {
+            $(this).attr('id', tocHeading + (++i));
+        });
+
+        // Set scroll toc fixed.
+        let tocHeight = parseInt($(window).height() * 0.4 - 64);
+        let $tocWidget = $('.toc-widget');
+        $(window).scroll(function () {
+            let scroll = $(window).scrollTop();
+            /* add post toc fixed. */
+            if (scroll > tocHeight) {
+                $tocWidget.addClass('toc-fixed');
+            } else {
+                $tocWidget.removeClass('toc-fixed');
+            }
+        });
+
+        
+        /* 修复文章卡片 div 的宽度. */
+        let fixPostCardWidth = function (srcId, targetId) {
+            let srcDiv = $('#' + srcId);
+            if (srcDiv.length === 0) {
+                return;
+            }
+
+            let w = srcDiv.width();
+            if (w >= 450) {
+                w = w + 21;
+            } else if (w >= 350 && w < 450) {
+                w = w + 18;
+            } else if (w >= 300 && w < 350) {
+                w = w + 16;
+            } else {
+                w = w + 14;
+            }
+            $('#' + targetId).width(w);
+        };
+
+        // 切换TOC目录展开收缩的相关操作.
+        const expandedClass = 'expanded';
+        let $tocAside = $('#toc-aside');
+        let $mainContent = $('#main-content');
+        $('#floating-toc-btn .btn-floating').click(function () {
+            if ($tocAside.hasClass(expandedClass)) {
+                $tocAside.removeClass(expandedClass).slideUp(500);
+                $mainContent.removeClass('l9');
+            } else {
+                $tocAside.addClass(expandedClass).slideDown(500);
+                $mainContent.addClass('l9');
+            }
+            fixPostCardWidth('artDetail', 'prenext-posts');
+        });
+        
+    });
+</script>
+    
+
+</main>
+
+
+<footer class="page-footer bg-color">
+    <div class="container row center-align">
+        <div class="col s12 m8 l8 copy-right">
+            本站由&copy;<a href="https://blinkfox.github.io/" target="_blank">Blinkfox</a>基于
+            <a href="https://hexo.io/" target="_blank">Hexo</a> 的
+            <a href="https://github.com/blinkfox/hexo-theme-matery" target="_blank">hexo-theme-matery</a>主题搭建.
+
+            
+                &nbsp;<i class="fa fa-area-chart"></i>&nbsp;站点总字数:&nbsp;
+                <span class="white-color">68.8k</span>
+            
+
+            <!-- <p id="timeDate">DangoSky的博客诞生已经</p><p id="times">载入时分秒...</p> -->
+            <!-- <p>DangoSky的博客已经诞生<strong><i><span id="day"></span><span id="hour"></span></span><span id="minutes"></span><span id="seconds"></span> </strong><i></p> -->
+                <p id="timeDate"></p>
+
+            <!-- 
+			 -->
+        </div>
+        <div class="col s12 m4 l4 social-link ">
+
+    <a href="mailto:1341514988@qq.com" class="tooltipped" target="_blank" data-tooltip="邮件联系我" data-position="top" data-delay="50">
+        <i class="fa fa-envelope-open"></i>
+    </a>
+
+
+
+    <a href="/atom.xml" class="tooltipped" target="_blank" data-tooltip="RSS 订阅" data-position="top" data-delay="50">
+        <i class="fa fa-rss"></i>
+    </a>
+
+
+
+   <a href="https://github.com/DangoSky" class="tooltipped" target="_blank" data-tooltip="访问我的GitHub" data-position="top" data-delay="50">
+    <i class="fa fa-github"></i>
+</a>
+
+</div>
+    </div>
+</footer>
+
+<div class="progress-bar"></div>
+
+<script type="text/javascript">
+    function computed(){
+        let sum = new Date()-new Date(2018,9,3,23,3,38)
+        sum = parseInt(sum / 1000);
+        let d = zero(parseInt(sum / 3600 / 24));
+        let h = zero(parseInt(sum / 3600 % 24));
+        let m = zero(parseInt(sum / 60 % 60));
+        let s = zero(parseInt(sum % 60));
+        document.getElementById("timeDate").innerHTML = "DangoSky的博客已经诞生<strong>" + d + "</strong>天<strong>" + h + "</strong>小时<strong>" + m + "</strong>分钟<strong>" + s + "</strong>秒了。"; 
+    }
+    function zero(i){
+        if(i < 10)  {
+            i = "0" + i;
+        }
+        return i;
+    }
+    setInterval("computed();",1000);
+</script>
+
+<!-- 搜索遮罩框 -->
+<div id="searchModal" class="modal">
+    <div class="modal-content">
+        <div class="search-header">
+            <span class="title"><i class="fa fa-search"></i>&nbsp;&nbsp;搜索</span>
+            <input type="search" id="searchInput" name="s" placeholder="请输入搜索的关键字"
+                   class="search-input">
+        </div>
+        <div id="searchResult"></div>
+    </div>
+</div>
+
+<script src="/js/search.js"></script>
+<script type="text/javascript">
+$(function () {
+    searchFunc("/" + "search.xml", 'searchInput', 'searchResult');
+});
+</script>
+<!-- 回到顶部按钮 -->
+<div id="backTop" class="top-scroll">
+    <a class="btn-floating btn-large waves-effect waves-light" href="#!">
+        <i class="fa fa-angle-up"></i>
+    </a>
+</div>
+
+
+<script src="/libs/materialize/materialize.min.js"></script>
+<script src="/libs/masonry/masonry.pkgd.min.js"></script>
+<script src="/libs/aos/aos.js"></script>
+<script src="/libs/scrollprogress/scrollProgress.min.js"></script>
+<script src="/libs/lightGallery/js/lightgallery-all.min.js"></script>
+<script src="/js/matery.js"></script>
+
+<!-- Global site tag (gtag.js) - Google Analytics -->
+
+
+
+    <script src="/libs/others/clicklove.js"></script>
+
+
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"debug":false,"model":{"jsonPath":"live2d-widget-model-shizuku"},"display":{"position":"right","width":200,"height":400},"mobile":{"show":false},"log":false});</script></body>
+</html>

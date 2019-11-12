@@ -1,0 +1,801 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN">
+
+
+<head><meta name="generator" content="Hexo 3.9.0">
+    <meta charset="utf-8">
+    <meta name="keywords" content="Puzzle Game, DangoSky">
+    <meta name="description" content=" 前言&amp;emsp;&amp;emsp;会做这个 Puzzle Game，还是应前几天 lightyears 的一次提议，模仿的是鹰脚网络首页左下角那个拼图小游戏。那天晚上睡觉的时候在床上想了一下，大致 get 到了它内部实现的原理，于是就干脆动手实">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="renderer" content="webkit|ie-stand|ie-comp">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>Puzzle Game | DangoSky</title>
+    <link rel="icon" type="image/jpeg" href="/favicon.jpg">
+
+    <link rel="stylesheet" type="text/css" href="/libs/awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="/libs/materialize/materialize.min.css">
+    <link rel="stylesheet" type="text/css" href="/libs/aos/aos.css">
+    <link rel="stylesheet" type="text/css" href="/libs/animate/animate.min.css">
+    <link rel="stylesheet" type="text/css" href="/libs/lightGallery/css/lightgallery.min.css">
+    <link rel="stylesheet" type="text/css" href="/css/matery.css">
+    <link rel="stylesheet" type="text/css" href="/css/my.css">
+    <style type="text/css">
+        
+    </style>
+
+    <script src="/libs/jquery/jquery-2.2.0.min.js"></script>
+<link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css"></head>
+
+
+<body>
+
+<header class="navbar-fixed">
+    <nav id="headNav" class="bg-color nav-transparent">
+        <div id="navContainer" class="nav-wrapper container">
+            <div class="brand-logo">
+                <a href="/" class="waves-effect waves-light">
+                    
+                    <span class="logo-span">DangoSky</span>
+                </a>
+            </div>
+            
+
+<a href="#" data-target="mobile-nav" class="sidenav-trigger button-collapse"><i class="fa fa-navicon"></i></a>
+<ul class="right">
+    
+    <li class="hide-on-med-and-down">
+        <a href="/" class="waves-effect waves-light">
+            
+            <i class="fa fa-home"></i>
+            
+            <span>首页</span>
+        </a>
+    </li>
+    
+    <li class="hide-on-med-and-down">
+        <a href="/tags" class="waves-effect waves-light">
+            
+            <i class="fa fa-tags"></i>
+            
+            <span>标签</span>
+        </a>
+    </li>
+    
+    <li class="hide-on-med-and-down">
+        <a href="/categories" class="waves-effect waves-light">
+            
+            <i class="fa fa-bookmark"></i>
+            
+            <span>分类</span>
+        </a>
+    </li>
+    
+    <li class="hide-on-med-and-down">
+        <a href="/archives" class="waves-effect waves-light">
+            
+            <i class="fa fa-archive"></i>
+            
+            <span>归档</span>
+        </a>
+    </li>
+    
+    <li class="hide-on-med-and-down">
+        <a href="/about" class="waves-effect waves-light">
+            
+            <i class="fa fa-user-circle-o"></i>
+            
+            <span>关于</span>
+        </a>
+    </li>
+    
+    <li class="hide-on-med-and-down">
+        <a href="/friends" class="waves-effect waves-light">
+            
+            <i class="fa fa-address-book"></i>
+            
+            <span>友情链接</span>
+        </a>
+    </li>
+    
+    <li>
+        <a href="#searchModal" class="modal-trigger waves-effect waves-light">
+            <i id="searchIcon" class="fa fa-search" title="搜索"></i>
+        </a>
+    </li>
+</ul>
+
+<div id="mobile-nav" class="side-nav sidenav">
+
+    <div class="mobile-head bg-color">
+        
+        <div class="logo-name">DangoSky</div>
+        <div class="logo-desc">
+            
+            但愿日子清净，抬头遇见的都是柔情。
+            
+        </div>
+    </div>
+
+    
+
+    <ul class="menu-list mobile-menu-list">
+        
+        <li>
+            <a href="/" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-home"></i>
+                
+                首页
+            </a>
+        </li>
+        
+        <li>
+            <a href="/tags" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-tags"></i>
+                
+                标签
+            </a>
+        </li>
+        
+        <li>
+            <a href="/categories" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-bookmark"></i>
+                
+                分类
+            </a>
+        </li>
+        
+        <li>
+            <a href="/archives" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-archive"></i>
+                
+                归档
+            </a>
+        </li>
+        
+        <li>
+            <a href="/about" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-user-circle-o"></i>
+                
+                关于
+            </a>
+        </li>
+        
+        <li>
+            <a href="/friends" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-address-book"></i>
+                
+                友情链接
+            </a>
+        </li>
+        
+        
+    </ul>
+</div>
+
+        </div>
+
+        
+    </nav>
+
+</header>
+
+
+
+
+
+<div class="bg-cover pd-header post-cover" style="background-image: url('https://github.com/DangoSky/puzzle-game/blob/master/image/bg.jpg?raw=true')">
+    <div class="container">
+        <div class="row">
+            <div class="col s12 m12 l12">
+                <div class="brand">
+                    <div class="description center-align post-title">
+                        Puzzle Game
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<main class="post-container content">
+
+    
+    <link rel="stylesheet" href="/libs/tocbot/tocbot.css">
+<style>
+    #articleContent h1::before,
+    #articleContent h2::before,
+    #articleContent h3::before,
+    #articleContent h4::before,
+    #articleContent h5::before,
+    #articleContent h6::before {
+        display: block;
+        content: " ";
+        height: 100px;
+        margin-top: -100px;
+        visibility: hidden;
+    }
+
+    #articleContent :focus {
+        outline: none;
+    }
+
+    .toc-fixed {
+        position: fixed;
+        top: 64px;
+    }
+
+    .toc-widget {
+        padding-left: 20px;
+    }
+
+    .toc-widget .toc-title {
+        margin: 35px 0 15px 0;
+        padding-left: 17px;
+        font-size: 1.5rem;
+        font-weight: bold;
+        line-height: 1.5rem;
+    }
+
+    .toc-widget ol {
+        padding: 0;
+        list-style: none;
+    }
+
+    #toc-content ol {
+        padding-left: 10px;
+    }
+
+    #toc-content ol li {
+        padding-left: 10px;
+    }
+
+    #toc-content .toc-link:hover {
+        color: #42b983;
+        font-weight: 700;
+        text-decoration: underline;
+    }
+
+    #toc-content .toc-link::before {
+        background-color: transparent;
+        max-height: 25px;
+    }
+
+    #toc-content .is-active-link {
+        color: #42b983;
+    }
+
+    #toc-content .is-active-link::before {
+        background-color: #42b983;
+    }
+
+    #floating-toc-btn {
+        position: fixed;
+        right: 20px;
+        bottom: 76px;
+        padding-top: 15px;
+        margin-bottom: 0;
+        z-index: 998;
+    }
+
+    #floating-toc-btn .btn-floating {
+        width: 48px;
+        height: 48px;
+    }
+
+    #floating-toc-btn .btn-floating i {
+        line-height: 48px;
+        font-size: 1.4rem;
+    }
+</style>
+<div class="row">
+    <div id="main-content" class="col s12 m12 l9">
+        <!-- 文章内容详情 -->
+<div id="artDetail">
+    <div class="card">
+        <div class="card-content article-info">
+            <div class="row tag-cate">
+                <div class="col s7">
+                    
+                    <div class="article-tag">
+                        
+                            <a href="/tags/JavaScript/" target="_blank">
+                                <span class="chip bg-color">JavaScript</span>
+                            </a>
+                        
+                            <a href="/tags/Web-Project/" target="_blank">
+                                <span class="chip bg-color">Web Project</span>
+                            </a>
+                        
+                            <a href="/tags/Vue/" target="_blank">
+                                <span class="chip bg-color">Vue</span>
+                            </a>
+                        
+                    </div>
+                    
+                </div>
+                <div class="col s5 right-align">
+                    
+                    <div class="post-cate">
+                        <i class="fa fa-bookmark fa-fw icon-category"></i>
+                        
+                            <a href="/categories/Web-Project/" class="post-category" target="_blank">
+                                Web Project
+                            </a>
+                        
+                    </div>
+                    
+                </div>
+            </div>
+
+            <div class="post-info">
+                <div class="post-date info-break-policy">
+                    <i class="fa fa-calendar-minus-o fa-fw"></i>发布日期:&nbsp;&nbsp;
+                    2019-05-03
+                </div>
+
+                
+                    
+                    <div class="info-break-policy">
+                        <i class="fa fa-file-word-o fa-fw"></i>文章字数:&nbsp;&nbsp;
+                        3.9k
+                    </div>
+                    
+
+                    
+                    <div class="info-break-policy">
+                        <i class="fa fa-clock-o fa-fw"></i>阅读时长:&nbsp;&nbsp;
+                        13 分
+                    </div>
+                    
+                
+				
+				
+            </div>
+        </div>
+        <hr class="clearfix">
+        <div class="card-content article-card-content">
+            <div id="articleContent">
+                <script src="/assets/js/APlayer.min.js"> </script><h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>&emsp;&emsp;会做这个 <strong>Puzzle Game</strong>，还是应前几天 lightyears 的一次提议，模仿的是鹰脚网络首页左下角那个<a href="https://www.hypergryph.com/#/" target="_blank" rel="noopener">拼图小游戏</a>。那天晚上睡觉的时候在床上想了一下，大致 get 到了它内部实现的原理，于是就干脆动手实践一番，现在也顺道写一篇博客记录下实现思路和中间遇到的一些问题。</p>
+<p><img src="/2019/05/03/Puzzle-Game/1.png" alt></p>
+<h1 id="实现"><a href="#实现" class="headerlink" title="实现"></a>实现</h1><h2 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h2><p>&emsp;&emsp;<strong>Puzzle Game</strong> 的游戏过程为：用户上传图片后选择要分割的碎片数量，一颗星代表 2 * 2 = 4 个碎片， 两颗星代表 3 * 3 = 9 个碎片，以此类推八颗星则是 81 个碎片。通过拖拽碎片进行拼图，当每个碎片和其相邻的碎片间隔都不超过阈值时，则提示拼图成功。</p>
+<p>&emsp;&emsp;<a href="http://dangosky.com/puzzle-game/index.html" target="_blank" rel="noopener">传送门</a>, Go to play?<br>&emsp;&emsp;<a href="https://github.com/DangoSky/puzzle-game" target="_blank" rel="noopener">GitHub</a>，喜欢的话就给个 star 鼓励鼓励吧😊。</p>
+<p><img src="/2019/05/03/Puzzle-Game/2.gif" alt></p>
+<p><img src="/2019/05/03/Puzzle-Game/3.gif" alt></p>
+<h2 id="首先要解决的两个难点"><a href="#首先要解决的两个难点" class="headerlink" title="首先要解决的两个难点"></a>首先要解决的两个难点</h2><p>&emsp;&emsp;<strong>Puzzle Game</strong> 的难点主要是两个：一是如何对上传的图片进行切割成各个碎片，二是如何判断是否拼图成功。鹰脚网络那个拼图因为是固定的，就只有那一张图片和四个图片碎片，所以大可以事先把图片分割成 4 块碎片再写进代码里。但 <strong>Puzzle Game</strong> 使用的图片和碎片数量取决于用户选择，所以就得另辟蹊径了。</p>
+<p>&emsp;&emsp;这里我利用到的是<strong>精灵图</strong>，根据用户选择的碎片数量，生成 N 个<code>&lt;div&gt;</code>（代表每一个碎片），将用户上传的图片设置为每一个<code>&lt;div&gt;</code>的背景图片，再使用<code>background-position</code>把每一个碎片都定位到图片相应的位置，这样就可以实现把图片切割成各个碎片啦。<strong>Puzzle Game</strong> 还是挺简单的，每一个碎片都是等大的，而且是 n * n 的碎片数量，相对容易实现很多。不过即使是 n * m 也是一样的，只要改变一下碎片的宽高和<code>background-position</code>的定位就可以了，问题不大。但如果每一个碎片都不等大的话就麻烦了，目前没想到实现思路。</p>
+<p>&emsp;&emsp;至于判断拼图是否成功，我想到的办法是：先设置好一个阈值，<strong>在每次拖拽完毕后就遍历每一个碎片，判断它和相邻碎片（上下左右四个碎片，对于边界碎片再行判断）之间的间隔是否不超过这个阈值</strong>。如果每一个碎片都不超过，则拼图成功；若有一个碎片和相邻某一个碎片之间的间隔超过了阈值，则直接结束判断过程。此处判断碎片间的距离使用的是<code>element.getBoundingClientRect()</code>，四个属性值<code>left</code>、<code>right</code>、<code>top</code>、<code>bottom</code>统一是相对于浏览器视口来计算的。（具体代码实现可以看<a href="https://github.com/DangoSky/puzzle-game/blob/master/index.html" target="_blank" rel="noopener">这里</a>）</p>
+<h2 id="遇到的一些问题"><a href="#遇到的一些问题" class="headerlink" title="遇到的一些问题"></a>遇到的一些问题</h2><h3 id="拖拽后计算碎片的位置"><a href="#拖拽后计算碎片的位置" class="headerlink" title="拖拽后计算碎片的位置"></a>拖拽后计算碎片的位置</h3><p>&emsp;&emsp;拖拽碎片进行移动使用到的 api 有三个：<code>mousedown</code>、<code>mousemove</code>、<code>mouseup</code>（移动端则是对应的<code>touchstart</code>、<code>touchmove</code>、<code>touchend</code>。不过 <strong>Puzzle Game</strong> 没有适应移动端，因为我觉得通过拖拽来实现拼图而且碎片数量还是不确定的，这需要大屏幕才方便操作，移动端屏幕太小不适合）。在<code>mousemove</code>的过程中实时更新碎片的位置，计算方法有两个：</p>
+<ol>
+<li><strong>鼠标拖拽过程中移动的距离 + 碎片原先离父元素的左 / 上边距</strong></li>
+</ol>
+<pre class=" language-js"><code class="language-js"><span class="token keyword">let</span> x <span class="token operator">=</span> e<span class="token punctuation">.</span>clientX <span class="token operator">-</span> startX <span class="token operator">+</span> px<span class="token punctuation">;</span>
+<span class="token keyword">let</span> y <span class="token operator">=</span> e<span class="token punctuation">.</span>clientY <span class="token operator">-</span> startY <span class="token operator">+</span> py<span class="token punctuation">;</span>
+</code></pre>
+<p>&emsp;&emsp;其中<code>e.clientX</code>是鼠标松开时鼠标的 x 坐标，startX 是一开始鼠标按下时的 x 坐标，px 是碎片原先离父元素的左边距，由<code>targetEle.offsetLeft</code>得到。</p>
+<ol start="2">
+<li><strong>鼠标松开时的 x / y 坐标 - 碎片自身宽 / 高的一半</strong></li>
+</ol>
+<pre class=" language-js"><code class="language-js"><span class="token keyword">let</span> x <span class="token operator">=</span> e<span class="token punctuation">.</span>clientX <span class="token operator">-</span> targetEle<span class="token punctuation">.</span>clientWidth <span class="token operator">/</span> <span class="token number">2</span><span class="token punctuation">;</span>
+<span class="token keyword">let</span> y <span class="token operator">=</span> e<span class="token punctuation">.</span>clientY <span class="token operator">-</span> targetEle<span class="token punctuation">.</span>clientHeight <span class="token operator">/</span> <span class="token number">2</span><span class="token punctuation">;</span>
+</code></pre>
+<p>&emsp;&emsp;这两个计算方法本身没有问题，但和后面的<code>targetEle.style.left = `${x}px`; targetEle.style.top = `${y}px`;</code>合用的时候就产生了一个参照物的问题。方法一使用到的<code>targetEle.offsetLeft</code>和<code>targetEle.offsetTop</code>是相对于它的<code>offsetParent</code>而言的，也就是它第一个设置有定位的父元素，如果它的父级元素都没有定位则为 body。而碎片设置的<code>left</code>和<code>top</code>属性也是相对于它第一个设有定位的父级元素而言的，所以不管碎片的父元素如何定位（默认也好，绝对 / 相对 / 固定定位也罢），<strong>得出的 x 和 y 值以及<code>left</code>和<code>top</code>都是相对于其父元素而言的，是统一的</strong>。</p>
+<p>&emsp;&emsp;但使用方法二算出来的 x 和 y 是相对于浏览器视口左上角而言的，和<code>left</code>和<code>top</code>的参照物可能不一样，所以使用方法二有时候就会出现拖拽图片但图片却偏离到右下角去了的情况。因此要准确地<strong>使用方法二是有个前提条件的，就是碎片的父元素必须得是相对于浏览器左上角定位的</strong>。这和父元素是否设置了定位无关，因为如果父元素没有设置定位，那么父元素自然是相对于浏览器左上角来定位的（即使父元素前面已经有其他的元素了）。而如果父元素设置了定位，只要父元素位于浏览器左上角从而让碎片还是相对于浏览器左上角定位那也是可以的，比如父元素设置了定位但<code>left</code>和<code>top</code>为 0 并且前面没有其他的元素，或者父元素前面的元素都脱离了文档流。只有满足这几个条件，才能正确使用方法二，否则拖拽后图片的位置会出现异常，例如下面图三所示。</p>
+<p>&emsp;&emsp;接下来我们先用代码和结果图进一步验证，看客可以<a href="https://jsfiddle.net/8x014ewm/2/" target="_blank" rel="noopener">戳这里</a>查看具体代码自行验证，这里就只放效果图不放代码啦。</p>
+<ul>
+<li><p>父元素没有设置定位<br><img src="/2019/05/03/Puzzle-Game/4.gif" alt></p>
+</li>
+<li><p>父元素设置了定位（<code>relative</code> / <code>absolute</code> / <code>fixed</code> 定位都行），但父元素位于浏览器左上角的位置（<code>left</code>和<code>top</code>为 0 且前面没有元素，或是前面的元素都脱离了文档流）。</p>
+</li>
+</ul>
+<p><img src="/2019/05/03/Puzzle-Game/5.gif" alt></p>
+<ul>
+<li>父元素设置了定位，但设置了非零的<code>left</code>和<code>top</code>，或是前面已有在文档流中占位的元素。</li>
+</ul>
+<p><img src="/2019/05/03/Puzzle-Game/6.gif" alt></p>
+<p>&emsp;&emsp;考虑到使用方法二会有一些限制条件，所以还是推荐使用方法一的好，比较健壮适应性也好。如果使用方法二的话，则要注意上述的这些坑点，免得跳坑里了。（咦，如果不跳一次坑哪来的这篇博客？？）</p>
+<h3 id="拖拽速度过快"><a href="#拖拽速度过快" class="headerlink" title="拖拽速度过快"></a>拖拽速度过快</h3><p>&emsp;&emsp;在监听事件的时候，我们通常都是把监听函数绑定到相应的目标元素上的，很少把监听函数绑定到<code>document</code>或<code>body</code>上（监听页面滚动和利用事件委托等除外）。所以当我把<code>mousedown</code>、<code>mousemove</code>、<code>mouseup</code>这三个监听函数绑定到碎片上时，<code>mousedown</code>没什么问题，问题就出在了<code>mousemove</code>和<code>mouseup</code>上。<strong>如果点击碎片后拖拽的速度过大，就会造成鼠标移动过快而碎片来不及响应移动</strong>。要知道，<code>mousemove</code>触发频率是很高的，相应的监听函数也会被高频率调用。这很容易造成碎片的移动速度跟不上鼠标的移动速度，<strong>结果就是鼠标移出了碎片后，即使鼠标没有松开但因为监听函数失去了目标所以碎片也不会再跟着移动。而因为鼠标松开后也没能触发相应的监听函数，所以此时标记鼠标移动是否开始的变量还是为<code>true</code>，又造成了当鼠标移动到碎片上时即使没有按住鼠标碎片也还是可以跟着鼠标移动</strong>。具体代码和效果可以<a href="https://jsfiddle.net/8x014ewm/1/" target="_blank" rel="noopener">戳这里</a>。</p>
+<p>&emsp;&emsp;我使用的解决办法很简单，直接把<code>mousemove</code>和<code>mouseup</code>这两个监听函数绑定到<code>document</code>或者<code>body</code>上就行了。这样即使鼠标移动速度过快离开了碎片，也还是能触发到相应的监听函数让碎片也跟着移动。这里还有一个注意点，计算得到 x 和 y 的值要修改碎片的<code>left</code>和<code>top</code>属性时，不能使用<code>e.target</code>来获取碎片自身了。因为鼠标移动过快离开碎片后此时的<code>e.target</code>便成<code>document</code>了，所以<strong>需要事先使用一个变量来缓存<code>e.target</code></strong>才行。</p>
+<p>&emsp;&emsp;接下来再说说把<code>mousemove</code>和<code>mouseup</code>这两个监听函数绑定到<code>document</code>和<code>body</code>的区别。<code>document</code>包括了整个浏览器视图，而<code>body</code>只包括了网页正文（脱离文档流的元素还不算在<code>body</code>的宽高上）。所以如果<code>body</code>没有达到整个浏览器视图的大小，那把监听函数绑定到<code>body</code>上和原先绑定在碎片上没有啥区别。如果<code>body</code>的宽高已经和浏览器视图一样大小了，比如手动设置为<code>100vw</code>和<code>100vh</code>，此时绑定到<code>document</code>或<code>body</code>上的区别在于两者对边界情况的处理不同。<strong>绑定到<code>document</code>上时即使鼠标移到了页面正文外（比如浏览器的工具栏和桌面的任务栏）碎片也还是能跟着继续移动，而绑定到<code>body</code>上如果鼠标移出了页面正文碎片就不会跟着移动了，只有鼠标再移回页面正文碎片的位置才会继续跟着响应</strong>。（若绑定到<code>window</code>或者<code>html</code>上则跟绑定到<code>document</code>上是一样的。）</p>
+<p>&emsp;&emsp;看效果图会更直观点，下图一是<code>mousemove</code>和<code>mouseup</code>监听函数绑定在<code>document</code>上，下图二是绑定在<code>body</code>上（当然代码中可不能直接写<code>body</code>，得写成<code>document.body</code>才行）。</p>
+<p><img src="/2019/05/03/Puzzle-Game/7.gif" alt></p>
+<p><img src="/2019/05/03/Puzzle-Game/8.gif" alt></p>
+<p>&emsp;&emsp;不知道看客有没有想到一个问题，把<code>mousemove</code>和<code>mouseup</code>的监听函数绑定到<code>document</code>上会不会造成事件触发频率过高的问题？毕竟监听对象从原来的几个碎片扩大成了整个<code>document</code>啊。不可避免地事件触发频率会高很多，但没办法，我想不出其他的解决方案啊，只能去尽量避免过多触发到监听函数了。比如把<code>mousemove</code>和<code>mouseup</code>的监听写在<code>mousedown</code>的监听函数里，这和前面使用一个变量标记鼠标移动是否开始差不多。但主要的是<strong>在<code>mouseup</code>的监听函数里把<code>document</code>上的<code>mousemove</code>和<code>mouseup</code>监听事件清除掉</strong>。比如<code>document.onmousemove = null; document.onmouseup = null;</code>。这样只有在点击碎片的时候才会监听事件并且点击完毕后就马上清除掉了，触发监听函数的次数少了很多。</p>
+<h3 id="上传的图片过大"><a href="#上传的图片过大" class="headerlink" title="上传的图片过大"></a>上传的图片过大</h3><p>&emsp;&emsp;如果用户上传的图片过大，甚至超过了浏览器视窗大小，那必然得对图片进行压缩后，否则图片都铺满了整个浏览器视窗还怎么进行拼图。这里我采用的方法也很简单，上传完图片后对图片的大小进行判断，如果超过了限定值（我设置的是浏览器宽度的一半）则将图片的宽度缩小为这个限定值，再根据原始的宽高比例和压缩后的图片宽度计算出压缩后的图片高度就行了。这里我还遇到两个小问题。</p>
+<ol>
+<li><p>我使用<code>imageEle.naturalWidth</code>和<code>imageEle.naturalHeight</code>来获取图片大小，但如果直接读取的话你会发现得到的图片宽高都是 0。这是因为 imageEle 的 src 属性是依赖于用户上传的图片来动态赋值的，<strong>需要等图片加载完成后才能获取到它的宽高</strong>，图片还没有加载完成就去获取得到的自然就是 0 了。解决方法是使用<code>setTimeout(callback, 0)</code>来异步获取图片宽高，如果想要更及时获取到图片宽高也可以开一个<code>setInterval</code>隔一段时间就去判断获取到的图片宽高是否非 0，是的话则代表图片已经加载完成就可以结束<code>setInterval</code>了。我本来以为使用<code>Vue.$nextTick</code>在下次 DOM 更新时再获取图片宽高也是可以的，但发现不行，估计是下次 DOM 更新了图片也可能没有加载完毕吧，这点不是很清楚。</p>
+</li>
+<li><p>另一个问题是，缩小图片尺寸后页面会有一瞬间图片从大变小的过程。解决方法也很简单，<strong>事先给图片设置一个<code>max-width</code></strong>就行了，这个<code>max-width</code>也就是前面提到的限定值，这样图片就不会有一个大小的瞬间变化了。不过这得在 js 代码里去设置，在 css 里没法获取到浏览器宽高。</p>
+</li>
+</ol>
+<h3 id="refs-的获取"><a href="#refs-的获取" class="headerlink" title="$refs 的获取"></a>$refs 的获取</h3><p>&emsp;&emsp;因为要分割成的碎片数量取决于用户的选择，所以所有的碎片都是动态加载的。<strong>而<code>$refs</code>不是响应式的，只能在组件渲染完成后才能获取到，所有动态加载的模板更新时<code>$refs</code>都无法相应地及时变化</strong>（<a href="https://cn.vuejs.org/v2/api/index.html#ref" target="_blank" rel="noopener">可见官方文档</a>）。所以需要等 DOM 更新后才能获取到<code>$refs</code>，可以利用<code>Vue.$nextTick(callback)</code>实现。</p>
+<h3 id="对-background-position-理解出错"><a href="#对-background-position-理解出错" class="headerlink" title="对 background-position 理解出错"></a>对 background-position 理解出错</h3><p>&emsp;&emsp;说到这个就有些尴尬了，我之前以为<code>background-position</code>的两个属性值 x 和 y 代表的是在这张图片上定位到（x, y）这个坐标的位置上再显示背景图片，结果导致使用<code>background-position</code>定位到的碎片显示的图片位置错位。又因为我老是以为是我中间哪里出问题了所以一直没有想到是我自己对<code>background-position</code>理解出错上去（Orz），最后单独起了个 demo 实验才发现问题所在。<strong>原来<code>background-position</code>的两个属性值 x 和 y 代表的是将这张图片向右移动和向下移动指定的距离后再显示背景图片</strong>。和我之前理解的恰恰相反，而且因为我之前没有设置<code>background-repeat: no-repeat</code>所以如果只有四个碎片的话是不会表现出什么问题的。知道了<code>background-position</code>的真正意思后要解决就很容易了，只要把 x 和 y 都变成负值就可以啦。</p>
+<h1 id="后记"><a href="#后记" class="headerlink" title="后记"></a>后记</h1><p>&emsp;&emsp;<strong>Puzzle Game</strong> 写起来还是挺简单的，主要是一时兴起练练手吧。中午去食堂的时候才想起来我在写一个<a href="http://blog.dangosky.com/tags/WebProject/">Web Project</a>的时候应该边写边记录的才对啊。像这个 <strong>Puzzle Game</strong> 就是边写代码的过程中边三言两语记录下遇到的问题和解决方案，这样事后才可以总结成一篇博客，记录自己遇到的坑点和盲点。不然就跟之前写的<a href="http://blog.dangosky.com/2019/03/10/vue%E5%85%A8%E5%AE%B6%E6%A1%B6%E4%BB%BFiOS%E7%89%88%E7%BD%91%E6%98%93%E4%BA%91%E9%9F%B3%E4%B9%90/">cloud music</a>一样，没有边写代码边记录遇到的问题，所以等写完代码后都差不多忘记中间遇到的很多问题了，写成的博客也就很空淡。好吧，吸收经验，下次就要记得正确的学习姿势了！</p>
+<p>&emsp;&emsp;花了三天的时间写完 <strong>Puzzle Game</strong> 和这篇博客，五一假期就只剩下这半天了啊。我还是滚回去写我的数据结构实验了，挥挥。</p>
+
+            </div>
+            <hr/>
+
+            
+
+            <link rel="stylesheet" type="text/css" href="/libs/share/css/share.min.css">
+
+<div id="article-share">
+    
+    <div class="social-share" data-disabled="qzone" data-wechat-qrcode-helper="<p>微信里点“发现”->“扫一扫”二维码便可查看分享。</p>"></div>
+    
+</div>
+
+<script src="/libs/share/js/social-share.min.js"></script>
+
+            <div class="reprint">
+                <p>
+                    <span class="reprint-tip">
+                        <i class="fa fa-exclamation-circle"></i>&nbsp;&nbsp;转载请注明:
+                    </span>
+                    <a href="http://blog.dangosky.com" class="b-link-green">DangoSky</a>
+                    <i class="fa fa-angle-right fa-lg fa-fw text-color"></i>
+                    <a href="/2019/05/03/Puzzle-Game/" class="b-link-green">Puzzle Game</a>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    
+
+    
+
+    
+        <div class="disqus-card card" data-aos="fade-up">
+    <div id="disqus_thread" class="card-content">
+        <noscript>Please enable JavaScript to view the
+            <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+    </div>
+</div>
+
+<script type="text/javascript">
+    disqus_config = function () {
+        this.page.url = 'http://blog.dangosky.com/2019/05/03/Puzzle-Game/';
+        this.page.identifier = '/2019/05/03/Puzzle-Game/';
+        this.page.title = 'Puzzle Game';
+    };
+    let disqus_shortname = 'dangosky';
+
+    (function () { // DON'T EDIT BELOW THIS LINE
+        let d = document, s = d.createElement('script');
+        // 如：s.src = 'https://blinkfox.disqus.com/embed.js';
+        s.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+    
+
+    
+
+    
+
+    
+
+<article id="prenext-posts" class="prev-next articles">
+    <div class="row article-row">
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge left-badge text-color">
+                <i class="fa fa-chevron-left"></i>&nbsp;上一篇</div>
+            <div class="card">
+                <a href="/2019/05/10/Leetcode：刷完31道链表题的一点总结/">
+                    <div class="card-image">
+                        
+                        <img src="https://github.com/DangoSky/practices-for-web/blob/master/images/9.jpg?raw=true" class="responsive-img" alt="Leetcode：刷完31道链表题的一点总结">
+                        
+                        <span class="card-title">Leetcode：刷完31道链表题的一点总结</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary"> 前言&emsp;&emsp;今天终于刷完了 Leetcode 上的链表专题，虽然只有 31 道题（总共是 35 道，但有 4 道题加了锁）而已，但也陆陆续续做了两三个星期，严重跟不上原先计划啊。本来打算数据结构课程老师讲完一个专题，我就用</div>
+                    <div class="publish-info">
+                        <span class="publish-date">
+                            <i class="fa fa-clock-o fa-fw icon-date"></i>2019-05-10
+                        </span>
+                        <span class="publish-author">
+                            
+                            <i class="fa fa-bookmark fa-fw icon-category"></i>
+                            
+                            <a href="/categories/数据结构/" class="post-category" target="_blank">
+                                    数据结构
+                                </a>
+                            
+                            
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/JavaScript/" target="_blank">
+                        <span class="chip bg-color">JavaScript</span>
+                    </a>
+                    
+                    <a href="/tags/算法/" target="_blank">
+                        <span class="chip bg-color">算法</span>
+                    </a>
+                    
+                    <a href="/tags/数据结构/" target="_blank">
+                        <span class="chip bg-color">数据结构</span>
+                    </a>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge right-badge text-color">
+                下一篇&nbsp;<i class="fa fa-chevron-right"></i>
+            </div>
+            <div class="card">
+                <a href="/2019/04/19/从浏览器的渲染机制谈起/">
+                    <div class="card-image">
+                        
+                        
+                        <img src="/medias/featureimages/17.jpg" class="responsive-img" alt="从浏览器的渲染机制谈起">
+                        
+                        <span class="card-title">从浏览器的渲染机制谈起</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary"> 前言&emsp;&emsp;大家应该都知道在前端有一道极其著名的题目：从输入 url 到页面加载完成的过程中发生了什么？不得不说这的确是一道覆盖面很广的题目，从计算机网络到浏览器缓存和渲染等内容几乎都包括在其内，更别提还可以引申出去再谈谈</div>
+                    <div class="publish-info">
+                            <span class="publish-date">
+                                <i class="fa fa-clock-o fa-fw icon-date"></i>2019-04-19
+                            </span>
+                        <span class="publish-author">
+                            
+                            <i class="fa fa-bookmark fa-fw icon-category"></i>
+                            
+                            <a href="/categories/JavaScript/" class="post-category" target="_blank">
+                                    JavaScript
+                                </a>
+                            
+                            
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/JavaScript/" target="_blank">
+                        <span class="chip bg-color">JavaScript</span>
+                    </a>
+                    
+                    <a href="/tags/性能优化/" target="_blank">
+                        <span class="chip bg-color">性能优化</span>
+                    </a>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+    </div>
+</article>
+</div>
+
+
+    </div>
+    <div id="toc-aside" class="expanded col l3 hide-on-med-and-down">
+        <div class="toc-widget">
+            <div class="toc-title"><i class="fa fa-list-alt"></i>&nbsp;&nbsp;目录</div>
+            <div id="toc-content"></div>
+        </div>
+    </div>
+</div>
+
+<!-- TOC 悬浮按钮. -->
+
+<div id="floating-toc-btn" class="hide-on-med-and-down">
+    <a class="btn-floating btn-large bg-color">
+        <i class="fa fa-list"></i>
+    </a>
+</div>
+
+
+<script src="/libs/tocbot/tocbot.min.js"></script>
+<script>
+    $(function () {
+        tocbot.init({
+            tocSelector: '#toc-content',
+            contentSelector: '#articleContent',
+            headingsOffset: -($(window).height() * 0.4 - 45),
+            // headingsOffset: -205,
+            headingSelector: 'h1, h2, h3'
+        });
+
+        // modify the toc link href to support Chinese.
+        let i = 0;
+        let tocHeading = 'toc-heading-';
+        $('#toc-content a').each(function () {
+            $(this).attr('href', '#' + tocHeading + (++i));
+        });
+
+        // modify the heading title id to support Chinese.
+        i = 0;
+        $('#articleContent').children('h1, h2, h3').each(function () {
+            $(this).attr('id', tocHeading + (++i));
+        });
+
+        // Set scroll toc fixed.
+        let tocHeight = parseInt($(window).height() * 0.4 - 64);
+        let $tocWidget = $('.toc-widget');
+        $(window).scroll(function () {
+            let scroll = $(window).scrollTop();
+            /* add post toc fixed. */
+            if (scroll > tocHeight) {
+                $tocWidget.addClass('toc-fixed');
+            } else {
+                $tocWidget.removeClass('toc-fixed');
+            }
+        });
+
+        
+        /* 修复文章卡片 div 的宽度. */
+        let fixPostCardWidth = function (srcId, targetId) {
+            let srcDiv = $('#' + srcId);
+            if (srcDiv.length === 0) {
+                return;
+            }
+
+            let w = srcDiv.width();
+            if (w >= 450) {
+                w = w + 21;
+            } else if (w >= 350 && w < 450) {
+                w = w + 18;
+            } else if (w >= 300 && w < 350) {
+                w = w + 16;
+            } else {
+                w = w + 14;
+            }
+            $('#' + targetId).width(w);
+        };
+
+        // 切换TOC目录展开收缩的相关操作.
+        const expandedClass = 'expanded';
+        let $tocAside = $('#toc-aside');
+        let $mainContent = $('#main-content');
+        $('#floating-toc-btn .btn-floating').click(function () {
+            if ($tocAside.hasClass(expandedClass)) {
+                $tocAside.removeClass(expandedClass).slideUp(500);
+                $mainContent.removeClass('l9');
+            } else {
+                $tocAside.addClass(expandedClass).slideDown(500);
+                $mainContent.addClass('l9');
+            }
+            fixPostCardWidth('artDetail', 'prenext-posts');
+        });
+        
+    });
+</script>
+    
+
+</main>
+
+
+<footer class="page-footer bg-color">
+    <div class="container row center-align">
+        <div class="col s12 m8 l8 copy-right">
+            本站由&copy;<a href="https://blinkfox.github.io/" target="_blank">Blinkfox</a>基于
+            <a href="https://hexo.io/" target="_blank">Hexo</a> 的
+            <a href="https://github.com/blinkfox/hexo-theme-matery" target="_blank">hexo-theme-matery</a>主题搭建.
+
+            
+                &nbsp;<i class="fa fa-area-chart"></i>&nbsp;站点总字数:&nbsp;
+                <span class="white-color">68.8k</span>
+            
+
+            <!-- <p id="timeDate">DangoSky的博客诞生已经</p><p id="times">载入时分秒...</p> -->
+            <!-- <p>DangoSky的博客已经诞生<strong><i><span id="day"></span><span id="hour"></span></span><span id="minutes"></span><span id="seconds"></span> </strong><i></p> -->
+                <p id="timeDate"></p>
+
+            <!-- 
+			 -->
+        </div>
+        <div class="col s12 m4 l4 social-link ">
+
+    <a href="mailto:1341514988@qq.com" class="tooltipped" target="_blank" data-tooltip="邮件联系我" data-position="top" data-delay="50">
+        <i class="fa fa-envelope-open"></i>
+    </a>
+
+
+
+    <a href="/atom.xml" class="tooltipped" target="_blank" data-tooltip="RSS 订阅" data-position="top" data-delay="50">
+        <i class="fa fa-rss"></i>
+    </a>
+
+
+
+   <a href="https://github.com/DangoSky" class="tooltipped" target="_blank" data-tooltip="访问我的GitHub" data-position="top" data-delay="50">
+    <i class="fa fa-github"></i>
+</a>
+
+</div>
+    </div>
+</footer>
+
+<div class="progress-bar"></div>
+
+<script type="text/javascript">
+    function computed(){
+        let sum = new Date()-new Date(2018,9,3,23,3,38)
+        sum = parseInt(sum / 1000);
+        let d = zero(parseInt(sum / 3600 / 24));
+        let h = zero(parseInt(sum / 3600 % 24));
+        let m = zero(parseInt(sum / 60 % 60));
+        let s = zero(parseInt(sum % 60));
+        document.getElementById("timeDate").innerHTML = "DangoSky的博客已经诞生<strong>" + d + "</strong>天<strong>" + h + "</strong>小时<strong>" + m + "</strong>分钟<strong>" + s + "</strong>秒了。"; 
+    }
+    function zero(i){
+        if(i < 10)  {
+            i = "0" + i;
+        }
+        return i;
+    }
+    setInterval("computed();",1000);
+</script>
+
+<!-- 搜索遮罩框 -->
+<div id="searchModal" class="modal">
+    <div class="modal-content">
+        <div class="search-header">
+            <span class="title"><i class="fa fa-search"></i>&nbsp;&nbsp;搜索</span>
+            <input type="search" id="searchInput" name="s" placeholder="请输入搜索的关键字"
+                   class="search-input">
+        </div>
+        <div id="searchResult"></div>
+    </div>
+</div>
+
+<script src="/js/search.js"></script>
+<script type="text/javascript">
+$(function () {
+    searchFunc("/" + "search.xml", 'searchInput', 'searchResult');
+});
+</script>
+<!-- 回到顶部按钮 -->
+<div id="backTop" class="top-scroll">
+    <a class="btn-floating btn-large waves-effect waves-light" href="#!">
+        <i class="fa fa-angle-up"></i>
+    </a>
+</div>
+
+
+<script src="/libs/materialize/materialize.min.js"></script>
+<script src="/libs/masonry/masonry.pkgd.min.js"></script>
+<script src="/libs/aos/aos.js"></script>
+<script src="/libs/scrollprogress/scrollProgress.min.js"></script>
+<script src="/libs/lightGallery/js/lightgallery-all.min.js"></script>
+<script src="/js/matery.js"></script>
+
+<!-- Global site tag (gtag.js) - Google Analytics -->
+
+
+
+    <script src="/libs/others/clicklove.js"></script>
+
+
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"debug":false,"model":{"jsonPath":"live2d-widget-model-shizuku"},"display":{"position":"right","width":200,"height":400},"mobile":{"show":false},"log":false});</script></body>
+</html>

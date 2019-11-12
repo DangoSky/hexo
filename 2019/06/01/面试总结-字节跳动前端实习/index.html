@@ -1,0 +1,872 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN">
+
+
+<head><meta name="generator" content="Hexo 3.9.0">
+    <meta charset="utf-8">
+    <meta name="keywords" content="面试总结| 字节跳动前端实习, DangoSky">
+    <meta name="description" content=" 一面&amp;emsp;&amp;emsp;持续了一个小时，全程都在问 CSS 和 JS。
+
+介绍 flex 布局，flex 是什么属性的缩写&amp;emsp;&amp;emsp;flex属性是 flex-grow、flex-shrink 和 flex-basis 的">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="renderer" content="webkit|ie-stand|ie-comp">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>面试总结| 字节跳动前端实习 | DangoSky</title>
+    <link rel="icon" type="image/jpeg" href="/favicon.jpg">
+
+    <link rel="stylesheet" type="text/css" href="/libs/awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="/libs/materialize/materialize.min.css">
+    <link rel="stylesheet" type="text/css" href="/libs/aos/aos.css">
+    <link rel="stylesheet" type="text/css" href="/libs/animate/animate.min.css">
+    <link rel="stylesheet" type="text/css" href="/libs/lightGallery/css/lightgallery.min.css">
+    <link rel="stylesheet" type="text/css" href="/css/matery.css">
+    <link rel="stylesheet" type="text/css" href="/css/my.css">
+    <style type="text/css">
+        
+    </style>
+
+    <script src="/libs/jquery/jquery-2.2.0.min.js"></script>
+<link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css"></head>
+
+
+<body>
+
+<header class="navbar-fixed">
+    <nav id="headNav" class="bg-color nav-transparent">
+        <div id="navContainer" class="nav-wrapper container">
+            <div class="brand-logo">
+                <a href="/" class="waves-effect waves-light">
+                    
+                    <span class="logo-span">DangoSky</span>
+                </a>
+            </div>
+            
+
+<a href="#" data-target="mobile-nav" class="sidenav-trigger button-collapse"><i class="fa fa-navicon"></i></a>
+<ul class="right">
+    
+    <li class="hide-on-med-and-down">
+        <a href="/" class="waves-effect waves-light">
+            
+            <i class="fa fa-home"></i>
+            
+            <span>首页</span>
+        </a>
+    </li>
+    
+    <li class="hide-on-med-and-down">
+        <a href="/tags" class="waves-effect waves-light">
+            
+            <i class="fa fa-tags"></i>
+            
+            <span>标签</span>
+        </a>
+    </li>
+    
+    <li class="hide-on-med-and-down">
+        <a href="/categories" class="waves-effect waves-light">
+            
+            <i class="fa fa-bookmark"></i>
+            
+            <span>分类</span>
+        </a>
+    </li>
+    
+    <li class="hide-on-med-and-down">
+        <a href="/archives" class="waves-effect waves-light">
+            
+            <i class="fa fa-archive"></i>
+            
+            <span>归档</span>
+        </a>
+    </li>
+    
+    <li class="hide-on-med-and-down">
+        <a href="/about" class="waves-effect waves-light">
+            
+            <i class="fa fa-user-circle-o"></i>
+            
+            <span>关于</span>
+        </a>
+    </li>
+    
+    <li class="hide-on-med-and-down">
+        <a href="/friends" class="waves-effect waves-light">
+            
+            <i class="fa fa-address-book"></i>
+            
+            <span>友情链接</span>
+        </a>
+    </li>
+    
+    <li>
+        <a href="#searchModal" class="modal-trigger waves-effect waves-light">
+            <i id="searchIcon" class="fa fa-search" title="搜索"></i>
+        </a>
+    </li>
+</ul>
+
+<div id="mobile-nav" class="side-nav sidenav">
+
+    <div class="mobile-head bg-color">
+        
+        <div class="logo-name">DangoSky</div>
+        <div class="logo-desc">
+            
+            但愿日子清净，抬头遇见的都是柔情。
+            
+        </div>
+    </div>
+
+    
+
+    <ul class="menu-list mobile-menu-list">
+        
+        <li>
+            <a href="/" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-home"></i>
+                
+                首页
+            </a>
+        </li>
+        
+        <li>
+            <a href="/tags" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-tags"></i>
+                
+                标签
+            </a>
+        </li>
+        
+        <li>
+            <a href="/categories" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-bookmark"></i>
+                
+                分类
+            </a>
+        </li>
+        
+        <li>
+            <a href="/archives" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-archive"></i>
+                
+                归档
+            </a>
+        </li>
+        
+        <li>
+            <a href="/about" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-user-circle-o"></i>
+                
+                关于
+            </a>
+        </li>
+        
+        <li>
+            <a href="/friends" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-address-book"></i>
+                
+                友情链接
+            </a>
+        </li>
+        
+        
+    </ul>
+</div>
+
+        </div>
+
+        
+    </nav>
+
+</header>
+
+
+
+
+
+<div class="bg-cover pd-header post-cover" style="background-image: url('https://github.com/DangoSky/practices-for-web/blob/master/images/10.jpg?raw=true')">
+    <div class="container">
+        <div class="row">
+            <div class="col s12 m12 l12">
+                <div class="brand">
+                    <div class="description center-align post-title">
+                        面试总结| 字节跳动前端实习
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<main class="post-container content">
+
+    
+    <link rel="stylesheet" href="/libs/tocbot/tocbot.css">
+<style>
+    #articleContent h1::before,
+    #articleContent h2::before,
+    #articleContent h3::before,
+    #articleContent h4::before,
+    #articleContent h5::before,
+    #articleContent h6::before {
+        display: block;
+        content: " ";
+        height: 100px;
+        margin-top: -100px;
+        visibility: hidden;
+    }
+
+    #articleContent :focus {
+        outline: none;
+    }
+
+    .toc-fixed {
+        position: fixed;
+        top: 64px;
+    }
+
+    .toc-widget {
+        padding-left: 20px;
+    }
+
+    .toc-widget .toc-title {
+        margin: 35px 0 15px 0;
+        padding-left: 17px;
+        font-size: 1.5rem;
+        font-weight: bold;
+        line-height: 1.5rem;
+    }
+
+    .toc-widget ol {
+        padding: 0;
+        list-style: none;
+    }
+
+    #toc-content ol {
+        padding-left: 10px;
+    }
+
+    #toc-content ol li {
+        padding-left: 10px;
+    }
+
+    #toc-content .toc-link:hover {
+        color: #42b983;
+        font-weight: 700;
+        text-decoration: underline;
+    }
+
+    #toc-content .toc-link::before {
+        background-color: transparent;
+        max-height: 25px;
+    }
+
+    #toc-content .is-active-link {
+        color: #42b983;
+    }
+
+    #toc-content .is-active-link::before {
+        background-color: #42b983;
+    }
+
+    #floating-toc-btn {
+        position: fixed;
+        right: 20px;
+        bottom: 76px;
+        padding-top: 15px;
+        margin-bottom: 0;
+        z-index: 998;
+    }
+
+    #floating-toc-btn .btn-floating {
+        width: 48px;
+        height: 48px;
+    }
+
+    #floating-toc-btn .btn-floating i {
+        line-height: 48px;
+        font-size: 1.4rem;
+    }
+</style>
+<div class="row">
+    <div id="main-content" class="col s12 m12 l9">
+        <!-- 文章内容详情 -->
+<div id="artDetail">
+    <div class="card">
+        <div class="card-content article-info">
+            <div class="row tag-cate">
+                <div class="col s7">
+                    
+                    <div class="article-tag">
+                        
+                            <a href="/tags/面试/" target="_blank">
+                                <span class="chip bg-color">面试</span>
+                            </a>
+                        
+                    </div>
+                    
+                </div>
+                <div class="col s5 right-align">
+                    
+                    <div class="post-cate">
+                        <i class="fa fa-bookmark fa-fw icon-category"></i>
+                        
+                            <a href="/categories/面试/" class="post-category" target="_blank">
+                                面试
+                            </a>
+                        
+                    </div>
+                    
+                </div>
+            </div>
+
+            <div class="post-info">
+                <div class="post-date info-break-policy">
+                    <i class="fa fa-calendar-minus-o fa-fw"></i>发布日期:&nbsp;&nbsp;
+                    2019-06-01
+                </div>
+
+                
+                    
+                    <div class="info-break-policy">
+                        <i class="fa fa-file-word-o fa-fw"></i>文章字数:&nbsp;&nbsp;
+                        3.1k
+                    </div>
+                    
+
+                    
+                    <div class="info-break-policy">
+                        <i class="fa fa-clock-o fa-fw"></i>阅读时长:&nbsp;&nbsp;
+                        11 分
+                    </div>
+                    
+                
+				
+				
+            </div>
+        </div>
+        <hr class="clearfix">
+        <div class="card-content article-card-content">
+            <div id="articleContent">
+                <script src="/assets/js/APlayer.min.js"> </script><h1 id="一面"><a href="#一面" class="headerlink" title="一面"></a>一面</h1><p>&emsp;&emsp;持续了一个小时，全程都在问 CSS 和 JS。</p>
+<ul>
+<li><p>介绍 flex 布局，flex 是什么属性的缩写<br>&emsp;&emsp;flex属性是 <code>flex-grow</code>、<code>flex-shrink</code> 和 <code>flex-basis</code> 的简写，当时我只答出了前两个。</p>
+</li>
+<li><p>CSS 怎么画一个大小为父元素宽度一半的正方形</p>
+<ul>
+<li>width 设置百分比</li>
+<li>padding 撑高</li>
+<li>伪元素设置 <code>margin-top: 100%</code>撑高（这个当时没想到，只答了前两个）</li>
+<li>如果只是要相对于 body 而言的话，还可以使用 vw 和 vh</li>
+</ul>
+</li>
+<li><p>实现两栏布局的方式</p>
+<ul>
+<li>flex</li>
+<li>grid</li>
+<li>table</li>
+<li>float + 负 margin</li>
+</ul>
+</li>
+<li><p>css 的动画有哪些</p>
+<ul>
+<li>animation</li>
+<li>transition</li>
+</ul>
+</li>
+<li><p>transform 的属性设置顺序可以改变吗<br>&emsp;&emsp;不可以，比如 translate 和 rotate，因为旋转后 x 轴和 y 轴也会跟着旋转，所以先平移后旋转，和先旋转后平移得到的结果是不一样的。<br>&emsp;&emsp;既然提到了 transform，我就顺带说了 transform 的副作用。子元素的属性比如宽高等单位设置为百分比，是相对于它第一个带有定位的父元素而言的。而如果它的父元素没有设置定位但设置了 transform 的话，也能起到类似定位的效果。因此如果设置了固定定位的元素的父元素带有 transform 的话，此时它的固定定位不再是相对于浏览器视口而言的，而是相对于这个带 transform 的父元素。</p>
+</li>
+<li><p>防抖和节流的区别，手写简易版本的防抖和节流</p>
+</li>
+<li><p>事件委托，手写代码<br>&emsp;&emsp;给出一个函数 <code>fn(parent, targetTag, event, handle)</code>，parent 是要绑定事件的父元素，targetTag 是要触发事件的目标元素，event 是要监听的事件类型，handle 是监听函数。这里的主要问题在于触发元素可能是 targetTag 的子孙元素（比如 DOM 结构是 ul &gt; li &gt; div &gt; span，parent 是 ul， targetTag 是 div，触发 span 也得执行 handle），所以不能单单用 <code>e.target.tagName.toLowerCase() === targetTag</code> 来判断，需要循环或者递归去寻找 targetTag 是否 是 e.target 的父亲节点或祖先结点。</p>
+</li>
+</ul>
+<pre class=" language-js"><code class="language-js"><span class="token keyword">function</span> <span class="token function">fn</span><span class="token punctuation">(</span>parent<span class="token punctuation">,</span> targetTag<span class="token punctuation">,</span> event<span class="token punctuation">,</span> handle<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  parent<span class="token punctuation">.</span><span class="token function">addEventListener</span><span class="token punctuation">(</span>event<span class="token punctuation">,</span> <span class="token punctuation">(</span>e<span class="token punctuation">)</span> <span class="token operator">=</span><span class="token operator">></span> <span class="token punctuation">{</span>
+    e <span class="token operator">=</span> e <span class="token operator">||</span> window<span class="token punctuation">.</span>event<span class="token punctuation">;</span>
+    <span class="token keyword">let</span> ele <span class="token operator">=</span> e<span class="token punctuation">.</span>target <span class="token operator">||</span> e<span class="token punctuation">.</span>srcElement<span class="token punctuation">;</span>
+    <span class="token keyword">if</span><span class="token punctuation">(</span><span class="token function">search</span><span class="token punctuation">(</span>ele<span class="token punctuation">,</span> targetTag<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      <span class="token function">handle</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">}</span><span class="token punctuation">)</span>
+<span class="token punctuation">}</span>
+
+<span class="token comment" spellcheck="true">// 向上寻找父亲祖先节点</span>
+<span class="token keyword">function</span> <span class="token function">search</span><span class="token punctuation">(</span>ele<span class="token punctuation">,</span> targetTag<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">while</span><span class="token punctuation">(</span>ele<span class="token punctuation">.</span>tagName<span class="token punctuation">.</span><span class="token function">toLowerCase</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">!==</span> <span class="token string">'body'</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">if</span><span class="token punctuation">(</span>ele<span class="token punctuation">.</span>tagName<span class="token punctuation">.</span><span class="token function">toLowerCase</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">===</span> targetTag<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      <span class="token keyword">return</span> <span class="token boolean">true</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+    ele <span class="token operator">=</span> ele<span class="token punctuation">.</span>parentNode<span class="token punctuation">;</span>
+  <span class="token punctuation">}</span>
+  <span class="token keyword">return</span> <span class="token boolean">false</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<p>&emsp;&emsp;<a href="https://jsfiddle.net/DangoSky/0qwkrp6a/2/" target="_blank" rel="noopener">可以戳这里进行实验</a>。</p>
+<ul>
+<li>模拟实现一个简易的 jQuery 的 $ 函数来获取 DOM 节点，例如 <code>$(&#39;#a .b p&#39;)</code>，需要取到相应的 p 标签</li>
+</ul>
+<pre class=" language-js"><code class="language-js"><span class="token comment" spellcheck="true">// 获取DOM结点</span>
+<span class="token comment" spellcheck="true">// 或者直接使用 querySelector</span>
+<span class="token keyword">function</span> <span class="token keyword">get</span><span class="token punctuation">(</span>str<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">let</span> ele<span class="token punctuation">;</span>
+  <span class="token keyword">if</span><span class="token punctuation">(</span>str<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span> <span class="token operator">===</span> <span class="token string">'.'</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    ele <span class="token operator">=</span> document<span class="token punctuation">.</span><span class="token function">getElementsByClassName</span><span class="token punctuation">(</span>str<span class="token punctuation">.</span><span class="token function">substr</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">,</span> str<span class="token punctuation">.</span>length<span class="token number">-1</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token punctuation">}</span>
+  <span class="token keyword">else</span> <span class="token keyword">if</span><span class="token punctuation">(</span>str<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span> <span class="token operator">===</span> <span class="token string">'#'</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    ele <span class="token operator">=</span> document<span class="token punctuation">.</span><span class="token function">getElementById</span><span class="token punctuation">(</span>str<span class="token punctuation">.</span><span class="token function">substr</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">,</span> str<span class="token punctuation">.</span>length<span class="token number">-1</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token punctuation">}</span>
+  <span class="token keyword">else</span> <span class="token punctuation">{</span>
+    ele <span class="token operator">=</span> document<span class="token punctuation">.</span><span class="token function">getElementsByTagName</span><span class="token punctuation">(</span>str<span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token punctuation">}</span>
+  <span class="token keyword">return</span> ele<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+
+<span class="token comment" spellcheck="true">// 查找target是否是parent的子孙元素</span>
+<span class="token keyword">function</span> <span class="token function">find</span><span class="token punctuation">(</span>parent<span class="token punctuation">,</span> target<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token comment" spellcheck="true">// 先在document中找到所有的target，再判断它们的父亲祖先元素是否位parent</span>
+  <span class="token keyword">let</span> nodes <span class="token operator">=</span> <span class="token keyword">get</span><span class="token punctuation">(</span>target<span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token comment" spellcheck="true">// 使用id获取结点时得到的是单个结点，使用class获取时则是一个节点集合，所以统一转换为集合的形式方便遍历</span>
+  <span class="token keyword">if</span><span class="token punctuation">(</span>nodes<span class="token punctuation">.</span>length <span class="token operator">===</span> undefined<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    nodes <span class="token operator">=</span> <span class="token punctuation">[</span>nodes<span class="token punctuation">]</span><span class="token punctuation">;</span>
+  <span class="token punctuation">}</span>
+  <span class="token keyword">for</span><span class="token punctuation">(</span><span class="token keyword">let</span> i<span class="token operator">=</span><span class="token number">0</span><span class="token punctuation">,</span> len<span class="token operator">=</span>nodes<span class="token punctuation">.</span>length<span class="token punctuation">;</span> i<span class="token operator">&lt;</span>len<span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">let</span> cur <span class="token operator">=</span> nodes<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">;</span>
+    <span class="token comment" spellcheck="true">// 层层遍历cur的父亲祖先节点</span>
+    <span class="token keyword">while</span><span class="token punctuation">(</span>cur<span class="token punctuation">.</span>tagName<span class="token punctuation">.</span><span class="token function">toLowerCase</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">!==</span> <span class="token string">'body'</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      <span class="token keyword">if</span><span class="token punctuation">(</span>cur <span class="token operator">===</span> parent<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">return</span> nodes<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">;</span>
+      <span class="token punctuation">}</span>
+      cur <span class="token operator">=</span> cur<span class="token punctuation">.</span>parentNode<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">}</span>
+  <span class="token keyword">return</span> undefined<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+
+<span class="token keyword">function</span> <span class="token function">_$</span><span class="token punctuation">(</span>str<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">let</span> arr <span class="token operator">=</span> str<span class="token punctuation">.</span><span class="token function">split</span><span class="token punctuation">(</span><span class="token string">' '</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token keyword">let</span> ele <span class="token operator">=</span> <span class="token keyword">get</span><span class="token punctuation">(</span>arr<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token keyword">for</span><span class="token punctuation">(</span><span class="token keyword">let</span> i<span class="token operator">=</span><span class="token number">1</span><span class="token punctuation">,</span> len<span class="token operator">=</span>arr<span class="token punctuation">.</span>length<span class="token punctuation">;</span> i<span class="token operator">&lt;</span>len<span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    ele <span class="token operator">=</span> <span class="token function">find</span><span class="token punctuation">(</span>ele<span class="token punctuation">,</span> arr<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">if</span><span class="token punctuation">(</span>ele <span class="token operator">===</span> undefined<span class="token punctuation">)</span>  <span class="token keyword">return</span> undefined<span class="token punctuation">;</span>
+  <span class="token punctuation">}</span>
+  <span class="token keyword">return</span> ele<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<p>&emsp;&emsp;面试的时候我回答的思路大致如上，不过当时没有考虑很多，写的代码还有一些细节错误 Orz。当时面试官提出的问题是，比如 <code>#a .b p</code>，如果这个 p 标签是 .c 的孙节点的话怎么办。我就说循环或递归去找 p 标签的父亲节点，判断 .c 是否是 p 标签的祖先节点。但是面试官说如果 DOM 节点一多的话这样会很耗性能，问有没有其他的方法，我想了一会没想出来就直接说我不会了。结束的时候面试官说了句其实不用那么麻烦，只用 XXX 就够了，当时那句话我没听清楚，以为有什么 api 可以直接获取一个 DOM 节点的所有父级元素。然而现在才发现这道题其实根本不用写那么多，只需要短短的 <code>return document.querySelector(str)</code> 就可以了！！！ <a href="https://developer.mozilla.org/zh-CN/docs/Web/API/Document/querySelector#%E4%B8%80%E4%B8%AA%E6%9B%B4%E5%A4%8D%E6%9D%82%E7%9A%84%E9%80%89%E6%8B%A9%E5%99%A8" target="_blank" rel="noopener">querySelector</a> 完全可以实现 jQuery 中 $ 的效果。我… </p>
+<p><img src="/2019/06/01/面试总结-字节跳动前端实习/1.png" alt></p>
+<h1 id="二面"><a href="#二面" class="headerlink" title="二面"></a>二面</h1><p>&emsp;&emsp;一面之后隔了十分钟左右二面的面试官就上线了，只进行了四十分钟（感觉凉凉）。一来先是常规的自我介绍（一面的时候没有自我介绍），介绍完之后直接问除了前端之外还有没有学其他的，计算机组成会吗（Orz）。我直接回答只会那么一点点，仅限于了解而已。然后面试官开始出题，<code>0.1 + 0.2</code> 等于多少，这个还好我之前写过一篇博客捣鼓过就直接答出来并解释一下为什么，还好面试官后面就没有再问计算机组成方面的问题了，不然可 hold 不住。</p>
+<ul>
+<li>JS 的数据类型</li>
+<li>JS 的整数是怎么表示的<br>&emsp;&emsp;听到这个问题我有些懵，虽然问题很明确，但就是不知道这个问题是考察哪方面的问题。所以我只能牛头不对马嘴地说 JS 是弱语言类型不区分整数和浮点数云云的，结果自然是被面试官戳穿了我是在转移话题。我老实回答我 get 不到这个问题的点（因为我真的不知道要怎么回答啊，二进制？），但是面试官表示他觉得他问得已经足够明确了（听到这句话我就觉得我要凉了 Orz），如果我不知道怎么回答可以直接说不会，他接着问下一题就行。于是我就直接表示我不了解了。</li>
+<li>闭包</li>
+<li><code>symbol</code> 有什么用处<br>&emsp;&emsp;可以用来表示一个独一无二的变量防止命名冲突。但是面试官问还有吗？我没想出其他的用处就直接答我不知道了，还可以利用 <code>symbol</code> 不会被常规的方法（除了 <code>Object.getOwnPropertySymbols</code> 外）遍历到，所以可以用来模拟私有变量。</li>
+<li>ES6 的遍历器了解吗，<code>symbol.iterator</code> 是用来做什么的<br>&emsp;&emsp;主要用来提供遍历接口，布置了 <code>symbol.iterator</code> 的对象才可以使用 <code>for···of</code> 循环，可以统一处理数据结构。调用之后回返回一个遍历器对象，包含有一个 next 方法，使用 next 方法后有两个返回值 value 和 done 分别表示函数当前执行位置的值和是否遍历完毕。</li>
+<li><code>localstorage</code>、<code>sessionstorage</code>、<code>indexDB</code> 的区别</li>
+<li>为什么用 <code>canvas</code><br>&emsp;&emsp;因为简历上写了之前用 <code>jQuery</code> 做的中国象棋，棋盘是用 canvas 画的。我就回答说当时想着顺带实践一下 <code>canvas</code>，所以就没有使用 border 来画棋盘。然而面试官说 <code>jQuery</code> 已经被淘汰了问我为什么还要学 <code>jQuery</code>，我解释说因为上学期开始学的时候还什么都不会，经常看到 <code>jQuery</code> 这个名字就顺带学了一点，但现在已经没用 <code>jQuery</code> 了。+手写 bind</li>
+<li>区间排序<br>&emsp;&emsp;面试官给了一个情景，大致的意思就是给了一个二维数组，比如 <code>[[20, 30], [1, 10], [10, 20]]</code>，每个数组元素表示一个区间，区间之间不重叠。要求写一个函数来排序这个二维数组，使得这个二维数组表示的区间有序，例如 <code>[[1, 10], [10, 20], [20, 30]]</code>。</li>
+</ul>
+<p>&emsp;&emsp;面试的时候我的思路是先将每一个数组元素的第一个值作为下标存储进一个临时数组，值为它所在原数组的索引，之后再遍历数组根据值从小到大排序。然而当时我遇到的问题是，数组元素的值是被我作为下标存进临时数组的，要怎么给这个临时数组排序？用 map ？当时我就这里想了许久也没想出来，最后因为面试官给的例子中区间的间隔是 10，所以我就赖着头皮直接从 0 开始每次累加 10 了。结果自然是被面试官戳破了，他说其实就是简单的排序而已（想桶排序那样）。然而我以为他是在考冒泡这些排序算法就往十大排序上去想解决方法，不过没想出来 Orz。之后面试官就问我有没有什么想问的，我问了我表现得怎么样有什么需要改进的吗。面试官说我面试得还不错（估计是安慰吧，我觉得我答得很糟糕啊啊啊），不过对问题的解决方法有点单一，思维没能转过来。直到现在我才理解面试官这句话的意思，因为现在我重新看这道区间排序，没想多久就想出方法了啊，直接一个 <code>sort</code> 函数排序就可以了啊啊啊。</p>
+<pre class=" language-js"><code class="language-js"><span class="token keyword">function</span> <span class="token function">fn</span><span class="token punctuation">(</span>arr<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  arr<span class="token punctuation">.</span><span class="token function">sort</span><span class="token punctuation">(</span><span class="token punctuation">(</span>a<span class="token punctuation">,</span> b<span class="token punctuation">)</span> <span class="token operator">=</span><span class="token operator">></span> <span class="token punctuation">{</span>
+    <span class="token keyword">return</span> a<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span> <span class="token operator">-</span> b<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+  <span class="token punctuation">}</span><span class="token punctuation">)</span>
+<span class="token punctuation">}</span>
+
+<span class="token keyword">let</span> arr <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">[</span><span class="token number">15</span><span class="token punctuation">,</span> <span class="token number">39</span><span class="token punctuation">]</span><span class="token punctuation">,</span> <span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">,</span> <span class="token number">14</span><span class="token punctuation">]</span><span class="token punctuation">,</span> <span class="token punctuation">[</span><span class="token number">100</span><span class="token punctuation">,</span> <span class="token number">999</span><span class="token punctuation">]</span><span class="token punctuation">,</span> <span class="token punctuation">[</span><span class="token number">80</span><span class="token punctuation">,</span> <span class="token number">99</span><span class="token punctuation">]</span><span class="token punctuation">,</span> <span class="token punctuation">[</span><span class="token number">40</span><span class="token punctuation">,</span> <span class="token number">79</span><span class="token punctuation">]</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+<span class="token function">fn</span><span class="token punctuation">(</span>arr<span class="token punctuation">)</span><span class="token punctuation">;</span>
+console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>arr<span class="token punctuation">)</span><span class="token punctuation">;</span>
+</code></pre>
+<p>&emsp;&emsp;为什么当时就是没有想到 sort 函数啊 Orz，在那里瞎折腾那么久。估计也是因为这个所以二面只持续了四十分钟吧。当天下午（2019.5.31）六点多 HR 就打电话过来进行了几分钟的沟通，说我通过了前面两轮技术面，接着问了一些个人情况啥的。我问还有下一轮面试吗，HR 说没有，不过等下周会有进一步的沟通（应该是 HR 面？）。虽然是这么说，但我感觉有些虚啊，我看网上一些字节跳动的面经有好些实习生就挂在 HR 面的，评论说是综合前面的技术面才会被挂的，或者是公司找到了更合适的人选。前面两轮技术面虽然是过了，但自我感觉还有很多不足啊，特别是那两三道手写代码的题，简直了（简单的方法没想到，就想到复杂的解法 Orz）。哎，还是等下周 HR 面后看结果吧，估计也还得等一个多星期才能出最后结果，到时再来补充吧（但愿能过 🙏）。</p>
+<h1 id="人生中的第二个offer"><a href="#人生中的第二个offer" class="headerlink" title="人生中的第二个offer"></a>人生中的第二个offer</h1><p>2019.6.3：</p>
+<p>&emsp;&emsp;啦啦啦，本来以为这周会有 HR 面的，结果中午刚放学就接到了 HR 的电话。看到那从北京打来的电话号码的时候我心一紧，以为是 HR 面来了。结果刚接电话 HR 就问我有没有时间，要进行五分钟左右的沟通。我有些惊讶于 HR 面难道只需要五分钟。结果就被 HR 接下来的一句 “你已经通过了 offer 审批，现在准备发录取邮件” 给吓到了。没有 HR 面的？？接着就确定了下入职时间，本来预期 7 月 6 号入职的，不过因为公司周末不办入职手续，所以就推到 8 号星期一再入职啦。接着又询问了一些信息就愉快又兴奋地结束通话啦。</p>
+<p>&emsp;&emsp;下午又给 HR 发信息问了一些情况，待遇、上班时间啥的，不得不说字节跳动的待遇真的好好啊啊啊！！弄得我都不想回来上学只想在那边实习了。预计会实习三个月左右吧，应该会请一个月的假，大概国庆假期过后就回学校，目前我是这么打算的，HR 也说需要实习三个月。开心过后麻烦就来了，在北京那租房好像很麻烦啊，押一付三啥的，还要找人合租，不然一个人住房租可 hold 不住。希望可以尽快找到合适的房子和室友啊！不然到时还没找到房子就更麻烦了。</p>
+<p>&emsp;&emsp;这个七月，帝都 🛫🛫🛫 </p>
+<p>&emsp;&emsp;真是让人期待啊~</p>
+<p>&emsp;&emsp;冲鸭！！！</p>
+
+            </div>
+            <hr/>
+
+            
+
+            <link rel="stylesheet" type="text/css" href="/libs/share/css/share.min.css">
+
+<div id="article-share">
+    
+    <div class="social-share" data-disabled="qzone" data-wechat-qrcode-helper="<p>微信里点“发现”->“扫一扫”二维码便可查看分享。</p>"></div>
+    
+</div>
+
+<script src="/libs/share/js/social-share.min.js"></script>
+
+            <div class="reprint">
+                <p>
+                    <span class="reprint-tip">
+                        <i class="fa fa-exclamation-circle"></i>&nbsp;&nbsp;转载请注明:
+                    </span>
+                    <a href="http://blog.dangosky.com" class="b-link-green">DangoSky</a>
+                    <i class="fa fa-angle-right fa-lg fa-fw text-color"></i>
+                    <a href="/2019/06/01/面试总结-字节跳动前端实习/" class="b-link-green">面试总结| 字节跳动前端实习</a>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    
+
+    
+
+    
+        <div class="disqus-card card" data-aos="fade-up">
+    <div id="disqus_thread" class="card-content">
+        <noscript>Please enable JavaScript to view the
+            <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+    </div>
+</div>
+
+<script type="text/javascript">
+    disqus_config = function () {
+        this.page.url = 'http://blog.dangosky.com/2019/06/01/面试总结-字节跳动前端实习/';
+        this.page.identifier = '/2019/06/01/面试总结-字节跳动前端实习/';
+        this.page.title = '面试总结| 字节跳动前端实习';
+    };
+    let disqus_shortname = 'dangosky';
+
+    (function () { // DON'T EDIT BELOW THIS LINE
+        let d = document, s = d.createElement('script');
+        // 如：s.src = 'https://blinkfox.disqus.com/embed.js';
+        s.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+    
+
+    
+
+    
+
+    
+
+<article id="prenext-posts" class="prev-next articles">
+    <div class="row article-row">
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge left-badge text-color">
+                <i class="fa fa-chevron-left"></i>&nbsp;上一篇</div>
+            <div class="card">
+                <a href="/2019/06/14/elementUI级联选择器踩坑/">
+                    <div class="card-image">
+                        
+                        <img src="https://github.com/DangoSky/practices-for-web/blob/master/images/8.jpg?raw=true" class="responsive-img" alt="elementUI级联选择器踩坑">
+                        
+                        <span class="card-title">elementUI级联选择器踩坑</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary"> 发现问题&emsp;&emsp;今天使用 elementUI 的时候踩到坑了，期望的效果如下图所示。每一栋教学楼都有 1-7 层，每一层的教室都为 03-22，以此来选择不同的教室。
+
+&emsp;&emsp;参照官方文档，我写了如下的级</div>
+                    <div class="publish-info">
+                        <span class="publish-date">
+                            <i class="fa fa-clock-o fa-fw icon-date"></i>2019-06-14
+                        </span>
+                        <span class="publish-author">
+                            
+                            <i class="fa fa-bookmark fa-fw icon-category"></i>
+                            
+                            <a href="/categories/踩坑指南/" class="post-category" target="_blank">
+                                    踩坑指南
+                                </a>
+                            
+                            
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/踩坑指南/" target="_blank">
+                        <span class="chip bg-color">踩坑指南</span>
+                    </a>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge right-badge text-color">
+                下一篇&nbsp;<i class="fa fa-chevron-right"></i>
+            </div>
+            <div class="card">
+                <a href="/2019/05/28/JavaScript：十大排序的算法思路和代码实现/">
+                    <div class="card-image">
+                        
+                        <img src="https://user-gold-cdn.xitu.io/2016/11/29/4abde1748817d7f35f2bf8b6a058aa40?imageView2/0/w/1280/h/960/format/webp/ignore-error/1" class="responsive-img" alt="JavaScript：十大排序的算法思路和代码实现">
+                        
+                        <span class="card-title">JavaScript：十大排序的算法思路和代码实现</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary"> &emsp;&emsp;本文内容包括：(双向)冒泡排序、选择排序、插入排序、快速排序(填坑和交换)、归并排序、桶排序、基数排序、计数排序(优化)、堆排序、希尔排序。大家可以在这里测试代码。更多 leetcode 的 JavaScript </div>
+                    <div class="publish-info">
+                            <span class="publish-date">
+                                <i class="fa fa-clock-o fa-fw icon-date"></i>2019-05-28
+                            </span>
+                        <span class="publish-author">
+                            
+                            <i class="fa fa-bookmark fa-fw icon-category"></i>
+                            
+                            <a href="/categories/算法/" class="post-category" target="_blank">
+                                    算法
+                                </a>
+                            
+                            
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/JavaScript/" target="_blank">
+                        <span class="chip bg-color">JavaScript</span>
+                    </a>
+                    
+                    <a href="/tags/算法/" target="_blank">
+                        <span class="chip bg-color">算法</span>
+                    </a>
+                    
+                    <a href="/tags/数据结构/" target="_blank">
+                        <span class="chip bg-color">数据结构</span>
+                    </a>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+    </div>
+</article>
+</div>
+
+
+    </div>
+    <div id="toc-aside" class="expanded col l3 hide-on-med-and-down">
+        <div class="toc-widget">
+            <div class="toc-title"><i class="fa fa-list-alt"></i>&nbsp;&nbsp;目录</div>
+            <div id="toc-content"></div>
+        </div>
+    </div>
+</div>
+
+<!-- TOC 悬浮按钮. -->
+
+<div id="floating-toc-btn" class="hide-on-med-and-down">
+    <a class="btn-floating btn-large bg-color">
+        <i class="fa fa-list"></i>
+    </a>
+</div>
+
+
+<script src="/libs/tocbot/tocbot.min.js"></script>
+<script>
+    $(function () {
+        tocbot.init({
+            tocSelector: '#toc-content',
+            contentSelector: '#articleContent',
+            headingsOffset: -($(window).height() * 0.4 - 45),
+            // headingsOffset: -205,
+            headingSelector: 'h1, h2, h3'
+        });
+
+        // modify the toc link href to support Chinese.
+        let i = 0;
+        let tocHeading = 'toc-heading-';
+        $('#toc-content a').each(function () {
+            $(this).attr('href', '#' + tocHeading + (++i));
+        });
+
+        // modify the heading title id to support Chinese.
+        i = 0;
+        $('#articleContent').children('h1, h2, h3').each(function () {
+            $(this).attr('id', tocHeading + (++i));
+        });
+
+        // Set scroll toc fixed.
+        let tocHeight = parseInt($(window).height() * 0.4 - 64);
+        let $tocWidget = $('.toc-widget');
+        $(window).scroll(function () {
+            let scroll = $(window).scrollTop();
+            /* add post toc fixed. */
+            if (scroll > tocHeight) {
+                $tocWidget.addClass('toc-fixed');
+            } else {
+                $tocWidget.removeClass('toc-fixed');
+            }
+        });
+
+        
+        /* 修复文章卡片 div 的宽度. */
+        let fixPostCardWidth = function (srcId, targetId) {
+            let srcDiv = $('#' + srcId);
+            if (srcDiv.length === 0) {
+                return;
+            }
+
+            let w = srcDiv.width();
+            if (w >= 450) {
+                w = w + 21;
+            } else if (w >= 350 && w < 450) {
+                w = w + 18;
+            } else if (w >= 300 && w < 350) {
+                w = w + 16;
+            } else {
+                w = w + 14;
+            }
+            $('#' + targetId).width(w);
+        };
+
+        // 切换TOC目录展开收缩的相关操作.
+        const expandedClass = 'expanded';
+        let $tocAside = $('#toc-aside');
+        let $mainContent = $('#main-content');
+        $('#floating-toc-btn .btn-floating').click(function () {
+            if ($tocAside.hasClass(expandedClass)) {
+                $tocAside.removeClass(expandedClass).slideUp(500);
+                $mainContent.removeClass('l9');
+            } else {
+                $tocAside.addClass(expandedClass).slideDown(500);
+                $mainContent.addClass('l9');
+            }
+            fixPostCardWidth('artDetail', 'prenext-posts');
+        });
+        
+    });
+</script>
+    
+
+</main>
+
+
+<footer class="page-footer bg-color">
+    <div class="container row center-align">
+        <div class="col s12 m8 l8 copy-right">
+            本站由&copy;<a href="https://blinkfox.github.io/" target="_blank">Blinkfox</a>基于
+            <a href="https://hexo.io/" target="_blank">Hexo</a> 的
+            <a href="https://github.com/blinkfox/hexo-theme-matery" target="_blank">hexo-theme-matery</a>主题搭建.
+
+            
+                &nbsp;<i class="fa fa-area-chart"></i>&nbsp;站点总字数:&nbsp;
+                <span class="white-color">68.8k</span>
+            
+
+            <!-- <p id="timeDate">DangoSky的博客诞生已经</p><p id="times">载入时分秒...</p> -->
+            <!-- <p>DangoSky的博客已经诞生<strong><i><span id="day"></span><span id="hour"></span></span><span id="minutes"></span><span id="seconds"></span> </strong><i></p> -->
+                <p id="timeDate"></p>
+
+            <!-- 
+			 -->
+        </div>
+        <div class="col s12 m4 l4 social-link ">
+
+    <a href="mailto:1341514988@qq.com" class="tooltipped" target="_blank" data-tooltip="邮件联系我" data-position="top" data-delay="50">
+        <i class="fa fa-envelope-open"></i>
+    </a>
+
+
+
+    <a href="/atom.xml" class="tooltipped" target="_blank" data-tooltip="RSS 订阅" data-position="top" data-delay="50">
+        <i class="fa fa-rss"></i>
+    </a>
+
+
+
+   <a href="https://github.com/DangoSky" class="tooltipped" target="_blank" data-tooltip="访问我的GitHub" data-position="top" data-delay="50">
+    <i class="fa fa-github"></i>
+</a>
+
+</div>
+    </div>
+</footer>
+
+<div class="progress-bar"></div>
+
+<script type="text/javascript">
+    function computed(){
+        let sum = new Date()-new Date(2018,9,3,23,3,38)
+        sum = parseInt(sum / 1000);
+        let d = zero(parseInt(sum / 3600 / 24));
+        let h = zero(parseInt(sum / 3600 % 24));
+        let m = zero(parseInt(sum / 60 % 60));
+        let s = zero(parseInt(sum % 60));
+        document.getElementById("timeDate").innerHTML = "DangoSky的博客已经诞生<strong>" + d + "</strong>天<strong>" + h + "</strong>小时<strong>" + m + "</strong>分钟<strong>" + s + "</strong>秒了。"; 
+    }
+    function zero(i){
+        if(i < 10)  {
+            i = "0" + i;
+        }
+        return i;
+    }
+    setInterval("computed();",1000);
+</script>
+
+<!-- 搜索遮罩框 -->
+<div id="searchModal" class="modal">
+    <div class="modal-content">
+        <div class="search-header">
+            <span class="title"><i class="fa fa-search"></i>&nbsp;&nbsp;搜索</span>
+            <input type="search" id="searchInput" name="s" placeholder="请输入搜索的关键字"
+                   class="search-input">
+        </div>
+        <div id="searchResult"></div>
+    </div>
+</div>
+
+<script src="/js/search.js"></script>
+<script type="text/javascript">
+$(function () {
+    searchFunc("/" + "search.xml", 'searchInput', 'searchResult');
+});
+</script>
+<!-- 回到顶部按钮 -->
+<div id="backTop" class="top-scroll">
+    <a class="btn-floating btn-large waves-effect waves-light" href="#!">
+        <i class="fa fa-angle-up"></i>
+    </a>
+</div>
+
+
+<script src="/libs/materialize/materialize.min.js"></script>
+<script src="/libs/masonry/masonry.pkgd.min.js"></script>
+<script src="/libs/aos/aos.js"></script>
+<script src="/libs/scrollprogress/scrollProgress.min.js"></script>
+<script src="/libs/lightGallery/js/lightgallery-all.min.js"></script>
+<script src="/js/matery.js"></script>
+
+<!-- Global site tag (gtag.js) - Google Analytics -->
+
+
+
+    <script src="/libs/others/clicklove.js"></script>
+
+
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"debug":false,"model":{"jsonPath":"live2d-widget-model-shizuku"},"display":{"position":"right","width":200,"height":400},"mobile":{"show":false},"log":false});</script></body>
+</html>

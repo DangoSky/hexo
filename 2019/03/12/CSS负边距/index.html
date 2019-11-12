@@ -1,0 +1,1082 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN">
+
+
+<head><meta name="generator" content="Hexo 3.9.0">
+    <meta charset="utf-8">
+    <meta name="keywords" content="盒模型和负margin, DangoSky">
+    <meta name="description" content=" 盒模型&amp;emsp;&amp;emsp;每一个HTML标签元素都是由四个部分组成的，分别是内容(content)、内边距(padding)、边框(border)、外边距(margin)。其中盒子的大小只由 content + padding + b">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="renderer" content="webkit|ie-stand|ie-comp">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>盒模型和负margin | DangoSky</title>
+    <link rel="icon" type="image/jpeg" href="/favicon.jpg">
+
+    <link rel="stylesheet" type="text/css" href="/libs/awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="/libs/materialize/materialize.min.css">
+    <link rel="stylesheet" type="text/css" href="/libs/aos/aos.css">
+    <link rel="stylesheet" type="text/css" href="/libs/animate/animate.min.css">
+    <link rel="stylesheet" type="text/css" href="/libs/lightGallery/css/lightgallery.min.css">
+    <link rel="stylesheet" type="text/css" href="/css/matery.css">
+    <link rel="stylesheet" type="text/css" href="/css/my.css">
+    <style type="text/css">
+        
+    </style>
+
+    <script src="/libs/jquery/jquery-2.2.0.min.js"></script>
+<link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css"></head>
+
+
+<body>
+
+<header class="navbar-fixed">
+    <nav id="headNav" class="bg-color nav-transparent">
+        <div id="navContainer" class="nav-wrapper container">
+            <div class="brand-logo">
+                <a href="/" class="waves-effect waves-light">
+                    
+                    <span class="logo-span">DangoSky</span>
+                </a>
+            </div>
+            
+
+<a href="#" data-target="mobile-nav" class="sidenav-trigger button-collapse"><i class="fa fa-navicon"></i></a>
+<ul class="right">
+    
+    <li class="hide-on-med-and-down">
+        <a href="/" class="waves-effect waves-light">
+            
+            <i class="fa fa-home"></i>
+            
+            <span>首页</span>
+        </a>
+    </li>
+    
+    <li class="hide-on-med-and-down">
+        <a href="/tags" class="waves-effect waves-light">
+            
+            <i class="fa fa-tags"></i>
+            
+            <span>标签</span>
+        </a>
+    </li>
+    
+    <li class="hide-on-med-and-down">
+        <a href="/categories" class="waves-effect waves-light">
+            
+            <i class="fa fa-bookmark"></i>
+            
+            <span>分类</span>
+        </a>
+    </li>
+    
+    <li class="hide-on-med-and-down">
+        <a href="/archives" class="waves-effect waves-light">
+            
+            <i class="fa fa-archive"></i>
+            
+            <span>归档</span>
+        </a>
+    </li>
+    
+    <li class="hide-on-med-and-down">
+        <a href="/about" class="waves-effect waves-light">
+            
+            <i class="fa fa-user-circle-o"></i>
+            
+            <span>关于</span>
+        </a>
+    </li>
+    
+    <li class="hide-on-med-and-down">
+        <a href="/friends" class="waves-effect waves-light">
+            
+            <i class="fa fa-address-book"></i>
+            
+            <span>友情链接</span>
+        </a>
+    </li>
+    
+    <li>
+        <a href="#searchModal" class="modal-trigger waves-effect waves-light">
+            <i id="searchIcon" class="fa fa-search" title="搜索"></i>
+        </a>
+    </li>
+</ul>
+
+<div id="mobile-nav" class="side-nav sidenav">
+
+    <div class="mobile-head bg-color">
+        
+        <div class="logo-name">DangoSky</div>
+        <div class="logo-desc">
+            
+            但愿日子清净，抬头遇见的都是柔情。
+            
+        </div>
+    </div>
+
+    
+
+    <ul class="menu-list mobile-menu-list">
+        
+        <li>
+            <a href="/" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-home"></i>
+                
+                首页
+            </a>
+        </li>
+        
+        <li>
+            <a href="/tags" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-tags"></i>
+                
+                标签
+            </a>
+        </li>
+        
+        <li>
+            <a href="/categories" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-bookmark"></i>
+                
+                分类
+            </a>
+        </li>
+        
+        <li>
+            <a href="/archives" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-archive"></i>
+                
+                归档
+            </a>
+        </li>
+        
+        <li>
+            <a href="/about" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-user-circle-o"></i>
+                
+                关于
+            </a>
+        </li>
+        
+        <li>
+            <a href="/friends" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-address-book"></i>
+                
+                友情链接
+            </a>
+        </li>
+        
+        
+    </ul>
+</div>
+
+        </div>
+
+        
+    </nav>
+
+</header>
+
+
+
+
+
+<div class="bg-cover pd-header post-cover" style="background-image: url('https://github.com/DangoSky/practices-for-web/blob/master/images/12.jpg?raw=true')">
+    <div class="container">
+        <div class="row">
+            <div class="col s12 m12 l12">
+                <div class="brand">
+                    <div class="description center-align post-title">
+                        盒模型和负margin
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<main class="post-container content">
+
+    
+    <link rel="stylesheet" href="/libs/tocbot/tocbot.css">
+<style>
+    #articleContent h1::before,
+    #articleContent h2::before,
+    #articleContent h3::before,
+    #articleContent h4::before,
+    #articleContent h5::before,
+    #articleContent h6::before {
+        display: block;
+        content: " ";
+        height: 100px;
+        margin-top: -100px;
+        visibility: hidden;
+    }
+
+    #articleContent :focus {
+        outline: none;
+    }
+
+    .toc-fixed {
+        position: fixed;
+        top: 64px;
+    }
+
+    .toc-widget {
+        padding-left: 20px;
+    }
+
+    .toc-widget .toc-title {
+        margin: 35px 0 15px 0;
+        padding-left: 17px;
+        font-size: 1.5rem;
+        font-weight: bold;
+        line-height: 1.5rem;
+    }
+
+    .toc-widget ol {
+        padding: 0;
+        list-style: none;
+    }
+
+    #toc-content ol {
+        padding-left: 10px;
+    }
+
+    #toc-content ol li {
+        padding-left: 10px;
+    }
+
+    #toc-content .toc-link:hover {
+        color: #42b983;
+        font-weight: 700;
+        text-decoration: underline;
+    }
+
+    #toc-content .toc-link::before {
+        background-color: transparent;
+        max-height: 25px;
+    }
+
+    #toc-content .is-active-link {
+        color: #42b983;
+    }
+
+    #toc-content .is-active-link::before {
+        background-color: #42b983;
+    }
+
+    #floating-toc-btn {
+        position: fixed;
+        right: 20px;
+        bottom: 76px;
+        padding-top: 15px;
+        margin-bottom: 0;
+        z-index: 998;
+    }
+
+    #floating-toc-btn .btn-floating {
+        width: 48px;
+        height: 48px;
+    }
+
+    #floating-toc-btn .btn-floating i {
+        line-height: 48px;
+        font-size: 1.4rem;
+    }
+</style>
+<div class="row">
+    <div id="main-content" class="col s12 m12 l9">
+        <!-- 文章内容详情 -->
+<div id="artDetail">
+    <div class="card">
+        <div class="card-content article-info">
+            <div class="row tag-cate">
+                <div class="col s7">
+                    
+                    <div class="article-tag">
+                        
+                            <a href="/tags/前端基础/" target="_blank">
+                                <span class="chip bg-color">前端基础</span>
+                            </a>
+                        
+                            <a href="/tags/CSS/" target="_blank">
+                                <span class="chip bg-color">CSS</span>
+                            </a>
+                        
+                    </div>
+                    
+                </div>
+                <div class="col s5 right-align">
+                    
+                    <div class="post-cate">
+                        <i class="fa fa-bookmark fa-fw icon-category"></i>
+                        
+                            <a href="/categories/CSS/" class="post-category" target="_blank">
+                                CSS
+                            </a>
+                        
+                    </div>
+                    
+                </div>
+            </div>
+
+            <div class="post-info">
+                <div class="post-date info-break-policy">
+                    <i class="fa fa-calendar-minus-o fa-fw"></i>发布日期:&nbsp;&nbsp;
+                    2019-03-12
+                </div>
+
+                
+                    
+                    <div class="info-break-policy">
+                        <i class="fa fa-file-word-o fa-fw"></i>文章字数:&nbsp;&nbsp;
+                        4.8k
+                    </div>
+                    
+
+                    
+                    <div class="info-break-policy">
+                        <i class="fa fa-clock-o fa-fw"></i>阅读时长:&nbsp;&nbsp;
+                        18 分
+                    </div>
+                    
+                
+				
+				
+            </div>
+        </div>
+        <hr class="clearfix">
+        <div class="card-content article-card-content">
+            <div id="articleContent">
+                <script src="/assets/js/APlayer.min.js"> </script><h1 id="盒模型"><a href="#盒模型" class="headerlink" title="盒模型"></a>盒模型</h1><p>&emsp;&emsp;每一个HTML标签元素都是由四个部分组成的，分别是内容(content)、内边距(padding)、边框(border)、外边距(margin)。其中盒子的大小只由 content + padding + border 决定，margin影响的不是盒子大小，而是盒子占据的位置。这一部分比较简单，所以这里就不多做叙述了。<br><img src="/2019/03/12/CSS负边距/box.png" alt></p>
+<h2 id="标准盒模型和IE盒模型"><a href="#标准盒模型和IE盒模型" class="headerlink" title="标准盒模型和IE盒模型"></a>标准盒模型和IE盒模型</h2><p>&emsp;&emsp;关于盒模型需要着重注意的是标准盒模型和IE盒模型的差异。W3C标准盒模型下，content 的宽高只由其自身的宽高决定，而在IE盒模型下，content 的宽高还包括了 border 和 padding（也就是怪异模式）。我们可以在页面开头声明 DOCTYPE 的类型，来指定浏览器统一使用 W3C 标准盒模型，否则在 IE 浏览器中会将盒模型解释为 IE 盒模型。声明 DOCTYPE 时推荐使用<code>&lt;!DOCTYPE html&gt;</code>，会指示浏览器使用 HTML5 规范（要使用 HTML4 则会有三种 &lt;!DOCTYPE&gt; 声明方式）。</p>
+<h2 id="box-sizing"><a href="#box-sizing" class="headerlink" title="box-sizing"></a>box-sizing</h2><p>&emsp;&emsp;在 IE8+ 及 chrome 等浏览器中还可以通过 CSS 的<code>box-sizing</code>属性来定义如何计算一个元素的宽高。对于默认值<code>box-sizing: content-box</code>，页面计算时会使用 W3C 标准盒模型，给元素的宽高赋值相当于对 content 赋值，而整个盒子的大小还得再算上 border 和 padding。</p>
+<pre class=" language-css"><code class="language-css"><span class="token selector"><span class="token class">.box</span> </span><span class="token punctuation">{</span>
+  <span class="token property">width</span><span class="token punctuation">:</span> <span class="token number">100</span>px<span class="token punctuation">;</span>
+  <span class="token property">height</span><span class="token punctuation">:</span> <span class="token number">100</span>px<span class="token punctuation">;</span>
+  <span class="token property">padding</span><span class="token punctuation">:</span> <span class="token number">10</span>px<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<p><img src="/2019/03/12/CSS负边距/box1.png" alt><br>&emsp;&emsp;若设置<code>box-sizing: border-box</code>，则会使用IE盒模型，给元素的宽高赋值相当于是设置content+padding+border的总宽高。我们使用padding时很多时候都需要再设置<code>box-sizing: border-box</code>，以免元素超出容器范围。比如当我们设置一个列表或输入框的时候，通常左边或右边会有一个icon图标，我们可以采用设置背景图片的方式来显示图标，再设置padding-left或padding-right来间隔开图标和文字。这时候我们就需要再设置<code>box-sizing: border-box</code>了，否则设置的padding会加宽盒子的宽高使得列表或输入框超出容器造成页面在水平方向可以拖动。</p>
+<pre class=" language-css"><code class="language-css"><span class="token selector"><span class="token class">.box</span> </span><span class="token punctuation">{</span>
+  <span class="token property">width</span><span class="token punctuation">:</span> <span class="token number">100</span>px<span class="token punctuation">;</span>
+  <span class="token property">height</span><span class="token punctuation">:</span> <span class="token number">100</span>px<span class="token punctuation">;</span>
+  <span class="token property">padding</span><span class="token punctuation">:</span> <span class="token number">10</span>px<span class="token punctuation">;</span>
+  <span class="token property">box-sizing</span><span class="token punctuation">:</span> border-box<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<p><img src="/2019/03/12/CSS负边距/box2.png" alt></p>
+<h1 id="margin"><a href="#margin" class="headerlink" title="margin"></a>margin</h1><h2 id="margin-left、margin-right和width"><a href="#margin-left、margin-right和width" class="headerlink" title="margin-left、margin-right和width"></a>margin-left、margin-right和width</h2><p>&emsp;&emsp;margin-left、margin-right和width设置为auto时的影响。</p>
+<h3 id="三者都设置为auto"><a href="#三者都设置为auto" class="headerlink" title="三者都设置为auto"></a>三者都设置为auto</h3><p>&emsp;&emsp;margin-left和margin-right会失效，都被设置为0，width尽可能大(即父元素宽度减去左右border和左右padding)。</p>
+<pre class=" language-css"><code class="language-css"><span class="token selector">&lt;div class="parent"> 
+  &lt;div class="box">块级元素&lt;/div> 
+&lt;/div>
+
+<span class="token class">.parent</span></span><span class="token punctuation">{</span>
+  <span class="token property">width</span><span class="token punctuation">:</span> <span class="token number">300</span>px<span class="token punctuation">;</span>
+  <span class="token property">background</span><span class="token punctuation">:</span> <span class="token hexcode">#eeb3b3</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+<span class="token selector"><span class="token class">.box</span> </span><span class="token punctuation">{</span>
+  <span class="token property">background</span><span class="token punctuation">:</span> <span class="token hexcode">#ffd800</span><span class="token punctuation">;</span>
+  <span class="token property">margin-left</span><span class="token punctuation">:</span> auto<span class="token punctuation">;</span>
+  <span class="token property">margin-right</span><span class="token punctuation">:</span> auto<span class="token punctuation">;</span>
+  <span class="token property">padding</span><span class="token punctuation">:</span> <span class="token number">10</span>px<span class="token punctuation">;</span> 
+  <span class="token property">width</span><span class="token punctuation">:</span> auto<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<p><img src="/2019/03/12/CSS负边距/box3.png" alt></p>
+<h3 id="其中一个设置为auto"><a href="#其中一个设置为auto" class="headerlink" title="其中一个设置为auto"></a>其中一个设置为auto</h3><p>&emsp;&emsp;设置为auto的元素会自动调整自身宽度，使得三者的总宽度等于父元素的宽度。若是margin-left和right设为定值且没有指定width，也会默认width为auto。</p>
+<pre class=" language-css"><code class="language-css"><span class="token selector"><span class="token class">.box</span> </span><span class="token punctuation">{</span>
+  <span class="token property">background</span><span class="token punctuation">:</span> <span class="token hexcode">#ffd800</span><span class="token punctuation">;</span>
+  <span class="token property">margin-left</span><span class="token punctuation">:</span> <span class="token number">50</span>px<span class="token punctuation">;</span>
+  <span class="token property">margin-right</span><span class="token punctuation">:</span> <span class="token number">50</span>px<span class="token punctuation">;</span>
+  <span class="token property">padding</span><span class="token punctuation">:</span> <span class="token number">10</span>px<span class="token punctuation">;</span> 
+  <span class="token property">width</span><span class="token punctuation">:</span> auto<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<p><img src="/2019/03/12/CSS负边距/box4.png" alt></p>
+<h3 id="其中两个设置为auto"><a href="#其中两个设置为auto" class="headerlink" title="其中两个设置为auto"></a>其中两个设置为auto</h3><ul>
+<li>margin-lef和margin-right为auto：此时margin-left和margin-right相等，平分剩下的空间，达到水平居中的效果。</li>
+</ul>
+<pre class=" language-css"><code class="language-css"><span class="token selector"><span class="token class">.box</span> </span><span class="token punctuation">{</span>
+  <span class="token property">background</span><span class="token punctuation">:</span> <span class="token hexcode">#ffd800</span><span class="token punctuation">;</span>
+  <span class="token property">margin-left</span><span class="token punctuation">:</span> auto<span class="token punctuation">;</span>
+  <span class="token property">margin-right</span><span class="token punctuation">:</span> auto<span class="token punctuation">;</span>
+  <span class="token property">padding</span><span class="token punctuation">:</span> <span class="token number">10</span>px<span class="token punctuation">;</span> 
+  <span class="token property">width</span><span class="token punctuation">:</span> <span class="token number">100</span>px<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<p><img src="/2019/03/12/CSS负边距/box5.png" alt></p>
+<ul>
+<li>width和其中一个margin为auto： 被设置为auto的那个margin变为0，width尽可能大。</li>
+</ul>
+<pre class=" language-css"><code class="language-css"><span class="token selector"><span class="token class">.box</span> </span><span class="token punctuation">{</span>
+  <span class="token property">background</span><span class="token punctuation">:</span> <span class="token hexcode">#ffd800</span><span class="token punctuation">;</span>
+  <span class="token property">margin-left</span><span class="token punctuation">:</span> auto<span class="token punctuation">;</span>
+  <span class="token property">margin-right</span><span class="token punctuation">:</span> <span class="token number">50</span>px<span class="token punctuation">;</span>
+  <span class="token property">padding</span><span class="token punctuation">:</span> <span class="token number">10</span>px<span class="token punctuation">;</span> 
+  <span class="token property">width</span><span class="token punctuation">:</span> auto<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<p><img src="/2019/03/12/CSS负边距/box6.png" alt></p>
+<h2 id="负margin"><a href="#负margin" class="headerlink" title="负margin"></a>负margin</h2><p>&emsp;&emsp;负margin同样可以使文档流中元素的位置发生偏移，和相对定位偏移的区别在于，相对定位的元素偏移后，仍然霸占着原先的位置，使文档流中其他元素无法占据该空间。而通过负margin偏移的元素，<strong>虽然元素大小不变，但会使文档流向左流或向上流(文档流只能往这两个方向移动)，造成了后面的元素可以占据这部分空间，会使得两个元素重叠</strong>(下文会详细说明)。</p>
+<p>&emsp;&emsp;（我还有另一种理解，通过负margin偏移的元素，虽然元素大小不变，但会<strong>减小该元素在文档流中占据的空间</strong>，自然也会使文档流向左流或向上流，导致后面的元素移动。我觉得以这种观点去理解的话，这整篇文章所涉及的内容也都可以说得通，甚至可以更好的解释清楚。但我谷歌了一下，发现并没有关于 元素在文档流中占据的空间可不可以被减小 的相关文章，所以这里只当作一种个人的理解方式仅供参考）</p>
+<h3 id="对static定位而且没有浮动的元素使用负margin"><a href="#对static定位而且没有浮动的元素使用负margin" class="headerlink" title="对static定位而且没有浮动的元素使用负margin"></a>对static定位而且没有浮动的元素使用负margin</h3><p><img src="/2019/03/12/CSS负边距/negative-margin.jpg" alt></p>
+<ol>
+<li><p>margin-top或margin-left为负值时，元素被拉向指定的方向(见上图)，即和设置margin-top和margin-left为正值时移动的方向相反。</p>
+</li>
+<li><p>margin-bottom或margin-right为负值时，元素本身不会偏移，但因为文档流向左/上移动了，所以后续的元素也会随之向左/上移动，和原来的元素重叠在一起。</p>
+</li>
+</ol>
+<p><img src="/2019/03/12/CSS负边距/no-margin-bottom.png" alt><br><img src="/2019/03/12/CSS负边距/use-margin-bottom.png" alt>    </p>
+<ol start="3">
+<li>如果元素没有设置width或width为auto时，设置负的margin-left或margin-right，会增大元素的宽度，类似于padding。若是负的margin-left的话，则还会向左移动。</li>
+</ol>
+<pre class=" language-css"><code class="language-css"><span class="token selector">&lt;div class="container">
+  &lt;div class="box">我没有设置宽高&lt;/div>
+&lt;/div>
+
+<span class="token class">.container</span> </span><span class="token punctuation">{</span>
+  <span class="token property">width</span><span class="token punctuation">:</span> <span class="token number">150</span>px<span class="token punctuation">;</span>
+  <span class="token property">height</span><span class="token punctuation">:</span> <span class="token number">150</span>px<span class="token punctuation">;</span>
+  <span class="token property">background-color</span><span class="token punctuation">:</span> <span class="token hexcode">#eee</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+<span class="token selector"><span class="token class">.box</span> </span><span class="token punctuation">{</span>
+  <span class="token property">background-color</span><span class="token punctuation">:</span> red<span class="token punctuation">;</span>
+  <span class="token property">margin-right</span><span class="token punctuation">:</span> -<span class="token number">50</span>px<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<p><img src="/2019/03/12/CSS负边距/margin-right.png" alt>    </p>
+<ol start="4">
+<li>这里单独再说一下负margin-bottom，负的margin-bottom不仅有上述第二点的影响外，更重要而且实用的一点是会<strong>减少元素框的高度</strong>。我在其他几个博客里看到有人把这说成是<strong>减少自身的供css读取的高度</strong>，但他们都没有解释什么叫做 “减少自身的供css读取的高度”，我谷歌了一下也没有发现什么解释，所以这里按照我个人的理解，使用 “减少元素框的高度” 这概念来解释。我们先来看几句代码和效果图：</li>
+</ol>
+<pre class=" language-css"><code class="language-css"><span class="token selector">&lt;div class="box">
+  &lt;div class="left">Coding Coding Coding Coding Coding&lt;/div>
+&lt;/div>
+
+<span class="token class">.left</span> </span><span class="token punctuation">{</span>
+  <span class="token property">width</span><span class="token punctuation">:</span> <span class="token number">60</span>px<span class="token punctuation">;</span>
+  <span class="token property">height</span><span class="token punctuation">:</span> <span class="token number">100</span>px<span class="token punctuation">;</span>
+  <span class="token property">background-color</span><span class="token punctuation">:</span> yellow<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<p><img src="/2019/03/12/CSS负边距/1.png" alt></p>
+<p>&emsp;&emsp;现在我们再给该元素设置<code>margin-bottom: -50px;</code>再来看看效果<br><img src="/2019/03/12/CSS负边距/2.png" alt><br>&emsp;&emsp;从图中我们可以发现，虽然控制台显示该元素的高度还是100px并且也全部都渲染出来了，但图中的橙色部分(貌似代表的是margin，但为了方便理解所以我把它当成<strong>元素框</strong>, 或者说是元素在文档流中占据的空间)缩小了一半。而CSS中的<code>overflow</code>属性判断元素是否溢出，不是根据我们给它设置好的height，而是根据元素框(图中的橙色框框)来判断的。只要元素内容超出这个元素框，给父容器设置了<code>overflow: hidden</code>后超出部分就会被隐藏，即使元素的高度是100px足够容纳元素内容。有图有真相：<br><img src="/2019/03/12/CSS负边距/3.png" alt></p>
+<p>&emsp;&emsp;借助负margin-bottom这个特性我们就可以实现很多功能了，包括常见的两栏等高布局，栗子见下文。</p>
+<h3 id="对浮动元素使用负margin"><a href="#对浮动元素使用负margin" class="headerlink" title="对浮动元素使用负margin"></a>对浮动元素使用负margin</h3><p>&emsp;&emsp;先看没有设置负margin时的原始样式和表现</p>
+<pre class=" language-css"><code class="language-css"><span class="token selector">&lt;div class="fa">&lt;/div>
+&lt;div class="fb">&lt;/div>
+&lt;div class="fc">&lt;/div>
+
+<span class="token class">.fa</span> </span><span class="token punctuation">{</span>
+  <span class="token property">width</span><span class="token punctuation">:</span> <span class="token number">100</span>px<span class="token punctuation">;</span>
+  <span class="token property">height</span><span class="token punctuation">:</span> <span class="token number">100</span>px<span class="token punctuation">;</span>
+  <span class="token property">float</span><span class="token punctuation">:</span> left<span class="token punctuation">;</span>
+  <span class="token property">background-color</span><span class="token punctuation">:</span> red<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+<span class="token selector"><span class="token class">.fb</span> </span><span class="token punctuation">{</span>
+  <span class="token property">width</span><span class="token punctuation">:</span> <span class="token number">100</span>px<span class="token punctuation">;</span>
+  <span class="token property">height</span><span class="token punctuation">:</span> <span class="token number">100</span>px<span class="token punctuation">;</span>
+  <span class="token property">float</span><span class="token punctuation">:</span> left<span class="token punctuation">;</span>
+  <span class="token property">background-color</span><span class="token punctuation">:</span> blue<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+<span class="token selector"><span class="token class">.fc</span> </span><span class="token punctuation">{</span>
+  <span class="token property">width</span><span class="token punctuation">:</span> <span class="token number">100</span>px<span class="token punctuation">;</span>
+  <span class="token property">height</span><span class="token punctuation">:</span> <span class="token number">100</span>px<span class="token punctuation">;</span>
+  <span class="token property">float</span><span class="token punctuation">:</span> left<span class="token punctuation">;</span>
+  <span class="token property">background-color</span><span class="token punctuation">:</span> pink<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<p><img src="/2019/03/12/CSS负边距/float.png" alt></p>
+<p>&emsp;&emsp;现在给每一个元素都设置<code>margin-right: -50px</code>，效果如下：<br><img src="/2019/03/12/CSS负边距/margin-right1.png" alt><br><img src="/2019/03/12/CSS负边距/margin-right2.png" alt><br>&emsp;&emsp;通过检查我们可以发现，三个元素的宽高并没有改变，还都是100px，那为什么fa，fb会被覆盖住呢？前面已经说过，通过负margin偏移后，元素在文档流中减小的那部分空间会被后面的元素占据上(这里是文档流左移了)，而自身的宽高不变。以fa为例(红色的方格)，本来fa占据了100px的空间，后面的元素只能紧挨着fa从100px后开始占位置，但现在给fa设置了<code>margin-right: -50px</code>，fa虽然宽还是100px，但fa在文档流中占据的空间减小了50px，所以这50px被后面的fb填充了，也就是图中的效果，fb重叠到了fa上面。至于fc和fb也是同样的道理。理解了这一点，下面这个也就懂了。</p>
+<pre class=" language-css"><code class="language-css"><span class="token selector">&lt;div class="left">左浮动&lt;/div>
+&lt;div class="right">也是左浮动&lt;/div>
+
+<span class="token class">.left</span> </span><span class="token punctuation">{</span>
+  <span class="token property">float</span><span class="token punctuation">:</span> left<span class="token punctuation">;</span>
+  <span class="token property">width</span><span class="token punctuation">:</span> <span class="token number">50</span>px<span class="token punctuation">;</span>
+  <span class="token property">background-color</span><span class="token punctuation">:</span> yellow<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+<span class="token selector"><span class="token class">.right</span> </span><span class="token punctuation">{</span>
+  <span class="token property">float</span><span class="token punctuation">:</span> left<span class="token punctuation">;</span>
+  <span class="token property">width</span><span class="token punctuation">:</span> <span class="token number">100</span>px<span class="token punctuation">;</span>
+  <span class="token property">background-color</span><span class="token punctuation">:</span> red<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+
+</code></pre>
+<p><img src="/2019/03/12/CSS负边距/float1.png" alt><br>&emsp;&emsp;当给第一个元素添加<code>margin-bottom: -200px</code>时，就成了<br><img src="/2019/03/12/CSS负边距/float2.png" alt><br><img src="/2019/03/12/CSS负边距/float3.png" alt><br>&emsp;&emsp;其中第一个元素并没有消失，宽高也没有改变，只是被第二个元素挡住了而已，原因同上。</p>
+<h2 id="负边距的应用"><a href="#负边距的应用" class="headerlink" title="负边距的应用"></a>负边距的应用</h2><h3 id="去除最后一个li的border-bottom"><a href="#去除最后一个li的border-bottom" class="headerlink" title="去除最后一个li的border-bottom"></a>去除最后一个li的border-bottom</h3><p>&emsp;&emsp;在一个列表中，我们经常会给每一个li设置border-bottom，并且外层的父元素也会设置border，代码和效果图如下：</p>
+<pre class=" language-css"><code class="language-css"><span class="token selector">&lt;div class="box">
+  &lt;ul>
+    &lt;li>Hello World&lt;/li>
+    &lt;li>Hello World&lt;/li>
+    &lt;li>Hello World&lt;/li>
+    &lt;li>Hello World&lt;/li>
+    &lt;li>Hello World&lt;/li>
+  &lt;/ul>
+&lt;/div>
+
+<span class="token class">.box</span> </span><span class="token punctuation">{</span>
+  <span class="token property">width</span><span class="token punctuation">:</span> <span class="token number">300</span>px<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+<span class="token selector"><span class="token class">.box</span> ul </span><span class="token punctuation">{</span>
+  <span class="token property">border</span><span class="token punctuation">:</span> <span class="token number">1</span>px solid red<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+<span class="token selector"><span class="token class">.box</span> li </span><span class="token punctuation">{</span>
+  <span class="token property">list-style</span><span class="token punctuation">:</span> none<span class="token punctuation">;</span>
+  <span class="token property">border-bottom</span><span class="token punctuation">:</span> <span class="token number">1</span>px solid red<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<p><img src="/2019/03/12/CSS负边距/4.png" alt><br>&emsp;&emsp;很明显最后一个li的border-bottom和父元素的border靠在一起了，视觉效果很不美观。我在开发IOS仿网易云音乐的时候就经常遇到这个问题，不过我是把border-bottom的样式单独写在一个class里，如果不是最后一个li就给它绑定这个类，当然这是可行的，但这样终究麻烦了一点，现在我使用负margin实验了一下发现也可以达到同样的效果。只需要给li增加一句<code>margin-bottom: -1px</code>就可以了，<br><img src="/2019/03/12/CSS负边距/5.png" alt><br>&emsp;&emsp;这要怎么理解呢？前面也说过，<strong>使用负margin后会使元素框的高度减小，造成后面的元素上移</strong>。没错，除却第一个li外其余几个li都上移了，只是1px比较小看起来不是很明显而已，如果你调成-5px效果就很明显了，这里就不贴图了(有个小问题，为什么第一个li不会上移呢？因为虽然第一个li的元素框高度减小了，但影响到的是它后面的元素，对其自身是没什么影响的)。那为什么后面几个li上移了最后一个border-bottom就不会重叠了呢？代码中我们并没有给ul指定高度，所以ul会由子元素li撑起来，li的元素框高度减小后整个ul的高度也会随着减小(这里是减小了5px)，ul的border-bottom自然也会随着上移5px，而最后一个li是上移了4px。算上最后一个li自身border-bottom的1px，所以ul的border-bottom和最后一个li的border-bottom会重叠在一起！一开始我也不太理解，重叠在一起不是也会加粗了边框吗？后来实践得知，两个边框重叠和靠在一起是不同的概念的！两个边框靠在一起才会看起来像是加粗了，重叠在一起是不会有这种视觉效果的。想象一下，你正对着千手观音时，你觉得那是一个人还是N个人？这里我还是贴一下图说明吧。</p>
+<pre class=" language-css"><code class="language-css"><span class="token selector">&lt;div class="test">&lt;/div>
+&lt;div class="test">&lt;/div>
+
+<span class="token class">.test</span> </span><span class="token punctuation">{</span>
+  <span class="token property">width</span><span class="token punctuation">:</span> <span class="token number">50</span>px<span class="token punctuation">;</span>
+  <span class="token property">height</span><span class="token punctuation">:</span> <span class="token number">50</span>px<span class="token punctuation">;</span>
+  <span class="token property">border</span><span class="token punctuation">:</span> <span class="token number">1</span>px solid red<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<p><img src="/2019/03/12/CSS负边距/6.png" alt><br>&emsp;&emsp;上图两条边框靠在了一起，当我给下面的方格添加<code>margin-top: -1px</code>后，,两个边框便重叠起来了，效果是<br><img src="/2019/03/12/CSS负边距/7.png" alt><br>&emsp;&emsp;以上，就是我对使用负margin消除最后一个li的border-bottom的理解了。所以啊，以后就不要用class动态绑定啦，开始用负margin吧。</p>
+<h3 id="实现两栏布局"><a href="#实现两栏布局" class="headerlink" title="实现两栏布局"></a>实现两栏布局</h3><p>&emsp;&emsp;利用浮动和负边距可以很神奇地实现两栏布局，即一栏作为侧边栏固定宽度，一栏宽度为100%自适应。先一步步来：</p>
+<pre class=" language-css"><code class="language-css"><span class="token selector">&lt;div>
+  &lt;div class="slider">
+    &lt;p>slider&lt;/p>
+  &lt;/div>
+  &lt;div class="content">
+    &lt;p>content&lt;/p>
+  &lt;/div>
+&lt;/div>
+
+<span class="token class">.slider</span> </span><span class="token punctuation">{</span>
+  <span class="token property">float</span><span class="token punctuation">:</span> left<span class="token punctuation">;</span>
+  <span class="token property">width</span><span class="token punctuation">:</span> <span class="token number">100</span>px<span class="token punctuation">;</span>
+  <span class="token property">height</span><span class="token punctuation">:</span> <span class="token number">200</span>px<span class="token punctuation">;</span>
+  <span class="token property">background-color</span><span class="token punctuation">:</span> blue<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+<span class="token selector"><span class="token class">.content</span> </span><span class="token punctuation">{</span>
+  <span class="token property">float</span><span class="token punctuation">:</span> left<span class="token punctuation">;</span>
+  <span class="token property">width</span><span class="token punctuation">:</span> <span class="token number">100%</span><span class="token punctuation">;</span>
+  <span class="token property">height</span><span class="token punctuation">:</span> <span class="token number">200</span>px<span class="token punctuation">;</span>
+  <span class="token property">background-color</span><span class="token punctuation">:</span> yellow<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<p><img src="/2019/03/12/CSS负边距/example1.png" alt><br>&emsp;&emsp;在上图中因为content是100%宽度而且slider已经占据了100px，所以content被挤了下去，而要实现两栏布局我们首先要做的就是将slider和content放到同一行去。但两者挤不下要怎么办？我们可以想到使slider在文档流中不占据位置，这样就可以让content也占据slider原本的位置从而使两者同行排列，而方法自然是给slider绝对定位了。这是一种方法，但我们也还可以使用负margin。前面提到过，使用<strong>负margin偏移后会造成该元素在文档流中占据的空间减小</strong>，原先content需要在文档流中占据100%的宽度，现在我们给content添加<code>margin-right: -100px; // slider的宽度</code>，就可以使content在文档流中只需要占据100%-100px的宽度空间就够了。为了防止造成页面水平拖动，所以给最外层的div加上<code>overflow: hidden</code>。效果如下：<br><img src="/2019/03/12/CSS负边距/example2.png" alt><br>&emsp;&emsp;这里还有一个问题，我们虽然隐藏了content超出外层div的内容，但那一部分空间还是存在的，conten的内容还是会分布在那一部分位置上。所以我们还需要给content的子元素加上<code>.content p {margin-right: 100px}</code>，这样就大功告成了，最终效果如下：<br><img src="/2019/03/12/CSS负边距/example3.gif" alt><br>完整代码：</p>
+<pre class=" language-css"><code class="language-css"><span class="token selector">&lt;div style="overflow: hidden">
+  &lt;div class="slider">
+    &lt;p>slider&lt;/p>
+  &lt;/div>
+  &lt;div class="content">
+    &lt;p>content&lt;/p>
+  &lt;/div>
+&lt;/div>
+
+<span class="token class">.slider</span> </span><span class="token punctuation">{</span>
+  <span class="token property">float</span><span class="token punctuation">:</span> left<span class="token punctuation">;</span>
+  <span class="token property">width</span><span class="token punctuation">:</span> <span class="token number">100</span>px<span class="token punctuation">;</span>
+  <span class="token property">height</span><span class="token punctuation">:</span> <span class="token number">200</span>px<span class="token punctuation">;</span>
+  <span class="token property">background-color</span><span class="token punctuation">:</span> blue<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+<span class="token selector"><span class="token class">.content</span> </span><span class="token punctuation">{</span>
+  <span class="token property">float</span><span class="token punctuation">:</span> left<span class="token punctuation">;</span>
+  <span class="token property">width</span><span class="token punctuation">:</span> <span class="token number">100%</span><span class="token punctuation">;</span>
+  <span class="token property">height</span><span class="token punctuation">:</span> <span class="token number">200</span>px<span class="token punctuation">;</span>
+  <span class="token property">background-color</span><span class="token punctuation">:</span> yellow<span class="token punctuation">;</span>
+  <span class="token property">margin-right</span><span class="token punctuation">:</span> -<span class="token number">100</span>px<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+<span class="token selector"><span class="token class">.content</span> p </span><span class="token punctuation">{</span>
+  <span class="token property">margin-right</span><span class="token punctuation">:</span> <span class="token number">100</span>px<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<h3 id="和绝对定位配合实现已知宽高元素的水平垂直居中"><a href="#和绝对定位配合实现已知宽高元素的水平垂直居中" class="headerlink" title="和绝对定位配合实现已知宽高元素的水平垂直居中"></a>和绝对定位配合实现已知宽高元素的水平垂直居中</h3><p>&emsp;&emsp;这应用是家常便饭了，就不赘述了。</p>
+<h3 id="实现多列等高，双飞翼布局等"><a href="#实现多列等高，双飞翼布局等" class="headerlink" title="实现多列等高，双飞翼布局等"></a>实现多列等高，双飞翼布局等</h3><p>&emsp;&emsp;实现原理和上面的两栏布局差不多，具体的实现请<a href="http://blog.dangosky.com/%2F2019%2F03%2F07%2F%E6%9C%AA%E7%9F%A5%E5%AE%BD%E9%AB%98%E5%85%83%E7%B4%A0%E7%9A%84%E6%B0%B4%E5%B9%B3%E5%9E%82%E7%9B%B4%E5%B1%85%E4%B8%AD%E5%B8%83%E5%B1%80%2F#toc-heading-5">戳这里</a>。</p>
+<h1 id="BFC"><a href="#BFC" class="headerlink" title="BFC"></a>BFC</h1><p>&emsp;&emsp;块级格式化上下文（Block Formatting Context，BFC），我的理解是：BFC 就是具有特定规则的一个容器，而且容器里面的元素不会在布局上影响到外面的元素。即不同的 BFC 区域之间是各自独立互不影响的。这里说的特定规则即下文要说到的垂直方向上 marin 会合并、子元素的 margin-top 会带跑父元素等。</p>
+<!-- 一个BFC区域包含创建该上下文元素的所有子元素，但是不包括创建了新的BFC的子元素的内部元素。每一个BFC区域只包括其子元素，不包括其子元素的子元素。 -->
+<p>&emsp;&emsp;只要满足下列任意一个条件即可触发 BFC：</p>
+<ul>
+<li>根元素，即 body</li>
+<li>float 的值不为 none</li>
+<li>overflow 的值不为 visible</li>
+<li>display 的值为 inline-block、table-cell、table-caption</li>
+<li>position 的值为 absolute 或 fixed </li>
+</ul>
+<p>&emsp;&emsp;我们通常可以利用两个 BFC 之间不会互相影响这个特性，来消除 BFC 区域带来的一些影响。</p>
+<h2 id="防止垂直方向上的-margin-合并"><a href="#防止垂直方向上的-margin-合并" class="headerlink" title="防止垂直方向上的 margin 合并"></a>防止垂直方向上的 margin 合并</h2><pre class=" language-css"><code class="language-css"><span class="token selector">&lt;div class="a">&lt;/div>
+&lt;div class="b">&lt;/div>
+
+<span class="token class">.a</span> </span><span class="token punctuation">{</span>
+  <span class="token property">width</span><span class="token punctuation">:</span> <span class="token number">100</span>px<span class="token punctuation">;</span>
+  <span class="token property">height</span><span class="token punctuation">:</span> <span class="token number">100</span>px<span class="token punctuation">;</span>
+  <span class="token property">background-color</span><span class="token punctuation">:</span> red<span class="token punctuation">;</span>
+  <span class="token property">margin-bottom</span><span class="token punctuation">:</span> <span class="token number">50</span>px<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+<span class="token selector"><span class="token class">.b</span> </span><span class="token punctuation">{</span>
+  <span class="token property">width</span><span class="token punctuation">:</span> <span class="token number">100</span>px<span class="token punctuation">;</span>
+  <span class="token property">height</span><span class="token punctuation">:</span> <span class="token number">100</span>px<span class="token punctuation">;</span>
+  <span class="token property">background-color</span><span class="token punctuation">:</span> yellow<span class="token punctuation">;</span>
+  <span class="token property">margin-top</span><span class="token punctuation">:</span> <span class="token number">100</span>px<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<p><img src="/2019/03/12/CSS负边距/10.png" alt></p>
+<p>&emsp;&emsp;在上面的测试代码中，我们给两个兄弟 div 各设置了 50px 和 100px 的外边距。依我们原先的预期，这两个 div 在垂直方向上应该会相距 150px 才对，但从上图中我们可以发现它们只相距了 100px 而已，这就是在同一个 BFC 区域内（这里是 body），垂直方向上的 margin 会合并。具体的合并规则是：</p>
+<ul>
+<li>如果两个外边距都为正数，则最终的外边距为两者的最大值。</li>
+<li>如果两个外边距一正一负，则最终的外边距为两者的和。</li>
+<li>如果两个外边距都为负数，则最终的外边距为两者的最小值。</li>
+</ul>
+<p>&emsp;&emsp;总结成一句话就是：正正取大，正负相加，负负取小。读者可以<a href="https://jsfiddle.net/DangoSky/4a3bnev6/" target="_blank" rel="noopener">戳这里进行实验</a>。</p>
+<p>&emsp;&emsp;为了防止 margin 合并，我们可以利用 BFC 来使两个 div 的布局不互相影响。可以给 div.a 或者 div.b 外层加一个父级 div 包裹，并触发父级 div 的 BFC，例如常用的<code>overflow: hidden</code>即可。</p>
+<h2 id="防止-margin-塌陷"><a href="#防止-margin-塌陷" class="headerlink" title="防止 margin 塌陷"></a>防止 margin 塌陷</h2><pre class=" language-css"><code class="language-css"><span class="token selector">&lt;div class="a">
+  &lt;div class="b">&lt;/div>
+&lt;/div>
+
+<span class="token class">.a</span> </span><span class="token punctuation">{</span>
+  <span class="token property">width</span><span class="token punctuation">:</span> <span class="token number">100</span>px<span class="token punctuation">;</span>
+  <span class="token property">height</span><span class="token punctuation">:</span> <span class="token number">100</span>px<span class="token punctuation">;</span>
+  <span class="token property">background-color</span><span class="token punctuation">:</span> red<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+<span class="token selector"><span class="token class">.b</span> </span><span class="token punctuation">{</span>
+  <span class="token property">width</span><span class="token punctuation">:</span> <span class="token number">50</span>px<span class="token punctuation">;</span>
+  <span class="token property">height</span><span class="token punctuation">:</span> <span class="token number">50</span>px<span class="token punctuation">;</span>
+  <span class="token property">background-color</span><span class="token punctuation">:</span> yellow<span class="token punctuation">;</span>
+  <span class="token property">margin-top</span><span class="token punctuation">:</span> <span class="token number">50</span>px<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<p><img src="/2019/03/12/CSS负边距/11.png" alt></p>
+<p>&emsp;&emsp;通过上面这段代码，我们预期中是想让子元素 b 距离父元素 a 顶部 50px 距离的，但结果却是子元素带着父元素一起偏离顶部 50px 了，它们的相对距离并没有改变，也就是子元素的 margin-top 带跑了父元素。解决办法也是利用 BFC 来使外层的 body 不影响到 div.a 和 div.b，同样给父元素添加 <code>overflow: hidden</code> 来触发 BFC。</p>
+<p><img src="/2019/03/12/CSS负边距/16.png" alt></p>
+<p>&emsp;&emsp;但需要注意的是，得子元素和父元素<strong>直接相接触</strong>才会导致 margin 塌陷，也就是说得满足几个条件：</p>
+<ul>
+<li>父元素没有设置 border 和 padding-top。</li>
+<li>该子元素是父元素的第一个非空子元素。</li>
+<li>如果父元素和该子元素之间存在其他空元素的话（比如空标签），若是行内元素则需保证没有设置水平方向的 margin、border 和 padding。若是块级元素则需保证没有设置垂直方向的 border 和 padding。</li>
+</ul>
+<p>&emsp;&emsp;总的来说，就是父元素和该子元素要相接触，之间不能存在其他障碍物阻拦，比如 border 或 padding 之类的。需要区分的是如果它们中间有其他空元素的话，行内元素和块级元素一个是要求水平不接触一个是要求垂直不接触。<a href="https://jsfiddle.net/DangoSky/2zho76f9/" target="_blank" rel="noopener">可以戳这里进行实验</a>。</p>
+<h2 id="阻止元素被浮动元素覆盖"><a href="#阻止元素被浮动元素覆盖" class="headerlink" title="阻止元素被浮动元素覆盖"></a>阻止元素被浮动元素覆盖</h2><pre class=" language-css"><code class="language-css"><span class="token selector">&lt;div class="a">&lt;/div>
+&lt;div class="b">&lt;/div>
+
+<span class="token class">.a</span> </span><span class="token punctuation">{</span>
+  <span class="token property">width</span><span class="token punctuation">:</span> <span class="token number">50</span>px<span class="token punctuation">;</span>
+  <span class="token property">height</span><span class="token punctuation">:</span> <span class="token number">50</span>px<span class="token punctuation">;</span>
+  <span class="token property">background-color</span><span class="token punctuation">:</span> red<span class="token punctuation">;</span>
+    <span class="token property">float</span><span class="token punctuation">:</span> left<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+<span class="token selector"><span class="token class">.b</span> </span><span class="token punctuation">{</span>
+  <span class="token property">width</span><span class="token punctuation">:</span> <span class="token number">100</span>px<span class="token punctuation">;</span>
+  <span class="token property">height</span><span class="token punctuation">:</span> <span class="token number">100</span>px<span class="token punctuation">;</span>
+  <span class="token property">background-color</span><span class="token punctuation">:</span> yellow<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<p><img src="/2019/03/12/CSS负边距/12.png" alt></p>
+<p>&emsp;&emsp;平时写页面的时候常常会遇到上图这种情况，一个浮动元素会覆盖在它后面的元素上。以前我都是直接给后面的元素设置一个外边距来间隔开它们。但其实利用 BFC 可以更方便得达成目的，也就是触发 div.b 的 BFC，使外层 body 的 BFC 不影响到 div.b。</p>
+<p><img src="/2019/03/12/CSS负边距/15.png" alt></p>
+<h2 id="清除浮动"><a href="#清除浮动" class="headerlink" title="清除浮动"></a>清除浮动</h2><pre class=" language-css"><code class="language-css"><span class="token selector">&lt;div class="a">
+  &lt;div class="b">&lt;/div>
+&lt;/div>
+
+<span class="token class">.a</span> </span><span class="token punctuation">{</span>
+  <span class="token property">border</span><span class="token punctuation">:</span> <span class="token number">1</span>px solid red<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+<span class="token selector"><span class="token class">.b</span> </span><span class="token punctuation">{</span>
+  <span class="token property">width</span><span class="token punctuation">:</span> <span class="token number">100</span>px<span class="token punctuation">;</span>
+  <span class="token property">height</span><span class="token punctuation">:</span> <span class="token number">100</span>px<span class="token punctuation">;</span>
+  <span class="token property">background-color</span><span class="token punctuation">:</span> yellow<span class="token punctuation">;</span>
+  <span class="token property">float</span><span class="token punctuation">:</span> left<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<p><img src="/2019/03/12/CSS负边距/13.png" alt></p>
+<p>&emsp;&emsp;我们知道，设置了浮动的元素不会将高度计算进父元素中，也就无法撑高父元素。如上图，父元素 a 只剩下 2px 的边框高度了。但往往我们需要把浮动元素的高度也计算进父元素中，之前写仿网易云音乐时就没少遇到这个需求。但当时还不知道 BFC，只会撒撒地再给父元素设置一个高度，然而弊端就在于需要事先知道这个高度才行，这就很硬核了… 如果使用 BFC 的话，就可以清除子元素的浮动，从而使得浮动中的子元素也可以撑起父元素。还是照旧，给父元素添加 <code>overflow: hidden</code> 即可。</p>
+<p><img src="/2019/03/12/CSS负边距/14.png" alt></p>
+
+            </div>
+            <hr/>
+
+            
+
+            <link rel="stylesheet" type="text/css" href="/libs/share/css/share.min.css">
+
+<div id="article-share">
+    
+    <div class="social-share" data-disabled="qzone" data-wechat-qrcode-helper="<p>微信里点“发现”->“扫一扫”二维码便可查看分享。</p>"></div>
+    
+</div>
+
+<script src="/libs/share/js/social-share.min.js"></script>
+
+            <div class="reprint">
+                <p>
+                    <span class="reprint-tip">
+                        <i class="fa fa-exclamation-circle"></i>&nbsp;&nbsp;转载请注明:
+                    </span>
+                    <a href="http://blog.dangosky.com" class="b-link-green">DangoSky</a>
+                    <i class="fa fa-angle-right fa-lg fa-fw text-color"></i>
+                    <a href="/2019/03/12/CSS负边距/" class="b-link-green">盒模型和负margin</a>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    
+
+    
+
+    
+        <div class="disqus-card card" data-aos="fade-up">
+    <div id="disqus_thread" class="card-content">
+        <noscript>Please enable JavaScript to view the
+            <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+    </div>
+</div>
+
+<script type="text/javascript">
+    disqus_config = function () {
+        this.page.url = 'http://blog.dangosky.com/2019/03/12/CSS负边距/';
+        this.page.identifier = '/2019/03/12/CSS负边距/';
+        this.page.title = '盒模型和负margin';
+    };
+    let disqus_shortname = 'dangosky';
+
+    (function () { // DON'T EDIT BELOW THIS LINE
+        let d = document, s = d.createElement('script');
+        // 如：s.src = 'https://blinkfox.disqus.com/embed.js';
+        s.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+    
+
+    
+
+    
+
+    
+
+<article id="prenext-posts" class="prev-next articles">
+    <div class="row article-row">
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge left-badge text-color">
+                <i class="fa fa-chevron-left"></i>&nbsp;上一篇</div>
+            <div class="card">
+                <a href="/2019/03/16/js之作用域和执行上下文/">
+                    <div class="card-image">
+                        
+                        
+                        <img src="/medias/featureimages/2.jpg" class="responsive-img" alt="JS之执行上下文和词法作用域">
+                        
+                        <span class="card-title">JS之执行上下文和词法作用域</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary"> 执行上下文
+全局执行上下文： 在浏览器中即window对象，此时this指向该全局对象（作用域链的源头）。JS代码一开始执行就会被创建，而且至始至终都存在直至关闭程序。
+函数执行上下文：每次调用函数时都会创建一个函数执行上下文，此时thi</div>
+                    <div class="publish-info">
+                        <span class="publish-date">
+                            <i class="fa fa-clock-o fa-fw icon-date"></i>2019-03-16
+                        </span>
+                        <span class="publish-author">
+                            
+                            <i class="fa fa-bookmark fa-fw icon-category"></i>
+                            
+                            <a href="/categories/JavaScript/" class="post-category" target="_blank">
+                                    JavaScript
+                                </a>
+                            
+                            
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/JavaScript/" target="_blank">
+                        <span class="chip bg-color">JavaScript</span>
+                    </a>
+                    
+                    <a href="/tags/前端基础/" target="_blank">
+                        <span class="chip bg-color">前端基础</span>
+                    </a>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge right-badge text-color">
+                下一篇&nbsp;<i class="fa fa-chevron-right"></i>
+            </div>
+            <div class="card">
+                <a href="/2019/03/07/未知宽高元素的水平垂直居中布局/">
+                    <div class="card-image">
+                        
+                        <img src="https://github.com/DangoSky/practices-for-web/blob/master/images/10.jpg?raw=true" class="responsive-img" alt="CSS常见的几种布局方式">
+                        
+                        <span class="card-title">CSS常见的几种布局方式</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary"> 未知宽高元素的水平垂直居中&lt;div class="container">
+  &lt;div class="ele">hello world&lt;/div>
+&lt;/div>
+
+/* 为了便于观察，先设置一些css样式:  */</div>
+                    <div class="publish-info">
+                            <span class="publish-date">
+                                <i class="fa fa-clock-o fa-fw icon-date"></i>2019-03-07
+                            </span>
+                        <span class="publish-author">
+                            
+                            <i class="fa fa-bookmark fa-fw icon-category"></i>
+                            
+                            <a href="/categories/CSS/" class="post-category" target="_blank">
+                                    CSS
+                                </a>
+                            
+                            
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/前端基础/" target="_blank">
+                        <span class="chip bg-color">前端基础</span>
+                    </a>
+                    
+                    <a href="/tags/CSS/" target="_blank">
+                        <span class="chip bg-color">CSS</span>
+                    </a>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+    </div>
+</article>
+</div>
+
+
+    </div>
+    <div id="toc-aside" class="expanded col l3 hide-on-med-and-down">
+        <div class="toc-widget">
+            <div class="toc-title"><i class="fa fa-list-alt"></i>&nbsp;&nbsp;目录</div>
+            <div id="toc-content"></div>
+        </div>
+    </div>
+</div>
+
+<!-- TOC 悬浮按钮. -->
+
+<div id="floating-toc-btn" class="hide-on-med-and-down">
+    <a class="btn-floating btn-large bg-color">
+        <i class="fa fa-list"></i>
+    </a>
+</div>
+
+
+<script src="/libs/tocbot/tocbot.min.js"></script>
+<script>
+    $(function () {
+        tocbot.init({
+            tocSelector: '#toc-content',
+            contentSelector: '#articleContent',
+            headingsOffset: -($(window).height() * 0.4 - 45),
+            // headingsOffset: -205,
+            headingSelector: 'h1, h2, h3'
+        });
+
+        // modify the toc link href to support Chinese.
+        let i = 0;
+        let tocHeading = 'toc-heading-';
+        $('#toc-content a').each(function () {
+            $(this).attr('href', '#' + tocHeading + (++i));
+        });
+
+        // modify the heading title id to support Chinese.
+        i = 0;
+        $('#articleContent').children('h1, h2, h3').each(function () {
+            $(this).attr('id', tocHeading + (++i));
+        });
+
+        // Set scroll toc fixed.
+        let tocHeight = parseInt($(window).height() * 0.4 - 64);
+        let $tocWidget = $('.toc-widget');
+        $(window).scroll(function () {
+            let scroll = $(window).scrollTop();
+            /* add post toc fixed. */
+            if (scroll > tocHeight) {
+                $tocWidget.addClass('toc-fixed');
+            } else {
+                $tocWidget.removeClass('toc-fixed');
+            }
+        });
+
+        
+        /* 修复文章卡片 div 的宽度. */
+        let fixPostCardWidth = function (srcId, targetId) {
+            let srcDiv = $('#' + srcId);
+            if (srcDiv.length === 0) {
+                return;
+            }
+
+            let w = srcDiv.width();
+            if (w >= 450) {
+                w = w + 21;
+            } else if (w >= 350 && w < 450) {
+                w = w + 18;
+            } else if (w >= 300 && w < 350) {
+                w = w + 16;
+            } else {
+                w = w + 14;
+            }
+            $('#' + targetId).width(w);
+        };
+
+        // 切换TOC目录展开收缩的相关操作.
+        const expandedClass = 'expanded';
+        let $tocAside = $('#toc-aside');
+        let $mainContent = $('#main-content');
+        $('#floating-toc-btn .btn-floating').click(function () {
+            if ($tocAside.hasClass(expandedClass)) {
+                $tocAside.removeClass(expandedClass).slideUp(500);
+                $mainContent.removeClass('l9');
+            } else {
+                $tocAside.addClass(expandedClass).slideDown(500);
+                $mainContent.addClass('l9');
+            }
+            fixPostCardWidth('artDetail', 'prenext-posts');
+        });
+        
+    });
+</script>
+    
+
+</main>
+
+
+<footer class="page-footer bg-color">
+    <div class="container row center-align">
+        <div class="col s12 m8 l8 copy-right">
+            本站由&copy;<a href="https://blinkfox.github.io/" target="_blank">Blinkfox</a>基于
+            <a href="https://hexo.io/" target="_blank">Hexo</a> 的
+            <a href="https://github.com/blinkfox/hexo-theme-matery" target="_blank">hexo-theme-matery</a>主题搭建.
+
+            
+                &nbsp;<i class="fa fa-area-chart"></i>&nbsp;站点总字数:&nbsp;
+                <span class="white-color">68.8k</span>
+            
+
+            <!-- <p id="timeDate">DangoSky的博客诞生已经</p><p id="times">载入时分秒...</p> -->
+            <!-- <p>DangoSky的博客已经诞生<strong><i><span id="day"></span><span id="hour"></span></span><span id="minutes"></span><span id="seconds"></span> </strong><i></p> -->
+                <p id="timeDate"></p>
+
+            <!-- 
+			 -->
+        </div>
+        <div class="col s12 m4 l4 social-link ">
+
+    <a href="mailto:1341514988@qq.com" class="tooltipped" target="_blank" data-tooltip="邮件联系我" data-position="top" data-delay="50">
+        <i class="fa fa-envelope-open"></i>
+    </a>
+
+
+
+    <a href="/atom.xml" class="tooltipped" target="_blank" data-tooltip="RSS 订阅" data-position="top" data-delay="50">
+        <i class="fa fa-rss"></i>
+    </a>
+
+
+
+   <a href="https://github.com/DangoSky" class="tooltipped" target="_blank" data-tooltip="访问我的GitHub" data-position="top" data-delay="50">
+    <i class="fa fa-github"></i>
+</a>
+
+</div>
+    </div>
+</footer>
+
+<div class="progress-bar"></div>
+
+<script type="text/javascript">
+    function computed(){
+        let sum = new Date()-new Date(2018,9,3,23,3,38)
+        sum = parseInt(sum / 1000);
+        let d = zero(parseInt(sum / 3600 / 24));
+        let h = zero(parseInt(sum / 3600 % 24));
+        let m = zero(parseInt(sum / 60 % 60));
+        let s = zero(parseInt(sum % 60));
+        document.getElementById("timeDate").innerHTML = "DangoSky的博客已经诞生<strong>" + d + "</strong>天<strong>" + h + "</strong>小时<strong>" + m + "</strong>分钟<strong>" + s + "</strong>秒了。"; 
+    }
+    function zero(i){
+        if(i < 10)  {
+            i = "0" + i;
+        }
+        return i;
+    }
+    setInterval("computed();",1000);
+</script>
+
+<!-- 搜索遮罩框 -->
+<div id="searchModal" class="modal">
+    <div class="modal-content">
+        <div class="search-header">
+            <span class="title"><i class="fa fa-search"></i>&nbsp;&nbsp;搜索</span>
+            <input type="search" id="searchInput" name="s" placeholder="请输入搜索的关键字"
+                   class="search-input">
+        </div>
+        <div id="searchResult"></div>
+    </div>
+</div>
+
+<script src="/js/search.js"></script>
+<script type="text/javascript">
+$(function () {
+    searchFunc("/" + "search.xml", 'searchInput', 'searchResult');
+});
+</script>
+<!-- 回到顶部按钮 -->
+<div id="backTop" class="top-scroll">
+    <a class="btn-floating btn-large waves-effect waves-light" href="#!">
+        <i class="fa fa-angle-up"></i>
+    </a>
+</div>
+
+
+<script src="/libs/materialize/materialize.min.js"></script>
+<script src="/libs/masonry/masonry.pkgd.min.js"></script>
+<script src="/libs/aos/aos.js"></script>
+<script src="/libs/scrollprogress/scrollProgress.min.js"></script>
+<script src="/libs/lightGallery/js/lightgallery-all.min.js"></script>
+<script src="/js/matery.js"></script>
+
+<!-- Global site tag (gtag.js) - Google Analytics -->
+
+
+
+    <script src="/libs/others/clicklove.js"></script>
+
+
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"debug":false,"model":{"jsonPath":"live2d-widget-model-shizuku"},"display":{"position":"right","width":200,"height":400},"mobile":{"show":false},"log":false});</script></body>
+</html>

@@ -1,0 +1,1015 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN">
+
+
+<head><meta name="generator" content="Hexo 3.9.0">
+    <meta charset="utf-8">
+    <meta name="keywords" content="DangoSky">
+    <meta name="description" content="DangoSky">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="renderer" content="webkit|ie-stand|ie-comp">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>DangoSky</title>
+    <link rel="icon" type="image/jpeg" href="/favicon.jpg">
+
+    <link rel="stylesheet" type="text/css" href="/libs/awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="/libs/materialize/materialize.min.css">
+    <link rel="stylesheet" type="text/css" href="/libs/aos/aos.css">
+    <link rel="stylesheet" type="text/css" href="/libs/animate/animate.min.css">
+    <link rel="stylesheet" type="text/css" href="/libs/lightGallery/css/lightgallery.min.css">
+    <link rel="stylesheet" type="text/css" href="/css/matery.css">
+    <link rel="stylesheet" type="text/css" href="/css/my.css">
+    <style type="text/css">
+        
+    </style>
+
+    <script src="/libs/jquery/jquery-2.2.0.min.js"></script>
+<link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css"></head>
+
+
+<body>
+
+<header class="navbar-fixed">
+    <nav id="headNav" class="bg-color nav-transparent">
+        <div id="navContainer" class="nav-wrapper container">
+            <div class="brand-logo">
+                <a href="/" class="waves-effect waves-light">
+                    
+                    <span class="logo-span">DangoSky</span>
+                </a>
+            </div>
+            
+
+<a href="#" data-target="mobile-nav" class="sidenav-trigger button-collapse"><i class="fa fa-navicon"></i></a>
+<ul class="right">
+    
+    <li class="hide-on-med-and-down">
+        <a href="/" class="waves-effect waves-light">
+            
+            <i class="fa fa-home"></i>
+            
+            <span>首页</span>
+        </a>
+    </li>
+    
+    <li class="hide-on-med-and-down">
+        <a href="/tags" class="waves-effect waves-light">
+            
+            <i class="fa fa-tags"></i>
+            
+            <span>标签</span>
+        </a>
+    </li>
+    
+    <li class="hide-on-med-and-down">
+        <a href="/categories" class="waves-effect waves-light">
+            
+            <i class="fa fa-bookmark"></i>
+            
+            <span>分类</span>
+        </a>
+    </li>
+    
+    <li class="hide-on-med-and-down">
+        <a href="/archives" class="waves-effect waves-light">
+            
+            <i class="fa fa-archive"></i>
+            
+            <span>归档</span>
+        </a>
+    </li>
+    
+    <li class="hide-on-med-and-down">
+        <a href="/about" class="waves-effect waves-light">
+            
+            <i class="fa fa-user-circle-o"></i>
+            
+            <span>关于</span>
+        </a>
+    </li>
+    
+    <li class="hide-on-med-and-down">
+        <a href="/friends" class="waves-effect waves-light">
+            
+            <i class="fa fa-address-book"></i>
+            
+            <span>友情链接</span>
+        </a>
+    </li>
+    
+    <li>
+        <a href="#searchModal" class="modal-trigger waves-effect waves-light">
+            <i id="searchIcon" class="fa fa-search" title="搜索"></i>
+        </a>
+    </li>
+</ul>
+
+<div id="mobile-nav" class="side-nav sidenav">
+
+    <div class="mobile-head bg-color">
+        
+        <div class="logo-name">DangoSky</div>
+        <div class="logo-desc">
+            
+            但愿日子清净，抬头遇见的都是柔情。
+            
+        </div>
+    </div>
+
+    
+
+    <ul class="menu-list mobile-menu-list">
+        
+        <li>
+            <a href="/" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-home"></i>
+                
+                首页
+            </a>
+        </li>
+        
+        <li>
+            <a href="/tags" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-tags"></i>
+                
+                标签
+            </a>
+        </li>
+        
+        <li>
+            <a href="/categories" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-bookmark"></i>
+                
+                分类
+            </a>
+        </li>
+        
+        <li>
+            <a href="/archives" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-archive"></i>
+                
+                归档
+            </a>
+        </li>
+        
+        <li>
+            <a href="/about" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-user-circle-o"></i>
+                
+                关于
+            </a>
+        </li>
+        
+        <li>
+            <a href="/friends" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-address-book"></i>
+                
+                友情链接
+            </a>
+        </li>
+        
+        
+    </ul>
+</div>
+
+        </div>
+
+        
+    </nav>
+
+</header>
+
+
+<style>
+    .carousel-control {
+        width: 45px;
+        height: 45px;
+        line-height: 55px;
+        border-radius: 45px;
+        background: transparent;
+        cursor: pointer;
+        z-index: 100;
+    }
+
+    #prev-cover {
+        position: absolute;
+        top: 48%;
+        left: 8px;
+    }
+
+    #next-cover {
+        position: absolute;
+        top: 48%;
+        right: 8px;;
+    }
+
+    #prev-cover i {
+        margin-right: 3px;
+    }
+
+    #next-cover i {
+        margin-left: 3px;
+    }
+
+    .carousel-control:hover {
+        background-color:rgba(0, 0, 0, .4);
+    }
+
+    .carousel-control i {
+        color: #fff;
+        font-size: 2.4rem;
+    }
+</style>
+
+
+
+<div class="carousel carousel-slider center index-cover" data-indicators="true" style="margin-top: -64px;">
+    
+    <div id="prev-cover" class="left waves-effect carousel-control">
+        <i class="icon fa fa-angle-left"></i>
+    </div>
+    <div id="next-cover" class="right waves-effect carousel-control">
+        <i class="icon fa fa-angle-right"></i>
+    </div>
+    
+
+    <div class="carousel-item red white-text bg-cover about-cover">
+        <div class="container">
+            <div class="row">
+    <div class="col s10 offset-s1 m8 offset-m2 l8 offset-l2">
+        <div class="brand">
+            <div class="title center-align">
+                
+                    团子的天空幻想
+                
+            </div>
+
+            <div class="description center-align">
+                
+                    但愿日子清净，抬头遇见的都是柔情。
+                
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+// 每天切换 banner 图.  Switch banner image every day.
+$('.bg-cover').css('background-image', 'url(/medias/banner/' + new Date().getDay() + '.jpg)');
+</script>
+
+            <div class="cover-btns">
+                <a href="#indexCard" class="waves-effect waves-light btn">
+                    <i class="fa fa-angle-double-down"></i>开始阅读
+                </a>
+
+                
+            </div>
+            <div class="cover-social-link">
+
+    <a href="mailto:1341514988@qq.com" class="tooltipped" target="_blank" data-tooltip="邮件联系我" data-position="top" data-delay="50">
+        <i class="fa fa-envelope-open"></i>
+    </a>
+
+
+
+    <a href="/atom.xml" class="tooltipped" target="_blank" data-tooltip="RSS 订阅" data-position="top" data-delay="50">
+        <i class="fa fa-rss"></i>
+    </a>
+
+
+
+   <a href="https://github.com/DangoSky" class="tooltipped" target="_blank" data-tooltip="访问我的GitHub" data-position="top" data-delay="50">
+    <i class="fa fa-github"></i>
+</a>
+
+</div>
+        </div>
+    </div>
+
+    
+    
+
+    
+    
+    <div class="carousel-item amber white-text carousel-post bg-cover"
+            style="background-image: url('/medias/featureimages/18.jpg');">
+        <div class="container">
+            <div class="row">
+                <div class="col s10 offset-s1">
+                    <div class="title center-align">JS之模拟实现</div>
+                    <div class="description center-align">
+                    
+                        编写函数模拟实现JS中的一些api，包括但不限于bind、flat、new等，陆续更新中。
+                    
+                    </div>
+                    <div class="cover-btns">
+                        <a href="/2019/03/28/JS之模拟实现/" class="waves-effect waves-light btn" target="_blank">
+                            <i class="icon fa fa-eye fa-fw"></i>阅读更多
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    
+    <div class="carousel-item amber white-text carousel-post bg-cover"
+            style="background-image: url('https://user-gold-cdn.xitu.io/2016/11/29/4abde1748817d7f35f2bf8b6a058aa40?imageView2/0/w/1280/h/960/format/webp/ignore-error/1');">
+        <div class="container">
+            <div class="row">
+                <div class="col s10 offset-s1">
+                    <div class="title center-align">JavaScript：十大排序的算法思路和代码实现</div>
+                    <div class="description center-align">
+                    
+                        简要总结十大排序的算法思想，并使用 JavaScript 实现。
+                    
+                    </div>
+                    <div class="cover-btns">
+                        <a href="/2019/05/28/JavaScript：十大排序的算法思路和代码实现/" class="waves-effect waves-light btn" target="_blank">
+                            <i class="icon fa fa-eye fa-fw"></i>阅读更多
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    
+    <div class="carousel-item amber white-text carousel-post bg-cover"
+            style="background-image: url('https://github.com/DangoSky/practices-for-web/blob/master/images/9.jpg?raw=true');">
+        <div class="container">
+            <div class="row">
+                <div class="col s10 offset-s1">
+                    <div class="title center-align">Leetcode：刷完31道链表题的一点总结</div>
+                    <div class="description center-align">
+                    
+                        刷完 Leetcode 的链表专题后，总结一些常用的解题思路。
+                    
+                    </div>
+                    <div class="cover-btns">
+                        <a href="/2019/05/10/Leetcode：刷完31道链表题的一点总结/" class="waves-effect waves-light btn" target="_blank">
+                            <i class="icon fa fa-eye fa-fw"></i>阅读更多
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    
+    <div class="carousel-item amber white-text carousel-post bg-cover"
+            style="background-image: url('https://github.com/DangoSky/practices-for-web/blob/master/images/10.jpg?raw=true');">
+        <div class="container">
+            <div class="row">
+                <div class="col s10 offset-s1">
+                    <div class="title center-align">CSS常见的几种布局方式</div>
+                    <div class="description center-align">
+                    
+                        水平垂直居中，两栏等高和两栏自适应，双飞翼布局和圣杯布局的差别。
+                    
+                    </div>
+                    <div class="cover-btns">
+                        <a href="/2019/03/07/未知宽高元素的水平垂直居中布局/" class="waves-effect waves-light btn" target="_blank">
+                            <i class="icon fa fa-eye fa-fw"></i>阅读更多
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    
+</div>
+
+<script>
+$(function () {
+    let coverSlider = $('.carousel');
+    coverSlider.carousel({
+        duration: Number('120'),
+        fullWidth: true,
+        indicators: 'true' === 'true'
+    });
+
+    let carouselIntervalId;
+    
+    // Loop to call the next cover article picture.
+    let autoCarousel = function() {
+        carouselIntervalId = setInterval(function () {
+            coverSlider.carousel('next');
+        }, 5000);
+    };
+    autoCarousel();
+    
+
+    let restartPlay = function () {
+        
+        clearInterval(carouselIntervalId);
+        autoCarousel();
+        
+    };
+
+    
+    // prev and next cover post.
+    $('#prev-cover').click(function () {
+        coverSlider.carousel('prev');
+        restartPlay();
+    });
+    $('#next-cover').click(function () {
+        coverSlider.carousel('next');
+        restartPlay();
+    });
+    
+});
+</script>
+
+
+
+<main class="content">
+
+    
+    <div id="indexCard" class="index-card">
+        <div class="container ">
+            <div class="card">
+                <div class="card-content">
+                    
+                        <div class="dream">
+    
+    <div class="title center-align">
+        <i class="fa fa-lightbulb-o"></i>&nbsp;&nbsp;向前有路，未来可期
+    </div>
+    
+    <div class="row">
+        <div class="col l8 offset-l2 m10 offset-m1 s10 offset-s1 center-align text">
+            希望可以通过写博客的方式，来加深自己对一些知识点的理解，用自己的话说说我所认识的前端，并跟看到这博客的人们一起学习一起交流~😊
+        </div>
+    </div>
+</div>
+                    
+
+                    
+
+                    
+
+                    <div id="recommend-sections" class="recommend">
+                        
+
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+
+    
+
+    <!-- 所有文章卡片 -->
+    <article id="articles" class="container articles">
+        <div class="row article-row">
+            
+            <div class="article col s12 m6 l4" data-aos="zoom-in">
+                <div class="card">
+                    <a href="/2019/11/12/文本溢出截断的几种方案/">
+                        <div class="card-image">
+                            
+                            
+                            <img src="/medias/featureimages/16.jpg" class="responsive-img" alt="文本溢出截断的几种方案">
+                            
+                            <span class="card-title">文本溢出截断的几种方案</span>
+                        </div>
+                    </a>
+
+                    <div class="card-content article-content">
+                        <div class="summary">
+                            
+                                文本溢出截断的原生方法以及几种模拟实现方案。
+                            
+                        </div>
+                        <div class="publish-info">
+                            <span class="publish-date">
+                                <i class="fa fa-clock-o fa-fw icon-date"></i>2019-11-12
+                            </span>
+                            <span class="publish-author">
+                                
+                                <i class="fa fa-bookmark fa-fw icon-category"></i>
+                                
+                                <a href="/categories/CSS/" class="post-category" target="_blank">
+                                    CSS
+                                </a>
+                                
+                                
+                            </span>
+                        </div>
+                    </div>
+
+                    
+                    <div class="card-action article-tags">
+                        
+                        <a href="/tags/前端基础/" target="_blank">
+                            <span class="chip bg-color">前端基础</span>
+                        </a>
+                        
+                        <a href="/tags/CSS/" target="_blank">
+                            <span class="chip bg-color">CSS</span>
+                        </a>
+                        
+                    </div>
+                    
+                </div>
+            </div>
+            
+            <div class="article col s12 m6 l4" data-aos="zoom-in">
+                <div class="card">
+                    <a href="/2019/09/03/Git常用命令/">
+                        <div class="card-image">
+                            
+                            <img src="https://raw.githubusercontent.com/DangoSky/practices-for-web/master/images/11.jpg" class="responsive-img" alt="Git常用命令">
+                            
+                            <span class="card-title">Git常用命令</span>
+                        </div>
+                    </a>
+
+                    <div class="card-content article-content">
+                        <div class="summary">
+                            
+                                整理一些常用的 Git 命令。
+                            
+                        </div>
+                        <div class="publish-info">
+                            <span class="publish-date">
+                                <i class="fa fa-clock-o fa-fw icon-date"></i>2019-09-03
+                            </span>
+                            <span class="publish-author">
+                                
+                                <i class="fa fa-bookmark fa-fw icon-category"></i>
+                                
+                                <a href="/categories/Git/" class="post-category" target="_blank">
+                                    Git
+                                </a>
+                                
+                                
+                            </span>
+                        </div>
+                    </div>
+
+                    
+                    <div class="card-action article-tags">
+                        
+                        <a href="/tags/Git/" target="_blank">
+                            <span class="chip bg-color">Git</span>
+                        </a>
+                        
+                    </div>
+                    
+                </div>
+            </div>
+            
+            <div class="article col s12 m6 l4" data-aos="zoom-in">
+                <div class="card">
+                    <a href="/2019/08/17/Vue双向数据绑定原理/">
+                        <div class="card-image">
+                            
+                            
+                            <img src="/medias/featureimages/23.jpg" class="responsive-img" alt="Vue双向数据绑定原理">
+                            
+                            <span class="card-title">Vue双向数据绑定原理</span>
+                        </div>
+                    </a>
+
+                    <div class="card-content article-content">
+                        <div class="summary">
+                            
+                                动手实现一个简易版的MVVM，理解Vue双向数据绑定的过程。
+                            
+                        </div>
+                        <div class="publish-info">
+                            <span class="publish-date">
+                                <i class="fa fa-clock-o fa-fw icon-date"></i>2019-08-17
+                            </span>
+                            <span class="publish-author">
+                                
+                                <i class="fa fa-bookmark fa-fw icon-category"></i>
+                                
+                                <a href="/categories/Vue/" class="post-category" target="_blank">
+                                    Vue
+                                </a>
+                                
+                                
+                            </span>
+                        </div>
+                    </div>
+
+                    
+                    <div class="card-action article-tags">
+                        
+                        <a href="/tags/Vue/" target="_blank">
+                            <span class="chip bg-color">Vue</span>
+                        </a>
+                        
+                    </div>
+                    
+                </div>
+            </div>
+            
+            <div class="article col s12 m6 l4" data-aos="zoom-in">
+                <div class="card">
+                    <a href="/2019/06/14/elementUI级联选择器踩坑/">
+                        <div class="card-image">
+                            
+                            <img src="https://github.com/DangoSky/practices-for-web/blob/master/images/8.jpg?raw=true" class="responsive-img" alt="elementUI级联选择器踩坑">
+                            
+                            <span class="card-title">elementUI级联选择器踩坑</span>
+                        </div>
+                    </a>
+
+                    <div class="card-content article-content">
+                        <div class="summary">
+                            
+                                由于 elementUI 级联选择器对所选择项的搜索是自上而下的，所以级联的每一项数据要唯一。
+                            
+                        </div>
+                        <div class="publish-info">
+                            <span class="publish-date">
+                                <i class="fa fa-clock-o fa-fw icon-date"></i>2019-06-14
+                            </span>
+                            <span class="publish-author">
+                                
+                                <i class="fa fa-bookmark fa-fw icon-category"></i>
+                                
+                                <a href="/categories/踩坑指南/" class="post-category" target="_blank">
+                                    踩坑指南
+                                </a>
+                                
+                                
+                            </span>
+                        </div>
+                    </div>
+
+                    
+                    <div class="card-action article-tags">
+                        
+                        <a href="/tags/踩坑指南/" target="_blank">
+                            <span class="chip bg-color">踩坑指南</span>
+                        </a>
+                        
+                    </div>
+                    
+                </div>
+            </div>
+            
+            <div class="article col s12 m6 l4" data-aos="zoom-in">
+                <div class="card">
+                    <a href="/2019/06/01/面试总结-字节跳动前端实习/">
+                        <div class="card-image">
+                            
+                            <img src="https://github.com/DangoSky/practices-for-web/blob/master/images/10.jpg?raw=true" class="responsive-img" alt="面试总结| 字节跳动前端实习">
+                            
+                            <span class="card-title">面试总结| 字节跳动前端实习</span>
+                        </div>
+                    </a>
+
+                    <div class="card-content article-content">
+                        <div class="summary">
+                            
+                                2019.5.31 字节跳动前端实习一二面总结
+                            
+                        </div>
+                        <div class="publish-info">
+                            <span class="publish-date">
+                                <i class="fa fa-clock-o fa-fw icon-date"></i>2019-06-01
+                            </span>
+                            <span class="publish-author">
+                                
+                                <i class="fa fa-bookmark fa-fw icon-category"></i>
+                                
+                                <a href="/categories/面试/" class="post-category" target="_blank">
+                                    面试
+                                </a>
+                                
+                                
+                            </span>
+                        </div>
+                    </div>
+
+                    
+                    <div class="card-action article-tags">
+                        
+                        <a href="/tags/面试/" target="_blank">
+                            <span class="chip bg-color">面试</span>
+                        </a>
+                        
+                    </div>
+                    
+                </div>
+            </div>
+            
+            <div class="article col s12 m6 l4" data-aos="zoom-in">
+                <div class="card">
+                    <a href="/2019/05/28/JavaScript：十大排序的算法思路和代码实现/">
+                        <div class="card-image">
+                            
+                            <img src="https://user-gold-cdn.xitu.io/2016/11/29/4abde1748817d7f35f2bf8b6a058aa40?imageView2/0/w/1280/h/960/format/webp/ignore-error/1" class="responsive-img" alt="JavaScript：十大排序的算法思路和代码实现">
+                            
+                            <span class="card-title">JavaScript：十大排序的算法思路和代码实现</span>
+                        </div>
+                    </a>
+
+                    <div class="card-content article-content">
+                        <div class="summary">
+                            
+                                简要总结十大排序的算法思想，并使用 JavaScript 实现。
+                            
+                        </div>
+                        <div class="publish-info">
+                            <span class="publish-date">
+                                <i class="fa fa-clock-o fa-fw icon-date"></i>2019-05-28
+                            </span>
+                            <span class="publish-author">
+                                
+                                <i class="fa fa-bookmark fa-fw icon-category"></i>
+                                
+                                <a href="/categories/算法/" class="post-category" target="_blank">
+                                    算法
+                                </a>
+                                
+                                
+                            </span>
+                        </div>
+                    </div>
+
+                    
+                    <div class="card-action article-tags">
+                        
+                        <a href="/tags/JavaScript/" target="_blank">
+                            <span class="chip bg-color">JavaScript</span>
+                        </a>
+                        
+                        <a href="/tags/算法/" target="_blank">
+                            <span class="chip bg-color">算法</span>
+                        </a>
+                        
+                        <a href="/tags/数据结构/" target="_blank">
+                            <span class="chip bg-color">数据结构</span>
+                        </a>
+                        
+                    </div>
+                    
+                </div>
+            </div>
+            
+            <div class="article col s12 m6 l4" data-aos="zoom-in">
+                <div class="card">
+                    <a href="/2019/05/20/防抖和节流/">
+                        <div class="card-image">
+                            
+                            
+                            <img src="/medias/featureimages/15.jpg" class="responsive-img" alt="防抖和节流">
+                            
+                            <span class="card-title">防抖和节流</span>
+                        </div>
+                    </a>
+
+                    <div class="card-content article-content">
+                        <div class="summary">
+                            
+                                认识防抖和节流，从 underscore 源码上看防抖和节流的实现。
+                            
+                        </div>
+                        <div class="publish-info">
+                            <span class="publish-date">
+                                <i class="fa fa-clock-o fa-fw icon-date"></i>2019-05-20
+                            </span>
+                            <span class="publish-author">
+                                
+                                <i class="fa fa-bookmark fa-fw icon-category"></i>
+                                
+                                <a href="/categories/JavaScript/" class="post-category" target="_blank">
+                                    JavaScript
+                                </a>
+                                
+                                
+                            </span>
+                        </div>
+                    </div>
+
+                    
+                    <div class="card-action article-tags">
+                        
+                        <a href="/tags/JavaScript/" target="_blank">
+                            <span class="chip bg-color">JavaScript</span>
+                        </a>
+                        
+                        <a href="/tags/前端基础/" target="_blank">
+                            <span class="chip bg-color">前端基础</span>
+                        </a>
+                        
+                        <a href="/tags/性能优化/" target="_blank">
+                            <span class="chip bg-color">性能优化</span>
+                        </a>
+                        
+                    </div>
+                    
+                </div>
+            </div>
+            
+            <div class="article col s12 m6 l4" data-aos="zoom-in">
+                <div class="card">
+                    <a href="/2019/05/10/Leetcode：刷完31道链表题的一点总结/">
+                        <div class="card-image">
+                            
+                            <img src="https://github.com/DangoSky/practices-for-web/blob/master/images/9.jpg?raw=true" class="responsive-img" alt="Leetcode：刷完31道链表题的一点总结">
+                            
+                            <span class="card-title">Leetcode：刷完31道链表题的一点总结</span>
+                        </div>
+                    </a>
+
+                    <div class="card-content article-content">
+                        <div class="summary">
+                            
+                                刷完 Leetcode 的链表专题后，总结一些常用的解题思路。
+                            
+                        </div>
+                        <div class="publish-info">
+                            <span class="publish-date">
+                                <i class="fa fa-clock-o fa-fw icon-date"></i>2019-05-10
+                            </span>
+                            <span class="publish-author">
+                                
+                                <i class="fa fa-bookmark fa-fw icon-category"></i>
+                                
+                                <a href="/categories/数据结构/" class="post-category" target="_blank">
+                                    数据结构
+                                </a>
+                                
+                                
+                            </span>
+                        </div>
+                    </div>
+
+                    
+                    <div class="card-action article-tags">
+                        
+                        <a href="/tags/JavaScript/" target="_blank">
+                            <span class="chip bg-color">JavaScript</span>
+                        </a>
+                        
+                        <a href="/tags/算法/" target="_blank">
+                            <span class="chip bg-color">算法</span>
+                        </a>
+                        
+                        <a href="/tags/数据结构/" target="_blank">
+                            <span class="chip bg-color">数据结构</span>
+                        </a>
+                        
+                    </div>
+                    
+                </div>
+            </div>
+            
+        </div>
+    </article>
+
+</main>
+
+
+<div class="container paging">
+    <div class="row">
+        <div class="col s6 m4 l4">
+            
+            <a class="left btn-floating btn-large disabled">
+                <i class="fa fa-angle-left"></i>
+            </a>
+            
+        </div>
+        <div class="page-info col m4 l4 hide-on-small-only">
+            <div class="center-align b-text-gray">1 / 4</div>
+        </div>
+        <div class="col s6 m4 l4">
+            
+            <a href="/page/2/"
+               class="right btn-floating btn-large waves-effect waves-light bg-color">
+                <i class="fa fa-angle-right"></i>
+            </a>
+            
+        </div>
+    </div>
+</div>
+
+
+
+<footer class="page-footer bg-color">
+    <div class="container row center-align">
+        <div class="col s12 m8 l8 copy-right">
+            本站由&copy;<a href="https://blinkfox.github.io/" target="_blank">Blinkfox</a>基于
+            <a href="https://hexo.io/" target="_blank">Hexo</a> 的
+            <a href="https://github.com/blinkfox/hexo-theme-matery" target="_blank">hexo-theme-matery</a>主题搭建.
+
+            
+                &nbsp;<i class="fa fa-area-chart"></i>&nbsp;站点总字数:&nbsp;
+                <span class="white-color">68.8k</span>
+            
+
+            <!-- <p id="timeDate">DangoSky的博客诞生已经</p><p id="times">载入时分秒...</p> -->
+            <!-- <p>DangoSky的博客已经诞生<strong><i><span id="day"></span><span id="hour"></span></span><span id="minutes"></span><span id="seconds"></span> </strong><i></p> -->
+                <p id="timeDate"></p>
+
+            <!-- 
+			 -->
+        </div>
+        <div class="col s12 m4 l4 social-link ">
+
+    <a href="mailto:1341514988@qq.com" class="tooltipped" target="_blank" data-tooltip="邮件联系我" data-position="top" data-delay="50">
+        <i class="fa fa-envelope-open"></i>
+    </a>
+
+
+
+    <a href="/atom.xml" class="tooltipped" target="_blank" data-tooltip="RSS 订阅" data-position="top" data-delay="50">
+        <i class="fa fa-rss"></i>
+    </a>
+
+
+
+   <a href="https://github.com/DangoSky" class="tooltipped" target="_blank" data-tooltip="访问我的GitHub" data-position="top" data-delay="50">
+    <i class="fa fa-github"></i>
+</a>
+
+</div>
+    </div>
+</footer>
+
+<div class="progress-bar"></div>
+
+<script type="text/javascript">
+    function computed(){
+        let sum = new Date()-new Date(2018,9,3,23,3,38)
+        sum = parseInt(sum / 1000);
+        let d = zero(parseInt(sum / 3600 / 24));
+        let h = zero(parseInt(sum / 3600 % 24));
+        let m = zero(parseInt(sum / 60 % 60));
+        let s = zero(parseInt(sum % 60));
+        document.getElementById("timeDate").innerHTML = "DangoSky的博客已经诞生<strong>" + d + "</strong>天<strong>" + h + "</strong>小时<strong>" + m + "</strong>分钟<strong>" + s + "</strong>秒了。"; 
+    }
+    function zero(i){
+        if(i < 10)  {
+            i = "0" + i;
+        }
+        return i;
+    }
+    setInterval("computed();",1000);
+</script>
+
+<!-- 搜索遮罩框 -->
+<div id="searchModal" class="modal">
+    <div class="modal-content">
+        <div class="search-header">
+            <span class="title"><i class="fa fa-search"></i>&nbsp;&nbsp;搜索</span>
+            <input type="search" id="searchInput" name="s" placeholder="请输入搜索的关键字"
+                   class="search-input">
+        </div>
+        <div id="searchResult"></div>
+    </div>
+</div>
+
+<script src="/js/search.js"></script>
+<script type="text/javascript">
+$(function () {
+    searchFunc("/" + "search.xml", 'searchInput', 'searchResult');
+});
+</script>
+<!-- 回到顶部按钮 -->
+<div id="backTop" class="top-scroll">
+    <a class="btn-floating btn-large waves-effect waves-light" href="#!">
+        <i class="fa fa-angle-up"></i>
+    </a>
+</div>
+
+
+<script src="/libs/materialize/materialize.min.js"></script>
+<script src="/libs/masonry/masonry.pkgd.min.js"></script>
+<script src="/libs/aos/aos.js"></script>
+<script src="/libs/scrollprogress/scrollProgress.min.js"></script>
+<script src="/libs/lightGallery/js/lightgallery-all.min.js"></script>
+<script src="/js/matery.js"></script>
+
+<!-- Global site tag (gtag.js) - Google Analytics -->
+
+
+
+    <script src="/libs/others/clicklove.js"></script>
+
+
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"debug":false,"model":{"jsonPath":"live2d-widget-model-shizuku"},"display":{"position":"right","width":200,"height":400},"mobile":{"show":false},"log":false});</script></body>
+</html>

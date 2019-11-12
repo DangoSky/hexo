@@ -1,0 +1,820 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN">
+
+
+<head><meta name="generator" content="Hexo 3.9.0">
+    <meta charset="utf-8">
+    <meta name="keywords" content="事件模型和事件委托, DangoSky">
+    <meta name="description" content=" &amp;emsp;&amp;emsp;这回说的是事件模型，跟上篇博客说的事件循环关系不大。事件循环主要是同异步事件在内部环境的执行过程，而事件模型主要是涉及到事件的生成过程，在实践中的应用比较多，比如说常见的事件委托（也叫做事件代理）。
+事件模型&amp;em">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="renderer" content="webkit|ie-stand|ie-comp">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>事件模型和事件委托 | DangoSky</title>
+    <link rel="icon" type="image/jpeg" href="/favicon.jpg">
+
+    <link rel="stylesheet" type="text/css" href="/libs/awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="/libs/materialize/materialize.min.css">
+    <link rel="stylesheet" type="text/css" href="/libs/aos/aos.css">
+    <link rel="stylesheet" type="text/css" href="/libs/animate/animate.min.css">
+    <link rel="stylesheet" type="text/css" href="/libs/lightGallery/css/lightgallery.min.css">
+    <link rel="stylesheet" type="text/css" href="/css/matery.css">
+    <link rel="stylesheet" type="text/css" href="/css/my.css">
+    <style type="text/css">
+        
+    </style>
+
+    <script src="/libs/jquery/jquery-2.2.0.min.js"></script>
+<link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css"></head>
+
+
+<body>
+
+<header class="navbar-fixed">
+    <nav id="headNav" class="bg-color nav-transparent">
+        <div id="navContainer" class="nav-wrapper container">
+            <div class="brand-logo">
+                <a href="/" class="waves-effect waves-light">
+                    
+                    <span class="logo-span">DangoSky</span>
+                </a>
+            </div>
+            
+
+<a href="#" data-target="mobile-nav" class="sidenav-trigger button-collapse"><i class="fa fa-navicon"></i></a>
+<ul class="right">
+    
+    <li class="hide-on-med-and-down">
+        <a href="/" class="waves-effect waves-light">
+            
+            <i class="fa fa-home"></i>
+            
+            <span>首页</span>
+        </a>
+    </li>
+    
+    <li class="hide-on-med-and-down">
+        <a href="/tags" class="waves-effect waves-light">
+            
+            <i class="fa fa-tags"></i>
+            
+            <span>标签</span>
+        </a>
+    </li>
+    
+    <li class="hide-on-med-and-down">
+        <a href="/categories" class="waves-effect waves-light">
+            
+            <i class="fa fa-bookmark"></i>
+            
+            <span>分类</span>
+        </a>
+    </li>
+    
+    <li class="hide-on-med-and-down">
+        <a href="/archives" class="waves-effect waves-light">
+            
+            <i class="fa fa-archive"></i>
+            
+            <span>归档</span>
+        </a>
+    </li>
+    
+    <li class="hide-on-med-and-down">
+        <a href="/about" class="waves-effect waves-light">
+            
+            <i class="fa fa-user-circle-o"></i>
+            
+            <span>关于</span>
+        </a>
+    </li>
+    
+    <li class="hide-on-med-and-down">
+        <a href="/friends" class="waves-effect waves-light">
+            
+            <i class="fa fa-address-book"></i>
+            
+            <span>友情链接</span>
+        </a>
+    </li>
+    
+    <li>
+        <a href="#searchModal" class="modal-trigger waves-effect waves-light">
+            <i id="searchIcon" class="fa fa-search" title="搜索"></i>
+        </a>
+    </li>
+</ul>
+
+<div id="mobile-nav" class="side-nav sidenav">
+
+    <div class="mobile-head bg-color">
+        
+        <div class="logo-name">DangoSky</div>
+        <div class="logo-desc">
+            
+            但愿日子清净，抬头遇见的都是柔情。
+            
+        </div>
+    </div>
+
+    
+
+    <ul class="menu-list mobile-menu-list">
+        
+        <li>
+            <a href="/" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-home"></i>
+                
+                首页
+            </a>
+        </li>
+        
+        <li>
+            <a href="/tags" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-tags"></i>
+                
+                标签
+            </a>
+        </li>
+        
+        <li>
+            <a href="/categories" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-bookmark"></i>
+                
+                分类
+            </a>
+        </li>
+        
+        <li>
+            <a href="/archives" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-archive"></i>
+                
+                归档
+            </a>
+        </li>
+        
+        <li>
+            <a href="/about" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-user-circle-o"></i>
+                
+                关于
+            </a>
+        </li>
+        
+        <li>
+            <a href="/friends" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-address-book"></i>
+                
+                友情链接
+            </a>
+        </li>
+        
+        
+    </ul>
+</div>
+
+        </div>
+
+        
+    </nav>
+
+</header>
+
+
+
+
+
+<div class="bg-cover pd-header post-cover" style="background-image: url('https://github.com/DangoSky/practices-for-web/blob/master/images/3.jpg?raw=true')">
+    <div class="container">
+        <div class="row">
+            <div class="col s12 m12 l12">
+                <div class="brand">
+                    <div class="description center-align post-title">
+                        事件模型和事件委托
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<main class="post-container content">
+
+    
+    <link rel="stylesheet" href="/libs/tocbot/tocbot.css">
+<style>
+    #articleContent h1::before,
+    #articleContent h2::before,
+    #articleContent h3::before,
+    #articleContent h4::before,
+    #articleContent h5::before,
+    #articleContent h6::before {
+        display: block;
+        content: " ";
+        height: 100px;
+        margin-top: -100px;
+        visibility: hidden;
+    }
+
+    #articleContent :focus {
+        outline: none;
+    }
+
+    .toc-fixed {
+        position: fixed;
+        top: 64px;
+    }
+
+    .toc-widget {
+        padding-left: 20px;
+    }
+
+    .toc-widget .toc-title {
+        margin: 35px 0 15px 0;
+        padding-left: 17px;
+        font-size: 1.5rem;
+        font-weight: bold;
+        line-height: 1.5rem;
+    }
+
+    .toc-widget ol {
+        padding: 0;
+        list-style: none;
+    }
+
+    #toc-content ol {
+        padding-left: 10px;
+    }
+
+    #toc-content ol li {
+        padding-left: 10px;
+    }
+
+    #toc-content .toc-link:hover {
+        color: #42b983;
+        font-weight: 700;
+        text-decoration: underline;
+    }
+
+    #toc-content .toc-link::before {
+        background-color: transparent;
+        max-height: 25px;
+    }
+
+    #toc-content .is-active-link {
+        color: #42b983;
+    }
+
+    #toc-content .is-active-link::before {
+        background-color: #42b983;
+    }
+
+    #floating-toc-btn {
+        position: fixed;
+        right: 20px;
+        bottom: 76px;
+        padding-top: 15px;
+        margin-bottom: 0;
+        z-index: 998;
+    }
+
+    #floating-toc-btn .btn-floating {
+        width: 48px;
+        height: 48px;
+    }
+
+    #floating-toc-btn .btn-floating i {
+        line-height: 48px;
+        font-size: 1.4rem;
+    }
+</style>
+<div class="row">
+    <div id="main-content" class="col s12 m12 l9">
+        <!-- 文章内容详情 -->
+<div id="artDetail">
+    <div class="card">
+        <div class="card-content article-info">
+            <div class="row tag-cate">
+                <div class="col s7">
+                    
+                    <div class="article-tag">
+                        
+                            <a href="/tags/JavaScript/" target="_blank">
+                                <span class="chip bg-color">JavaScript</span>
+                            </a>
+                        
+                            <a href="/tags/前端基础/" target="_blank">
+                                <span class="chip bg-color">前端基础</span>
+                            </a>
+                        
+                    </div>
+                    
+                </div>
+                <div class="col s5 right-align">
+                    
+                    <div class="post-cate">
+                        <i class="fa fa-bookmark fa-fw icon-category"></i>
+                        
+                            <a href="/categories/JavaScript/" class="post-category" target="_blank">
+                                JavaScript
+                            </a>
+                        
+                    </div>
+                    
+                </div>
+            </div>
+
+            <div class="post-info">
+                <div class="post-date info-break-policy">
+                    <i class="fa fa-calendar-minus-o fa-fw"></i>发布日期:&nbsp;&nbsp;
+                    2019-04-12
+                </div>
+
+                
+                    
+                    <div class="info-break-policy">
+                        <i class="fa fa-file-word-o fa-fw"></i>文章字数:&nbsp;&nbsp;
+                        2.3k
+                    </div>
+                    
+
+                    
+                    <div class="info-break-policy">
+                        <i class="fa fa-clock-o fa-fw"></i>阅读时长:&nbsp;&nbsp;
+                        8 分
+                    </div>
+                    
+                
+				
+				
+            </div>
+        </div>
+        <hr class="clearfix">
+        <div class="card-content article-card-content">
+            <div id="articleContent">
+                <script src="/assets/js/APlayer.min.js"> </script><p>&emsp;&emsp;这回说的是事件模型，跟上篇博客说的事件循环关系不大。事件循环主要是同异步事件在内部环境的执行过程，而事件模型主要是涉及到事件的生成过程，在实践中的应用比较多，比如说常见的事件委托（也叫做事件代理）。</p>
+<h1 id="事件模型"><a href="#事件模型" class="headerlink" title="事件模型"></a>事件模型</h1><p>&emsp;&emsp;事件模型指的是当我们触发一个事件时，会经历三个阶段，分别是捕获阶段，目标阶段，冒泡阶段。（<strong>IE8及之前版本 的事件模型则没有捕获阶段</strong>）</p>
+<ol>
+<li>捕获阶段：事件对象从window经过目标节点的祖先节点到达目标节点，若经过的结点中绑定有同类型事件的监听函数，则会被触发执行。</li>
+<li>目标阶段：事件对象到达目标节点，开始执行指定的事件监听函数。若该事件对象被标志为不能冒泡，则到此会停止执行。</li>
+<li>冒泡阶段：事件对象从目标节点经过目标节点的祖先节点到达window，若经过的结点中绑定有同类型事件的监听函数，则会被触发执行。</li>
+</ol>
+<p>&emsp;&emsp;在捕获阶段从 window 到目标节点经过的节点顺序为 window -&gt; document -&gt; html -&gt; body -&gt; 祖先节点 -&gt; 父亲节点 -&gt; 目标节点，冒泡阶段则反过来。</p>
+<p><img src="/2019/04/12/事件模型和事件委托/1.png" alt></p>
+<p>&emsp;&emsp;我们可以用代码验证一下：</p>
+<pre class=" language-html"><code class="language-html">// html 代码， css的样式代码就不贴了
+&lt;div id="parent>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">id</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>children<span class="token punctuation">"</span></span><span class="token punctuation">></span></span><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+</code></pre>
+<pre class=" language-js"><code class="language-js"><span class="token comment" spellcheck="true">// JS代码</span>
+window<span class="token punctuation">.</span><span class="token function">addEventListener</span><span class="token punctuation">(</span><span class="token string">"click"</span><span class="token punctuation">,</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=</span><span class="token operator">></span> <span class="token punctuation">{</span>
+  console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token string">"window"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span class="token punctuation">,</span> <span class="token boolean">true</span><span class="token punctuation">)</span>
+document<span class="token punctuation">.</span><span class="token function">addEventListener</span><span class="token punctuation">(</span><span class="token string">"click"</span><span class="token punctuation">,</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=</span><span class="token operator">></span> <span class="token punctuation">{</span>
+  console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token string">"document"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span class="token punctuation">,</span> <span class="token boolean">true</span><span class="token punctuation">)</span>
+document<span class="token punctuation">.</span>body<span class="token punctuation">.</span><span class="token function">addEventListener</span><span class="token punctuation">(</span><span class="token string">"click"</span><span class="token punctuation">,</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=</span><span class="token operator">></span> <span class="token punctuation">{</span>
+  console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token string">"body"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span class="token punctuation">,</span> <span class="token boolean">true</span><span class="token punctuation">)</span>
+document<span class="token punctuation">.</span>documentElement<span class="token punctuation">.</span><span class="token function">addEventListener</span><span class="token punctuation">(</span><span class="token string">"click"</span><span class="token punctuation">,</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=</span><span class="token operator">></span> <span class="token punctuation">{</span>
+  console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token string">"html"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span class="token punctuation">,</span> <span class="token boolean">true</span><span class="token punctuation">)</span>
+document<span class="token punctuation">.</span><span class="token function">getElementById</span><span class="token punctuation">(</span><span class="token string">"parent"</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">addEventListener</span><span class="token punctuation">(</span><span class="token string">"click"</span><span class="token punctuation">,</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=</span><span class="token operator">></span> <span class="token punctuation">{</span>
+  console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token string">"parent"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span class="token punctuation">,</span> <span class="token boolean">true</span><span class="token punctuation">)</span>
+document<span class="token punctuation">.</span><span class="token function">getElementById</span><span class="token punctuation">(</span><span class="token string">"children"</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">addEventListener</span><span class="token punctuation">(</span><span class="token string">"click"</span><span class="token punctuation">,</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=</span><span class="token operator">></span> <span class="token punctuation">{</span>
+  console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token string">"children"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span class="token punctuation">,</span> <span class="token boolean">true</span><span class="token punctuation">)</span>
+</code></pre>
+<p><img src="/2019/04/12/事件模型和事件委托/2.png" alt></p>
+<p>&emsp;&emsp;上面结果是通过点击 children 节点得到的。 需要注意的是，addEventListener 函数的第三个参数表示是否在捕获阶段触发监听函数，默认为 false 即在冒泡阶段才触发，为 true 时则在捕获阶段触发。我们把上面代码的第三个参数都修改成 false 看看冒泡阶段的执行顺序。</p>
+<p><img src="/2019/04/12/事件模型和事件委托/3.png" alt></p>
+<p>&emsp;&emsp;可以看到，冒泡阶段的执行顺序确实是和捕获阶段相反的。当然如果你给某一个节点的捕获阶段和冒泡阶段都添加相应的事件监听函数，则在一次点击事件中两者都会触发到。我们把上面捕获阶段和冒泡阶段的代码放到一起执行来验证看看。</p>
+<p><img src="/2019/04/12/事件模型和事件委托/4.png" alt></p>
+<p>&emsp;&emsp;这里还有一个注意点，如果<strong>目标节点</strong>同时定义了同类型事件捕获阶段和冒泡阶段的监听函数，则<strong>哪个事件代码写在前面就先执行哪个</strong>，而对于非目标节点则都是先执行捕获后执行冒泡。这里就不贴图了，看客们可以自行验证。</p>
+<h1 id="Event-对象"><a href="#Event-对象" class="headerlink" title="Event 对象"></a>Event 对象</h1><p>&emsp;&emsp;关于 Event 对象，这里只介绍四个和事件模型相关的 api，其余部分看客们可直接查看<a href="https://developer.mozilla.org/zh-CN/docs/Web/API/Event" target="_blank" rel="noopener">MDN</a>。</p>
+<h2 id="event-stopPropagation"><a href="#event-stopPropagation" class="headerlink" title="event.stopPropagation()"></a>event.stopPropagation()</h2><p>&emsp;&emsp;如果要阻止事件继续向下捕获或向上冒泡的话，可以直接在相应的目标事件中使用<code>event.stopPropagation()</code>（但依旧会执行当前节点的监听函数）。如果是非目标节点的话，在执行完当前节点的相应事件后就会停止执行了。<strong>如果是目标节点的话，即使在捕获阶段阻止了也还是会执行目标节点的冒泡事件再停止执行</strong>。</p>
+<p>&emsp;&emsp;除了<code>event.stopPropagation()</code>，<code>event.cancelBubble = true</code>也可以达到同样的功能，不过<code>event.cancelBubble = true</code>主要是用于做 IE 兼容，而且已经 Web 标准中删除了。我试了下，发现不管是<code>event.stopPropagation()</code>，还是<code>event.cancelBubble = true</code>在 Chrome 和 IE11 中都起作用了。<code>event.cancelBubble = true</code>了解一下就好了，说不定以后哪天需要兼容到 IE 老古董的时候就可以派上用场。</p>
+<h2 id="event-composedPath"><a href="#event-composedPath" class="headerlink" title="event.composedPath()"></a>event.composedPath()</h2><p>&emsp;&emsp;<code>event.composedPath()</code>会返回一个数组，成员是目标节点最内层的子节点和依次冒泡经过的所有上层节点。还是使用上面的代码，我们在 children 节点的点击监听函数中使用<code>event.composedPath()</code>再点击验证看看。</p>
+<p><img src="/2019/04/12/事件模型和事件委托/6.png" alt></p>
+<h2 id="event-stopImmediatePropagation"><a href="#event-stopImmediatePropagation" class="headerlink" title="event.stopImmediatePropagation()"></a>event.stopImmediatePropagation()</h2><p>&emsp;&emsp;如果有多个相同类型事件的监听函数绑定到同一个元素上的话，则当触发事件时，会把这些事件按代码编写顺序都执行下去。若在某一个事件上增加<code>event.stopImmediatePropagation()</code>则可以阻止执行剩下的同类型监听函数。</p>
+<h2 id="event-preventDefault"><a href="#event-preventDefault" class="headerlink" title="event.preventDefault()"></a>event.preventDefault()</h2><p>&emsp;&emsp;<code>event.preventDefault()</code>顾名思义是用来阻止默认行为的，可以阻止浏览器给一些事件预先设置好的默认行为如 a 标签的页面跳转等。在 jQuery 中则可以直接使用<code>return false</code>来阻止默认行为，简单粗暴，然而现在这年头估计很少用 jQuery 了吧。</p>
+<p>&emsp;&emsp;之前我在做 <a href="https://github.com/DangoSky/2048" target="_blank" rel="noopener">2048</a> 的时候发现一个问题，在移动端如果一个页面的宽高都只是移动设备视图的百分之百即不会出现水平垂直滚动，但若页面中给某一个元素添加了 touch 监听事件，则在 touchmove 的时候是会触发浏览器的默认行为造成页面滑动的。当然这时候可以选择使用<code>event.preventDefault()</code>来阻止移动端页面的默认滑动行为，但这时候会报错<code>Unable to preventDefault inside passive event listener due to target being treated as passive</code>。</p>
+<p>&emsp;&emsp;之所以会这样和<code>addEventListener</code>的第三个参数配置有关，一般情况下我们都是不设置第三个参数的，因为它默认下是 false 表示事件在冒泡阶段触发，这也是我们想要的效果。但<strong>实际上第三个参数是可以设置为一个对象的</strong>，包括了几个属性：</p>
+<ul>
+<li>capture： 表示监听函数是否在捕获阶段执行，默认为 false。</li>
+<li>once： 表示监听函数最多只会调用一次，设置为 true 后监听函数在第一次调用后会自动被移除。</li>
+<li>passive： 表示监听函数永远不会阻止默认行为，默认为 true，如果这时候监听函数仍使用<code>event.preventDefault()</code>就会报错。</li>
+</ul>
+<p>&emsp;&emsp;没错，会报<code>Unable to preventDefault inside passive event listener due to target being treated as passive</code>的错误就是和这个 passive 有关。这样的设置也是有原因的，简而言之就是，当我们触发页面的 touch 事件的时候，浏览器其实并不知道页面是否需要滚动，这得根据监听函数里是否有阻止默认行为。所以浏览器只能等 touch 监听事件执行完毕后才能开始选择滚动与否，这就造成了页面的滚动会有一定时间的延迟（我看到的说是 200ms）。而为了避免这无谓的浪费，就在<code>addEventListener</code>的第三个参数中配置 passive 提前告诉浏览器是否需要滚动以提高页面响应速度。说到这，解决那报错的方法就很明显了，直接把 passive 设置为 false 就可以了。</p>
+<h1 id="事件委托"><a href="#事件委托" class="headerlink" title="事件委托"></a>事件委托</h1><p>&emsp;&emsp;事件委托是利用事件冒泡来实现的，在实际的应用中十分常见。当我们想要给子元素比如 li 添加监听函数的时候，可以选择把监听函数委托给父元素如 ul 上，在子元素上触发该事件时通过冒泡到父元素上再触发。这样可以避免为每一个子元素单独编写监听函数（不但浪费内存而且代码还冗余），更重要的是可以<strong>给之后动态添加进来的子元素也绑定该监听事件</strong>！</p>
+<pre class=" language-html"><code class="language-html">// html 代码
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>button</span> <span class="token attr-name">id</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>btn<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>给ul添加一个li标签<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>button</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>ul</span> <span class="token attr-name">id</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>ul<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>li</span><span class="token punctuation">></span></span>我是子元素<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>li</span><span class="token punctuation">></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>li</span><span class="token punctuation">></span></span>我是子元素<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>li</span><span class="token punctuation">></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>li</span><span class="token punctuation">></span></span>我是子元素<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>li</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>ul</span><span class="token punctuation">></span></span>
+</code></pre>
+<pre class=" language-js"><code class="language-js"><span class="token comment" spellcheck="true">// JS 代码</span>
+<span class="token keyword">let</span> ul <span class="token operator">=</span> document<span class="token punctuation">.</span><span class="token function">getElementById</span><span class="token punctuation">(</span><span class="token string">"ul"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+ul<span class="token punctuation">.</span><span class="token function">addEventListener</span><span class="token punctuation">(</span><span class="token string">'click'</span><span class="token punctuation">,</span> <span class="token punctuation">(</span>e<span class="token punctuation">)</span> <span class="token operator">=</span><span class="token operator">></span> <span class="token punctuation">{</span>
+  e <span class="token operator">=</span> e <span class="token operator">||</span> window<span class="token punctuation">.</span>event<span class="token punctuation">;</span>
+  <span class="token keyword">let</span> ele <span class="token operator">=</span> e<span class="token punctuation">.</span>target <span class="token operator">||</span> e<span class="token punctuation">.</span>srcElement<span class="token punctuation">;</span>
+  ele<span class="token punctuation">.</span>style<span class="token punctuation">.</span>color <span class="token operator">=</span> <span class="token string">'red'</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span>
+<span class="token keyword">let</span> btn <span class="token operator">=</span> document<span class="token punctuation">.</span><span class="token function">getElementById</span><span class="token punctuation">(</span><span class="token string">"btn"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+btn<span class="token punctuation">.</span><span class="token function">addEventListener</span><span class="token punctuation">(</span><span class="token string">'click'</span><span class="token punctuation">,</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=</span><span class="token operator">></span> <span class="token punctuation">{</span>
+  <span class="token keyword">let</span> tag <span class="token operator">=</span> document<span class="token punctuation">.</span><span class="token function">createElement</span><span class="token punctuation">(</span><span class="token string">'li'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token keyword">let</span> text <span class="token operator">=</span> document<span class="token punctuation">.</span><span class="token function">createTextNode</span><span class="token punctuation">(</span><span class="token string">"我是动态添加进来的子元素"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  tag<span class="token punctuation">.</span><span class="token function">appendChild</span><span class="token punctuation">(</span>text<span class="token punctuation">)</span><span class="token punctuation">;</span>
+  ul<span class="token punctuation">.</span><span class="token function">appendChild</span><span class="token punctuation">(</span>tag<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span>
+</code></pre>
+<p><img src="/2019/04/12/事件模型和事件委托/6.png" alt></p>
+<p>&emsp;&emsp;上面的代码实现中涉及到一个问题，它对于每一个子元素的点击都会进行响应，但如果我们不想给其他子元素例如 p 和 span 等标签也添加事件监听那怎么办？其实这也可以办到，只要在监听函数里判断目标元素是不是 li 标签就可以了。</p>
+<pre><code>if(ele.tagName.toLowerCase() === &#39;li&#39;) {
+  ele.style.color = &#39;red&#39;;
+};
+</code></pre><p>&emsp;&emsp;这里再稍微提一下<code>e.target</code>和<code>e.currentTarget</code>，平时还是挺容易混淆两者的。<strong><code>e.target</code>获取的是真正触发事件的目标节点，而<code>e.currentTarget</code>获取的是绑定监听事件的节点</strong>。以上面的代码为例，当我们点击每一个 li 时，<code>e.target</code>获取到的就是点击到的那个 li，而<code>e.currentTarget</code>获取到的就是 ul，因为监听事件其实是绑定到 ul 上的。</p>
+
+            </div>
+            <hr/>
+
+            
+
+            <link rel="stylesheet" type="text/css" href="/libs/share/css/share.min.css">
+
+<div id="article-share">
+    
+    <div class="social-share" data-disabled="qzone" data-wechat-qrcode-helper="<p>微信里点“发现”->“扫一扫”二维码便可查看分享。</p>"></div>
+    
+</div>
+
+<script src="/libs/share/js/social-share.min.js"></script>
+
+            <div class="reprint">
+                <p>
+                    <span class="reprint-tip">
+                        <i class="fa fa-exclamation-circle"></i>&nbsp;&nbsp;转载请注明:
+                    </span>
+                    <a href="http://blog.dangosky.com" class="b-link-green">DangoSky</a>
+                    <i class="fa fa-angle-right fa-lg fa-fw text-color"></i>
+                    <a href="/2019/04/12/事件模型和事件委托/" class="b-link-green">事件模型和事件委托</a>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    
+
+    
+
+    
+        <div class="disqus-card card" data-aos="fade-up">
+    <div id="disqus_thread" class="card-content">
+        <noscript>Please enable JavaScript to view the
+            <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+    </div>
+</div>
+
+<script type="text/javascript">
+    disqus_config = function () {
+        this.page.url = 'http://blog.dangosky.com/2019/04/12/事件模型和事件委托/';
+        this.page.identifier = '/2019/04/12/事件模型和事件委托/';
+        this.page.title = '事件模型和事件委托';
+    };
+    let disqus_shortname = 'dangosky';
+
+    (function () { // DON'T EDIT BELOW THIS LINE
+        let d = document, s = d.createElement('script');
+        // 如：s.src = 'https://blinkfox.disqus.com/embed.js';
+        s.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+    
+
+    
+
+    
+
+    
+
+<article id="prenext-posts" class="prev-next articles">
+    <div class="row article-row">
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge left-badge text-color">
+                <i class="fa fa-chevron-left"></i>&nbsp;上一篇</div>
+            <div class="card">
+                <a href="/2019/04/19/从浏览器的渲染机制谈起/">
+                    <div class="card-image">
+                        
+                        
+                        <img src="/medias/featureimages/17.jpg" class="responsive-img" alt="从浏览器的渲染机制谈起">
+                        
+                        <span class="card-title">从浏览器的渲染机制谈起</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary"> 前言&emsp;&emsp;大家应该都知道在前端有一道极其著名的题目：从输入 url 到页面加载完成的过程中发生了什么？不得不说这的确是一道覆盖面很广的题目，从计算机网络到浏览器缓存和渲染等内容几乎都包括在其内，更别提还可以引申出去再谈谈</div>
+                    <div class="publish-info">
+                        <span class="publish-date">
+                            <i class="fa fa-clock-o fa-fw icon-date"></i>2019-04-19
+                        </span>
+                        <span class="publish-author">
+                            
+                            <i class="fa fa-bookmark fa-fw icon-category"></i>
+                            
+                            <a href="/categories/JavaScript/" class="post-category" target="_blank">
+                                    JavaScript
+                                </a>
+                            
+                            
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/JavaScript/" target="_blank">
+                        <span class="chip bg-color">JavaScript</span>
+                    </a>
+                    
+                    <a href="/tags/性能优化/" target="_blank">
+                        <span class="chip bg-color">性能优化</span>
+                    </a>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge right-badge text-color">
+                下一篇&nbsp;<i class="fa fa-chevron-right"></i>
+            </div>
+            <div class="card">
+                <a href="/2019/04/07/事件队列和事件循环/">
+                    <div class="card-image">
+                        
+                        <img src="http://www.ruanyifeng.com/blogimg/asset/2014/bg2014100802.png" class="responsive-img" alt="事件队列和事件循环">
+                        
+                        <span class="card-title">事件队列和事件循环</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary"> JavaScript是单线程的&emsp;&emsp;JavaScript 从出生以来就是单线程的，这可能和 JavaScript 一切从简有关，毕竟是人家只花了10天就开发出的语言。也可能是受限于 JavaScript 的用途，Java</div>
+                    <div class="publish-info">
+                            <span class="publish-date">
+                                <i class="fa fa-clock-o fa-fw icon-date"></i>2019-04-07
+                            </span>
+                        <span class="publish-author">
+                            
+                            <i class="fa fa-bookmark fa-fw icon-category"></i>
+                            
+                            <a href="/categories/JavaScript/" class="post-category" target="_blank">
+                                    JavaScript
+                                </a>
+                            
+                            
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/JavaScript/" target="_blank">
+                        <span class="chip bg-color">JavaScript</span>
+                    </a>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+    </div>
+</article>
+</div>
+
+
+    </div>
+    <div id="toc-aside" class="expanded col l3 hide-on-med-and-down">
+        <div class="toc-widget">
+            <div class="toc-title"><i class="fa fa-list-alt"></i>&nbsp;&nbsp;目录</div>
+            <div id="toc-content"></div>
+        </div>
+    </div>
+</div>
+
+<!-- TOC 悬浮按钮. -->
+
+<div id="floating-toc-btn" class="hide-on-med-and-down">
+    <a class="btn-floating btn-large bg-color">
+        <i class="fa fa-list"></i>
+    </a>
+</div>
+
+
+<script src="/libs/tocbot/tocbot.min.js"></script>
+<script>
+    $(function () {
+        tocbot.init({
+            tocSelector: '#toc-content',
+            contentSelector: '#articleContent',
+            headingsOffset: -($(window).height() * 0.4 - 45),
+            // headingsOffset: -205,
+            headingSelector: 'h1, h2, h3'
+        });
+
+        // modify the toc link href to support Chinese.
+        let i = 0;
+        let tocHeading = 'toc-heading-';
+        $('#toc-content a').each(function () {
+            $(this).attr('href', '#' + tocHeading + (++i));
+        });
+
+        // modify the heading title id to support Chinese.
+        i = 0;
+        $('#articleContent').children('h1, h2, h3').each(function () {
+            $(this).attr('id', tocHeading + (++i));
+        });
+
+        // Set scroll toc fixed.
+        let tocHeight = parseInt($(window).height() * 0.4 - 64);
+        let $tocWidget = $('.toc-widget');
+        $(window).scroll(function () {
+            let scroll = $(window).scrollTop();
+            /* add post toc fixed. */
+            if (scroll > tocHeight) {
+                $tocWidget.addClass('toc-fixed');
+            } else {
+                $tocWidget.removeClass('toc-fixed');
+            }
+        });
+
+        
+        /* 修复文章卡片 div 的宽度. */
+        let fixPostCardWidth = function (srcId, targetId) {
+            let srcDiv = $('#' + srcId);
+            if (srcDiv.length === 0) {
+                return;
+            }
+
+            let w = srcDiv.width();
+            if (w >= 450) {
+                w = w + 21;
+            } else if (w >= 350 && w < 450) {
+                w = w + 18;
+            } else if (w >= 300 && w < 350) {
+                w = w + 16;
+            } else {
+                w = w + 14;
+            }
+            $('#' + targetId).width(w);
+        };
+
+        // 切换TOC目录展开收缩的相关操作.
+        const expandedClass = 'expanded';
+        let $tocAside = $('#toc-aside');
+        let $mainContent = $('#main-content');
+        $('#floating-toc-btn .btn-floating').click(function () {
+            if ($tocAside.hasClass(expandedClass)) {
+                $tocAside.removeClass(expandedClass).slideUp(500);
+                $mainContent.removeClass('l9');
+            } else {
+                $tocAside.addClass(expandedClass).slideDown(500);
+                $mainContent.addClass('l9');
+            }
+            fixPostCardWidth('artDetail', 'prenext-posts');
+        });
+        
+    });
+</script>
+    
+
+</main>
+
+
+<footer class="page-footer bg-color">
+    <div class="container row center-align">
+        <div class="col s12 m8 l8 copy-right">
+            本站由&copy;<a href="https://blinkfox.github.io/" target="_blank">Blinkfox</a>基于
+            <a href="https://hexo.io/" target="_blank">Hexo</a> 的
+            <a href="https://github.com/blinkfox/hexo-theme-matery" target="_blank">hexo-theme-matery</a>主题搭建.
+
+            
+                &nbsp;<i class="fa fa-area-chart"></i>&nbsp;站点总字数:&nbsp;
+                <span class="white-color">68.8k</span>
+            
+
+            <!-- <p id="timeDate">DangoSky的博客诞生已经</p><p id="times">载入时分秒...</p> -->
+            <!-- <p>DangoSky的博客已经诞生<strong><i><span id="day"></span><span id="hour"></span></span><span id="minutes"></span><span id="seconds"></span> </strong><i></p> -->
+                <p id="timeDate"></p>
+
+            <!-- 
+			 -->
+        </div>
+        <div class="col s12 m4 l4 social-link ">
+
+    <a href="mailto:1341514988@qq.com" class="tooltipped" target="_blank" data-tooltip="邮件联系我" data-position="top" data-delay="50">
+        <i class="fa fa-envelope-open"></i>
+    </a>
+
+
+
+    <a href="/atom.xml" class="tooltipped" target="_blank" data-tooltip="RSS 订阅" data-position="top" data-delay="50">
+        <i class="fa fa-rss"></i>
+    </a>
+
+
+
+   <a href="https://github.com/DangoSky" class="tooltipped" target="_blank" data-tooltip="访问我的GitHub" data-position="top" data-delay="50">
+    <i class="fa fa-github"></i>
+</a>
+
+</div>
+    </div>
+</footer>
+
+<div class="progress-bar"></div>
+
+<script type="text/javascript">
+    function computed(){
+        let sum = new Date()-new Date(2018,9,3,23,3,38)
+        sum = parseInt(sum / 1000);
+        let d = zero(parseInt(sum / 3600 / 24));
+        let h = zero(parseInt(sum / 3600 % 24));
+        let m = zero(parseInt(sum / 60 % 60));
+        let s = zero(parseInt(sum % 60));
+        document.getElementById("timeDate").innerHTML = "DangoSky的博客已经诞生<strong>" + d + "</strong>天<strong>" + h + "</strong>小时<strong>" + m + "</strong>分钟<strong>" + s + "</strong>秒了。"; 
+    }
+    function zero(i){
+        if(i < 10)  {
+            i = "0" + i;
+        }
+        return i;
+    }
+    setInterval("computed();",1000);
+</script>
+
+<!-- 搜索遮罩框 -->
+<div id="searchModal" class="modal">
+    <div class="modal-content">
+        <div class="search-header">
+            <span class="title"><i class="fa fa-search"></i>&nbsp;&nbsp;搜索</span>
+            <input type="search" id="searchInput" name="s" placeholder="请输入搜索的关键字"
+                   class="search-input">
+        </div>
+        <div id="searchResult"></div>
+    </div>
+</div>
+
+<script src="/js/search.js"></script>
+<script type="text/javascript">
+$(function () {
+    searchFunc("/" + "search.xml", 'searchInput', 'searchResult');
+});
+</script>
+<!-- 回到顶部按钮 -->
+<div id="backTop" class="top-scroll">
+    <a class="btn-floating btn-large waves-effect waves-light" href="#!">
+        <i class="fa fa-angle-up"></i>
+    </a>
+</div>
+
+
+<script src="/libs/materialize/materialize.min.js"></script>
+<script src="/libs/masonry/masonry.pkgd.min.js"></script>
+<script src="/libs/aos/aos.js"></script>
+<script src="/libs/scrollprogress/scrollProgress.min.js"></script>
+<script src="/libs/lightGallery/js/lightgallery-all.min.js"></script>
+<script src="/js/matery.js"></script>
+
+<!-- Global site tag (gtag.js) - Google Analytics -->
+
+
+
+    <script src="/libs/others/clicklove.js"></script>
+
+
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"debug":false,"model":{"jsonPath":"live2d-widget-model-shizuku"},"display":{"position":"right","width":200,"height":400},"mobile":{"show":false},"log":false});</script></body>
+</html>

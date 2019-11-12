@@ -1,0 +1,863 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN">
+
+
+<head><meta name="generator" content="Hexo 3.9.0">
+    <meta charset="utf-8">
+    <meta name="keywords" content="Vue双向数据绑定原理, DangoSky">
+    <meta name="description" content=" Vue双向数据绑定原理完整的实现代码戳这里。
+实现思路Vue 通过数据劫持来实现数据绑定，使用 Object.defineProperty() 来劫持各个数据的 get 和 set 方法。当使用到某一个数据时会触发该数据的 get 方法，">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="renderer" content="webkit|ie-stand|ie-comp">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>Vue双向数据绑定原理 | DangoSky</title>
+    <link rel="icon" type="image/jpeg" href="/favicon.jpg">
+
+    <link rel="stylesheet" type="text/css" href="/libs/awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="/libs/materialize/materialize.min.css">
+    <link rel="stylesheet" type="text/css" href="/libs/aos/aos.css">
+    <link rel="stylesheet" type="text/css" href="/libs/animate/animate.min.css">
+    <link rel="stylesheet" type="text/css" href="/libs/lightGallery/css/lightgallery.min.css">
+    <link rel="stylesheet" type="text/css" href="/css/matery.css">
+    <link rel="stylesheet" type="text/css" href="/css/my.css">
+    <style type="text/css">
+        
+    </style>
+
+    <script src="/libs/jquery/jquery-2.2.0.min.js"></script>
+<link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css"></head>
+
+
+<body>
+
+<header class="navbar-fixed">
+    <nav id="headNav" class="bg-color nav-transparent">
+        <div id="navContainer" class="nav-wrapper container">
+            <div class="brand-logo">
+                <a href="/" class="waves-effect waves-light">
+                    
+                    <span class="logo-span">DangoSky</span>
+                </a>
+            </div>
+            
+
+<a href="#" data-target="mobile-nav" class="sidenav-trigger button-collapse"><i class="fa fa-navicon"></i></a>
+<ul class="right">
+    
+    <li class="hide-on-med-and-down">
+        <a href="/" class="waves-effect waves-light">
+            
+            <i class="fa fa-home"></i>
+            
+            <span>首页</span>
+        </a>
+    </li>
+    
+    <li class="hide-on-med-and-down">
+        <a href="/tags" class="waves-effect waves-light">
+            
+            <i class="fa fa-tags"></i>
+            
+            <span>标签</span>
+        </a>
+    </li>
+    
+    <li class="hide-on-med-and-down">
+        <a href="/categories" class="waves-effect waves-light">
+            
+            <i class="fa fa-bookmark"></i>
+            
+            <span>分类</span>
+        </a>
+    </li>
+    
+    <li class="hide-on-med-and-down">
+        <a href="/archives" class="waves-effect waves-light">
+            
+            <i class="fa fa-archive"></i>
+            
+            <span>归档</span>
+        </a>
+    </li>
+    
+    <li class="hide-on-med-and-down">
+        <a href="/about" class="waves-effect waves-light">
+            
+            <i class="fa fa-user-circle-o"></i>
+            
+            <span>关于</span>
+        </a>
+    </li>
+    
+    <li class="hide-on-med-and-down">
+        <a href="/friends" class="waves-effect waves-light">
+            
+            <i class="fa fa-address-book"></i>
+            
+            <span>友情链接</span>
+        </a>
+    </li>
+    
+    <li>
+        <a href="#searchModal" class="modal-trigger waves-effect waves-light">
+            <i id="searchIcon" class="fa fa-search" title="搜索"></i>
+        </a>
+    </li>
+</ul>
+
+<div id="mobile-nav" class="side-nav sidenav">
+
+    <div class="mobile-head bg-color">
+        
+        <div class="logo-name">DangoSky</div>
+        <div class="logo-desc">
+            
+            但愿日子清净，抬头遇见的都是柔情。
+            
+        </div>
+    </div>
+
+    
+
+    <ul class="menu-list mobile-menu-list">
+        
+        <li>
+            <a href="/" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-home"></i>
+                
+                首页
+            </a>
+        </li>
+        
+        <li>
+            <a href="/tags" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-tags"></i>
+                
+                标签
+            </a>
+        </li>
+        
+        <li>
+            <a href="/categories" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-bookmark"></i>
+                
+                分类
+            </a>
+        </li>
+        
+        <li>
+            <a href="/archives" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-archive"></i>
+                
+                归档
+            </a>
+        </li>
+        
+        <li>
+            <a href="/about" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-user-circle-o"></i>
+                
+                关于
+            </a>
+        </li>
+        
+        <li>
+            <a href="/friends" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-address-book"></i>
+                
+                友情链接
+            </a>
+        </li>
+        
+        
+    </ul>
+</div>
+
+        </div>
+
+        
+    </nav>
+
+</header>
+
+
+
+
+
+<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/23.jpg')">
+    <div class="container">
+        <div class="row">
+            <div class="col s12 m12 l12">
+                <div class="brand">
+                    <div class="description center-align post-title">
+                        Vue双向数据绑定原理
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<main class="post-container content">
+
+    
+    <link rel="stylesheet" href="/libs/tocbot/tocbot.css">
+<style>
+    #articleContent h1::before,
+    #articleContent h2::before,
+    #articleContent h3::before,
+    #articleContent h4::before,
+    #articleContent h5::before,
+    #articleContent h6::before {
+        display: block;
+        content: " ";
+        height: 100px;
+        margin-top: -100px;
+        visibility: hidden;
+    }
+
+    #articleContent :focus {
+        outline: none;
+    }
+
+    .toc-fixed {
+        position: fixed;
+        top: 64px;
+    }
+
+    .toc-widget {
+        padding-left: 20px;
+    }
+
+    .toc-widget .toc-title {
+        margin: 35px 0 15px 0;
+        padding-left: 17px;
+        font-size: 1.5rem;
+        font-weight: bold;
+        line-height: 1.5rem;
+    }
+
+    .toc-widget ol {
+        padding: 0;
+        list-style: none;
+    }
+
+    #toc-content ol {
+        padding-left: 10px;
+    }
+
+    #toc-content ol li {
+        padding-left: 10px;
+    }
+
+    #toc-content .toc-link:hover {
+        color: #42b983;
+        font-weight: 700;
+        text-decoration: underline;
+    }
+
+    #toc-content .toc-link::before {
+        background-color: transparent;
+        max-height: 25px;
+    }
+
+    #toc-content .is-active-link {
+        color: #42b983;
+    }
+
+    #toc-content .is-active-link::before {
+        background-color: #42b983;
+    }
+
+    #floating-toc-btn {
+        position: fixed;
+        right: 20px;
+        bottom: 76px;
+        padding-top: 15px;
+        margin-bottom: 0;
+        z-index: 998;
+    }
+
+    #floating-toc-btn .btn-floating {
+        width: 48px;
+        height: 48px;
+    }
+
+    #floating-toc-btn .btn-floating i {
+        line-height: 48px;
+        font-size: 1.4rem;
+    }
+</style>
+<div class="row">
+    <div id="main-content" class="col s12 m12 l9">
+        <!-- 文章内容详情 -->
+<div id="artDetail">
+    <div class="card">
+        <div class="card-content article-info">
+            <div class="row tag-cate">
+                <div class="col s7">
+                    
+                    <div class="article-tag">
+                        
+                            <a href="/tags/Vue/" target="_blank">
+                                <span class="chip bg-color">Vue</span>
+                            </a>
+                        
+                    </div>
+                    
+                </div>
+                <div class="col s5 right-align">
+                    
+                    <div class="post-cate">
+                        <i class="fa fa-bookmark fa-fw icon-category"></i>
+                        
+                            <a href="/categories/Vue/" class="post-category" target="_blank">
+                                Vue
+                            </a>
+                        
+                    </div>
+                    
+                </div>
+            </div>
+
+            <div class="post-info">
+                <div class="post-date info-break-policy">
+                    <i class="fa fa-calendar-minus-o fa-fw"></i>发布日期:&nbsp;&nbsp;
+                    2019-08-17
+                </div>
+
+                
+                    
+                    <div class="info-break-policy">
+                        <i class="fa fa-file-word-o fa-fw"></i>文章字数:&nbsp;&nbsp;
+                        3.3k
+                    </div>
+                    
+
+                    
+                    <div class="info-break-policy">
+                        <i class="fa fa-clock-o fa-fw"></i>阅读时长:&nbsp;&nbsp;
+                        12 分
+                    </div>
+                    
+                
+				
+				
+            </div>
+        </div>
+        <hr class="clearfix">
+        <div class="card-content article-card-content">
+            <div id="articleContent">
+                <script src="/assets/js/APlayer.min.js"> </script><h1 id="Vue双向数据绑定原理"><a href="#Vue双向数据绑定原理" class="headerlink" title="Vue双向数据绑定原理"></a>Vue双向数据绑定原理</h1><p>完整的实现代码<a href="https://github.com/DangoSky/MVVM" target="_blank" rel="noopener">戳这里</a>。</p>
+<h2 id="实现思路"><a href="#实现思路" class="headerlink" title="实现思路"></a>实现思路</h2><p>Vue 通过数据劫持来实现数据绑定，使用 <a href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Object/defineProperty" target="_blank" rel="noopener">Object.defineProperty()</a> 来劫持各个数据的 <code>get</code> 和 <code>set</code> 方法。当使用到某一个数据时会触发该数据的 <code>get</code> 方法，所以我们可以在 <code>get</code> 方法中将使用到该数据的指令收集起来（这些就是该数据的依赖）；当修改到这个数据的值时会触发该数据的 <code>set</code> 方法，我们再在 <code>set</code> 方法中去逐个触发这些依赖的更新函数，从而就可以达到 model / view 双向更新的效果。</p>
+<p>理解了实现思路后，我们再从这个思路出发，想想实现过程中会遇到什么问题：</p>
+<ul>
+<li><p><strong>依赖是什么：</strong> 比如 <code>&lt;input type=&quot;text v-model=&quot;inputVal&quot;&gt;</code>，<code>inputVal</code> 是 <code>mvvm</code> 实例中的一个 <code>data</code> 属性，而这个 <code>input</code> 输入框的 <code>v-model</code> 指令使用到了它。所以这个输入框就成了 <code>inputVal</code> 的依赖，当 <code>inputVal</code> 的值改变时，这个依赖也要随着做出相应的改变。因为可能会有多个元素节点多条指令使用到同一个数据，所以数据的依赖是会有多个的。</p>
+</li>
+<li><p><strong>如何收集：</strong> 是否是某个数据的依赖取决于这个元素节点有没有使用到某个数据，可能是通过 <code>v-</code> 指令，也可能是通过 { {} }。所以就需要我们去遍历整个 <code>Dom</code> 树，判断每一个元素节点 / 文本节点上是否有使用到相关的指令，以及指令上使用到了什么数据。这也就是 <code>compiler.js</code> 的工作——解析各个节点上的指令，并根据不同的指令使用、绑定不同的更新方法。</p>
+</li>
+<li><p><strong>收集在哪里：</strong> 顾名思义，依赖是依赖于数据而言的，所以我们可以为每一个数据建立一个对象，用一个独一无二的 <code>id</code> 来表示这个数据，用一个 <code>subs</code> 属性（数组）来存放该数据的所有依赖，也就是 <code>observer.js</code> 中的 <code>Dep</code> 构造器。</p>
+</li>
+</ul>
+<h2 id="代码结构"><a href="#代码结构" class="headerlink" title="代码结构"></a>代码结构</h2><pre><code>MVVM
+|—— index.html 入口文件
+|—— js
+|   |—— mvvm.js      构造 MVVM，实现数据代理
+|   |—— observer.js  进行数据劫持，构造 Dep 来收集依赖
+|   |—— compiler.js  解析、处理指令
+|   |—— watcher.js   订阅相关属性的变化并更新视图
+</code></pre><h2 id="预期实现"><a href="#预期实现" class="headerlink" title="预期实现"></a>预期实现</h2><ul>
+<li style="list-style: none"><input type="checkbox" checked> 可以解析 <code>v-model</code> 指令进行双向数据绑定。</li>
+<li style="list-style: none"><input type="checkbox" checked> view / model 改变时，model / view 自动进行更新。</li>
+<li style="list-style: none"><input type="checkbox" checked> 可以解析一些简单的指令：{ {} }, <code>v-text</code>, <code>v-class</code>, <code>v-html</code>, <code>v-on</code>。</li>
+</ul>
+<h2 id="实现步骤"><a href="#实现步骤" class="headerlink" title="实现步骤"></a>实现步骤</h2><h3 id="构建-MVVM"><a href="#构建-MVVM" class="headerlink" title="构建 MVVM"></a>构建 MVVM</h3><p>刚开始写一个 <code>mvvm</code> 的时候会有些无法从下手的感觉，因为看到的都是 <code>observer</code>、<code>compiler</code> 和 <code>watcher</code>。虽然这些是 <code>mvvm</code> 的重要组成部分，也是 Vue 双向数据绑定原理的精髓，但并不是 <code>mvvm</code> 的入口。如果一开始就从 <code>observer</code> 等写起的话，很可能会陷入不知道怎么写、接下来不知道写什么的局面。所以我们需要先把 <code>mvvm</code> 建立好，有了地基后才好有方向指引我们接下来要写什么。</p>
+<p>我们可以模仿 Vue 那样，先创建一个 <code>MVVM</code> 实例。</p>
+<pre class=" language-js"><code class="language-js">index<span class="token punctuation">.</span>html
+
+<span class="token keyword">let</span> vm <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">MVVM</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+  el<span class="token punctuation">:</span> <span class="token string">'#app'</span><span class="token punctuation">,</span>
+  data<span class="token punctuation">:</span> <span class="token punctuation">{</span><span class="token punctuation">}</span><span class="token punctuation">,</span>
+  method<span class="token punctuation">:</span> <span class="token punctuation">{</span><span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<p>有了一个 <code>mvvm</code> 实例，我们才可以往里面定义各个 <code>data</code> 属性和 <code>method</code> 函数，像使用 Vue 那样去构建我们的项目。为了能够正常使用这个 <code>vm</code> 实例，我们需要先定义 <code>MVVM</code> 构造器。</p>
+<pre class=" language-js"><code class="language-js"><span class="token keyword">function</span> <span class="token function">MVVM</span><span class="token punctuation">(</span>options<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token comment" spellcheck="true">// vue实例的data</span>
+  <span class="token keyword">this</span><span class="token punctuation">.</span>_data <span class="token operator">=</span> options<span class="token punctuation">.</span>data<span class="token punctuation">;</span>
+  <span class="token comment" spellcheck="true">// vue实例的各个属性，data、method等</span>
+  <span class="token keyword">this</span><span class="token punctuation">.</span>options <span class="token operator">=</span> options<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<p>到这里一个基本的空架子就有了，接下来我们就需要按照先前的实现思路一步步在上面添砖加瓦。不过为了后续操作 <code>data</code> 的方便，我们可以先实现数据代理。先解释一下什么是数据代理吧，比如我们可以通过 a 来操作 c，但由于这种方法比较麻烦，所以我们通过 b 来操作 c，而 b 在这里就是起到了代理的作用。回到 <code>mvvm</code>，我们每次要使用到 <code>data</code> 中的数据时，都得通过 <code>vm._data.xxx</code> 来获取数据，所以我们可以使用 <code>vm</code> 来代理 <code>vm._data</code>，之后我们只需要通过 <code>vm.xxx</code> 就能获取到 <code>vm._data.xxx</code> 了。可能当前这个数据代理的好处不是很明显，但在后续的 <code>observer.js</code> 等文件中操作 <code>data</code> 时就会很方便了。具体的实现也是利用 <code>Object.defineProperty()</code> 改写 <code>get</code> 和 <code>set</code> 方法，当读写 <code>vm.xxx</code> 时，操作 <code>vm._data.xxx</code> 就可以了。</p>
+<h3 id="指令解析"><a href="#指令解析" class="headerlink" title="指令解析"></a>指令解析</h3><p>我们暂时先不去写数据劫持的代码，因为涉及到了 <code>Dep</code> 和 <code>Watcher</code>。我们可以先写指令解析和相关的更新操作，把页面渲染出来先。</p>
+<p>在解析指令时，因为会频繁操作到 <code>DOM</code>，所以为了提高性能，我们先创建文档片段，在这个文档片段上进行 <code>DOM</code> 操作后再将其插入回 <code>DOM</code> 中。</p>
+<pre class=" language-js"><code class="language-js"><span class="token function">nodeToFragment</span><span class="token punctuation">(</span>node<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">let</span> fragment <span class="token operator">=</span> document<span class="token punctuation">.</span><span class="token function">createDocumentFragment</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token keyword">let</span> child<span class="token punctuation">;</span>
+  <span class="token keyword">while</span><span class="token punctuation">(</span>child <span class="token operator">=</span> node<span class="token punctuation">.</span>firstChild<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    fragment<span class="token punctuation">.</span><span class="token function">appendChild</span><span class="token punctuation">(</span>child<span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token punctuation">}</span>
+  <span class="token keyword">return</span> fragment<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<p>此处的 <code>node</code> 是指我们挂载 <code>MVVM</code> 实例的元素节点，也就是我们初始化时绑定的 <code>el</code>。可能会有人不理解这个 while 循环（包括我），<code>while(child = node.firstChild)</code> 不是一直将 <code>el</code> 的第一个子节点赋值给 child 吗？不会导致死循环吗？这个问题的关键在于，使用 <code>appendChid</code> 方法将原 <code>DOM</code> 树中的节点添加到 <code>DocumentFragment</code> 中时，会同时删除掉原来 <code>DOM</code> 树中的节点！所以当把 <code>el</code> 的所有子节点都添加到文档片段中时，自然也就结束循环了。</p>
+<p>有了 <code>el</code> 的文档片段后，我们就可以遍历上面的每一个节点了。此处还要区分节点的类型，HTML 的节点有分为元素节点、文本节点和注释节点等。我们需要通过 <code>nodeType</code> 对元素节点和文本节点都进行判断，</p>
+<ol>
+<li><p>对于元素节点，我们要遍历节点上的每一个属性，若存在指令（以 <code>v-</code> 开头的属性），则根据不同的指令名进行相应的处理，比如 <code>v-text</code> 指令就进行节点文本替换，<code>v-class</code> 指令则增加节点的 class，<code>v-on</code> 指令就给节点绑定相关的监听函数。</p>
+</li>
+<li><p>而对于文本节点，我们只需要去匹配它的文本是否具有 { {} }，有的话则将文本内容替换成相应的 <code>data</code> 属性的数据。</p>
+</li>
+</ol>
+<p>这里有几个需要注意的点：</p>
+<ul>
+<li><p>遍历节点时，需要递归遍历每一个节点。</p>
+</li>
+<li><p>对于 { {} } 和 <code>v-text</code> 指令，需要考虑到有嵌套对象的情况，比如 a.b.c，要一步步从 <code>data</code> 解析下去获取相应的属性值。</p>
+</li>
+</ul>
+<p>完成到这一步后，我们已经能够使用 <code>MVVM</code> 的指令和数据成功渲染出一个页面了，只不过现在的页面还是静态的，还差最最关键的数据绑定部分。</p>
+<h3 id="数据绑定"><a href="#数据绑定" class="headerlink" title="数据绑定"></a>数据绑定</h3><p>我们先捋清楚几个点：</p>
+<ul>
+<li><p>数据和指令是什么关系：在数据绑定中，指令使用到了 <code>data</code> 中的数据，所以指令是依赖于数据的。当 <code>data</code> 中的数据发生变化时，就需要通知所有依赖于它的指令去进行相关的更新操作。（数据相当于发布者，指令相当于订阅者）</p>
+</li>
+<li><p>数据和指令的对应关系：这里的对应关系是指一对一，一对多，多对一，多对多这些。一个数据可以被多条指令使用到，所以数据对应于指令，是一对多的关系。一条指令可能使用到多个数据，比如它使用到的数据是 a.b.c，这样的话该指令就成了 a、b、c 三者的依赖，所以指令对应数据，也是一对多的关系。</p>
+</li>
+</ul>
+<p>既然两者对应于彼此都是一对多的关系，那我们就可以为两者都建立一个对象（分别为 <code>Dep</code> 和 <code>Watcher</code>），其中分别用一个 <code>subs</code> 数组和一个 <code>depIds</code> 来收集它们使用到的依赖（指令和数据）。</p>
+<h4 id="Dep"><a href="#Dep" class="headerlink" title="Dep"></a>Dep</h4><p>现在我们来写数据劫持的代码，我们需要遍历 <code>data</code> 中的每一个数据，注意还需要递归遍历，以防有 a.b.c 这种嵌套的对象。每遍历一个数据时，我们就实例化一个 <code>Dep</code> 用来添加依赖。那么我们什么时候需要添加依赖呢？之前说过我们在 <code>get</code> 方法中添加依赖，当我们解析指令的时候，会去获取这个指令使用到的数据，这时候就触发到了该数据的 <code>get</code> 方法，我们便在此时把依赖添加进 <code>dep</code> 实例中。为了在 <code>observer.js</code> 中能够获取到 <code>watcher.js</code> 中正在解析的指令，所以我们给 <code>Dep</code> 建立一个静态属性 <code>Dep.target</code> 并初始化为 <code>null</code>， 表示当前需要添加到 <code>dep</code> 实例中的依赖。当 <code>Dep.target</code> 不为空时，就把依赖添加到 <code>dep</code> 中的 <code>subs</code> 数组。而在 <code>set</code> 方法中，我们则去更新依赖，遍历 <code>dep</code> 的 <code>subs</code> 数组，执行依赖的更新函数，从而更新视图，这也就到达了 数据 -&gt; 视图 的效果了。</p>
+<pre class=" language-js"><code class="language-js"><span class="token function">defineReactive</span><span class="token punctuation">(</span>data<span class="token punctuation">,</span> key<span class="token punctuation">,</span> curVal<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">let</span> dep <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Dep</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token comment" spellcheck="true">// 递归劫持该对象里面的每一个属性（针对属性值是对象的时候）</span>
+  <span class="token keyword">new</span> <span class="token class-name">Observer</span><span class="token punctuation">(</span>curVal<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+  Object<span class="token punctuation">.</span><span class="token function">defineProperty</span><span class="token punctuation">(</span>data<span class="token punctuation">,</span> key<span class="token punctuation">,</span> <span class="token punctuation">{</span>
+    enumerable<span class="token punctuation">:</span> <span class="token boolean">true</span><span class="token punctuation">,</span>
+    configurable<span class="token punctuation">:</span> <span class="token boolean">false</span><span class="token punctuation">,</span>
+    <span class="token keyword">get</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      <span class="token comment" spellcheck="true">// 初始化数据劫持的时候Dep.target为null</span>
+      <span class="token comment" spellcheck="true">// 解析指令时，需要为指令对应的每个数据的dep添加watcher，此时Dep.target为该watcher</span>
+      <span class="token keyword">if</span><span class="token punctuation">(</span>Dep<span class="token punctuation">.</span>target<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token comment" spellcheck="true">// 先回到watcher中，把这个dep添加到Dep.target的depIds中，之后再回来</span>
+        Dep<span class="token punctuation">.</span>target<span class="token punctuation">.</span><span class="token function">addDep</span><span class="token punctuation">(</span>dep<span class="token punctuation">)</span><span class="token punctuation">;</span>
+      <span class="token punctuation">}</span>
+      <span class="token keyword">return</span> curVal<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token keyword">set</span><span class="token punctuation">(</span>newVal<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      <span class="token keyword">if</span><span class="token punctuation">(</span>newVal <span class="token operator">===</span> curVal<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">return</span><span class="token punctuation">;</span>
+      <span class="token punctuation">}</span>
+      curVal <span class="token operator">=</span> newVal<span class="token punctuation">;</span>
+      <span class="token comment" spellcheck="true">// 监听newVal（针对newVal是对象的时候）</span>
+      <span class="token keyword">new</span> <span class="token class-name">Observer</span><span class="token punctuation">(</span>newVal<span class="token punctuation">)</span><span class="token punctuation">;</span>
+      <span class="token comment" spellcheck="true">// 通知相关的订阅者(watcher)更新</span>
+      dep<span class="token punctuation">.</span><span class="token function">notify</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">}</span><span class="token punctuation">)</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<h4 id="Watcher"><a href="#Watcher" class="headerlink" title="Watcher"></a>Watcher</h4><p>理清了 <code>Dep</code> 的逻辑，我们再来看 <code>Watcher</code>。其实 <code>Watcher</code> 就是指令，我们使用一个 <code>watcher</code> 实例来表示它，去封装它的指令值、使用到的数据以及更新函数，以便在触发数据的 <code>set</code> 方法时去更新视图。在实例化一个 <code>watcher</code> 的时候，我们需要先把 <code>Dep.target</code> 设置为当前的指令，并根据指令值去 <code>data</code> 中取一遍数据，以便触发数据的 <code>get</code> 方法从而将 <code>watcher</code> 添加进数据的 <code>subs</code> 中。</p>
+<p>在上面的代码中，其实并没有直接在 <code>get</code> 方法中给 <code>dep</code> 添加依赖，而是先给 <code>watcher</code> 实例添加 <code>dep</code>， 也就是这句 <code>Dep.target.addDep(dep)</code>。我们先弄清楚一点，<code>Dep</code> 中有一个 <code>subs</code> 数组，用来存储使用到该数据的依赖（数组元素就是 <code>watcher</code> 实例），<code>Watcher</code> 中有一个 <code>depIds</code> 对象，用来存储该指令使用到的数据（对象属性就是 <code>dep</code> 实例，由一个 <code>id</code> 来标志每一个 <code>dep</code>， 使用对象可以避免 <code>depIds</code> 里加入重复的 <code>dep</code>）。所以当一个数据和一个指令产生联系的时候，我们既需要把 <code>dep</code> 添加进 <code>watcher</code> 的 <code>depIds</code> 中，还需要把 <code>watcher</code> 添加进 <code>dep</code> 的 <code>subs</code> 中。而 <code>dep</code> 和 <code>watcher</code> 分属在两个js 文件里，为了能够在 <code>watcher.js</code> 中获取当前的 <code>dep</code>，所以我们需要先在 <code>observer.js</code> 的 <code>get</code> 方法中触发当前 <code>watcher</code> 即 <code>Dep.target</code> 的 <code>addDep</code> 方法，并将当前的 <code>dep</code> 传递过去，再在 <code>addDep</code> 方法中调用 <code>dep</code> 的 <code>addSub</code> 方法。这样就能将 <code>dep</code> 和 <code>watcher</code> 都收集起来了。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p><code>MVVM</code> 的实现思路就如上面所述了，现在我们再总结一下整个流程。</p>
+<p>我们先创建一个 <code>MVVM</code> 实例，并由 <code>Observer</code> 实现数据劫持，<code>Compiler</code> 实现指令解析。劫持对象时为每个数据创建 <code>Dep</code> 实例作为发布者，解析指令时则为每个指令创建 <code>Watcher</code> 实例，并订阅相应的 <code>Dep</code>（在数据的 <code>get</code> 方法中完成）。当数据变化时，<code>Dep</code> 就通知它的所有订阅者执行它绑定的更新函数来更新视图（在数据的 <code>set</code> 方法中完成）。</p>
+<p><img src="https://raw.githubusercontent.com/DMQ/mvvm/master/img/2.png" alt="mvvm实现流程图"></p>
+<h2 id="存在的问题（toDo）"><a href="#存在的问题（toDo）" class="headerlink" title="存在的问题（toDo）"></a>存在的问题（toDo）</h2><ul>
+<li><p>{ {} } 当作数据绑定处理并有其他文本信息出现时，解析之后其他的文本信息会丢失。</p>
+<p>  例如： <code>&lt;p&gt;hello &lt;/p&gt;</code>。</p>
+<p>  解决方案：使用正则匹配大括号，只对 { {} } 之间的内容进行更新。但需要考虑到有多个大括号的情况。</p>
+</li>
+<li><p>在纯文本里面 { {} } 也会被解析成是数据绑定，从而丢失了原来的文本信息。</p>
+<p> 例如： <code>&lt;p&gt;这只是一个单纯的&lt;/p&gt;</code>。</p>
+<p>   解决方案：解析到 { {} } 时，判断 { {} } 里面的内容是否为 <code>data</code> 中的属性，是的话则处理为数据绑定；没有的话则不进行解析，当作纯文本内容处理。</p>
+</li>
+<li><p>在同一个标签里无法解析多个 { {} }。</p>
+<p> 例如：<code>&lt;p&gt; &lt;/p&gt;</code>。</p>
+<p> 解决方案：使用正则匹配 { {} } 之间的内容，改用数组的形式传递给处理指令的函数，批量更新。</p>
+</li>
+</ul>
+<h2 id="参考资料："><a href="#参考资料：" class="headerlink" title="参考资料："></a>参考资料：</h2><ul>
+<li><p><a href="https://www.bilibili.com/video/av24099073/?p=49" target="_blank" rel="noopener">尚硅谷_Vue核心技术</a></p>
+</li>
+<li><p><a href="https://github.com/DMQ/mvvm" target="_blank" rel="noopener">mvvm</a></p>
+</li>
+</ul>
+
+            </div>
+            <hr/>
+
+            
+
+            <link rel="stylesheet" type="text/css" href="/libs/share/css/share.min.css">
+
+<div id="article-share">
+    
+    <div class="social-share" data-disabled="qzone" data-wechat-qrcode-helper="<p>微信里点“发现”->“扫一扫”二维码便可查看分享。</p>"></div>
+    
+</div>
+
+<script src="/libs/share/js/social-share.min.js"></script>
+
+            <div class="reprint">
+                <p>
+                    <span class="reprint-tip">
+                        <i class="fa fa-exclamation-circle"></i>&nbsp;&nbsp;转载请注明:
+                    </span>
+                    <a href="http://blog.dangosky.com" class="b-link-green">DangoSky</a>
+                    <i class="fa fa-angle-right fa-lg fa-fw text-color"></i>
+                    <a href="/2019/08/17/Vue双向数据绑定原理/" class="b-link-green">Vue双向数据绑定原理</a>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    
+
+    
+
+    
+        <div class="disqus-card card" data-aos="fade-up">
+    <div id="disqus_thread" class="card-content">
+        <noscript>Please enable JavaScript to view the
+            <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+    </div>
+</div>
+
+<script type="text/javascript">
+    disqus_config = function () {
+        this.page.url = 'http://blog.dangosky.com/2019/08/17/Vue双向数据绑定原理/';
+        this.page.identifier = '/2019/08/17/Vue双向数据绑定原理/';
+        this.page.title = 'Vue双向数据绑定原理';
+    };
+    let disqus_shortname = 'dangosky';
+
+    (function () { // DON'T EDIT BELOW THIS LINE
+        let d = document, s = d.createElement('script');
+        // 如：s.src = 'https://blinkfox.disqus.com/embed.js';
+        s.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+    
+
+    
+
+    
+
+    
+
+<article id="prenext-posts" class="prev-next articles">
+    <div class="row article-row">
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge left-badge text-color">
+                <i class="fa fa-chevron-left"></i>&nbsp;上一篇</div>
+            <div class="card">
+                <a href="/2019/09/03/Git常用命令/">
+                    <div class="card-image">
+                        
+                        <img src="https://raw.githubusercontent.com/DangoSky/practices-for-web/master/images/11.jpg" class="responsive-img" alt="Git常用命令">
+                        
+                        <span class="card-title">Git常用命令</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary"> 在头条实习的这八周里，刚开始没少因为我对 Git 掌握严重不足而挨 mentor 训过，所以在这里记录一些比较常用的 Git 操作。
+合并多个commit假如我们现在在本地仓库提了3个 commit，就像这样：
+
+如果我们直接这样 pus</div>
+                    <div class="publish-info">
+                        <span class="publish-date">
+                            <i class="fa fa-clock-o fa-fw icon-date"></i>2019-09-03
+                        </span>
+                        <span class="publish-author">
+                            
+                            <i class="fa fa-bookmark fa-fw icon-category"></i>
+                            
+                            <a href="/categories/Git/" class="post-category" target="_blank">
+                                    Git
+                                </a>
+                            
+                            
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/Git/" target="_blank">
+                        <span class="chip bg-color">Git</span>
+                    </a>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge right-badge text-color">
+                下一篇&nbsp;<i class="fa fa-chevron-right"></i>
+            </div>
+            <div class="card">
+                <a href="/2019/06/14/elementUI级联选择器踩坑/">
+                    <div class="card-image">
+                        
+                        <img src="https://github.com/DangoSky/practices-for-web/blob/master/images/8.jpg?raw=true" class="responsive-img" alt="elementUI级联选择器踩坑">
+                        
+                        <span class="card-title">elementUI级联选择器踩坑</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary"> 发现问题&emsp;&emsp;今天使用 elementUI 的时候踩到坑了，期望的效果如下图所示。每一栋教学楼都有 1-7 层，每一层的教室都为 03-22，以此来选择不同的教室。
+
+&emsp;&emsp;参照官方文档，我写了如下的级</div>
+                    <div class="publish-info">
+                            <span class="publish-date">
+                                <i class="fa fa-clock-o fa-fw icon-date"></i>2019-06-14
+                            </span>
+                        <span class="publish-author">
+                            
+                            <i class="fa fa-bookmark fa-fw icon-category"></i>
+                            
+                            <a href="/categories/踩坑指南/" class="post-category" target="_blank">
+                                    踩坑指南
+                                </a>
+                            
+                            
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/踩坑指南/" target="_blank">
+                        <span class="chip bg-color">踩坑指南</span>
+                    </a>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+    </div>
+</article>
+</div>
+
+
+    </div>
+    <div id="toc-aside" class="expanded col l3 hide-on-med-and-down">
+        <div class="toc-widget">
+            <div class="toc-title"><i class="fa fa-list-alt"></i>&nbsp;&nbsp;目录</div>
+            <div id="toc-content"></div>
+        </div>
+    </div>
+</div>
+
+<!-- TOC 悬浮按钮. -->
+
+<div id="floating-toc-btn" class="hide-on-med-and-down">
+    <a class="btn-floating btn-large bg-color">
+        <i class="fa fa-list"></i>
+    </a>
+</div>
+
+
+<script src="/libs/tocbot/tocbot.min.js"></script>
+<script>
+    $(function () {
+        tocbot.init({
+            tocSelector: '#toc-content',
+            contentSelector: '#articleContent',
+            headingsOffset: -($(window).height() * 0.4 - 45),
+            // headingsOffset: -205,
+            headingSelector: 'h1, h2, h3'
+        });
+
+        // modify the toc link href to support Chinese.
+        let i = 0;
+        let tocHeading = 'toc-heading-';
+        $('#toc-content a').each(function () {
+            $(this).attr('href', '#' + tocHeading + (++i));
+        });
+
+        // modify the heading title id to support Chinese.
+        i = 0;
+        $('#articleContent').children('h1, h2, h3').each(function () {
+            $(this).attr('id', tocHeading + (++i));
+        });
+
+        // Set scroll toc fixed.
+        let tocHeight = parseInt($(window).height() * 0.4 - 64);
+        let $tocWidget = $('.toc-widget');
+        $(window).scroll(function () {
+            let scroll = $(window).scrollTop();
+            /* add post toc fixed. */
+            if (scroll > tocHeight) {
+                $tocWidget.addClass('toc-fixed');
+            } else {
+                $tocWidget.removeClass('toc-fixed');
+            }
+        });
+
+        
+        /* 修复文章卡片 div 的宽度. */
+        let fixPostCardWidth = function (srcId, targetId) {
+            let srcDiv = $('#' + srcId);
+            if (srcDiv.length === 0) {
+                return;
+            }
+
+            let w = srcDiv.width();
+            if (w >= 450) {
+                w = w + 21;
+            } else if (w >= 350 && w < 450) {
+                w = w + 18;
+            } else if (w >= 300 && w < 350) {
+                w = w + 16;
+            } else {
+                w = w + 14;
+            }
+            $('#' + targetId).width(w);
+        };
+
+        // 切换TOC目录展开收缩的相关操作.
+        const expandedClass = 'expanded';
+        let $tocAside = $('#toc-aside');
+        let $mainContent = $('#main-content');
+        $('#floating-toc-btn .btn-floating').click(function () {
+            if ($tocAside.hasClass(expandedClass)) {
+                $tocAside.removeClass(expandedClass).slideUp(500);
+                $mainContent.removeClass('l9');
+            } else {
+                $tocAside.addClass(expandedClass).slideDown(500);
+                $mainContent.addClass('l9');
+            }
+            fixPostCardWidth('artDetail', 'prenext-posts');
+        });
+        
+    });
+</script>
+    
+
+</main>
+
+
+<footer class="page-footer bg-color">
+    <div class="container row center-align">
+        <div class="col s12 m8 l8 copy-right">
+            本站由&copy;<a href="https://blinkfox.github.io/" target="_blank">Blinkfox</a>基于
+            <a href="https://hexo.io/" target="_blank">Hexo</a> 的
+            <a href="https://github.com/blinkfox/hexo-theme-matery" target="_blank">hexo-theme-matery</a>主题搭建.
+
+            
+                &nbsp;<i class="fa fa-area-chart"></i>&nbsp;站点总字数:&nbsp;
+                <span class="white-color">68.8k</span>
+            
+
+            <!-- <p id="timeDate">DangoSky的博客诞生已经</p><p id="times">载入时分秒...</p> -->
+            <!-- <p>DangoSky的博客已经诞生<strong><i><span id="day"></span><span id="hour"></span></span><span id="minutes"></span><span id="seconds"></span> </strong><i></p> -->
+                <p id="timeDate"></p>
+
+            <!-- 
+			 -->
+        </div>
+        <div class="col s12 m4 l4 social-link ">
+
+    <a href="mailto:1341514988@qq.com" class="tooltipped" target="_blank" data-tooltip="邮件联系我" data-position="top" data-delay="50">
+        <i class="fa fa-envelope-open"></i>
+    </a>
+
+
+
+    <a href="/atom.xml" class="tooltipped" target="_blank" data-tooltip="RSS 订阅" data-position="top" data-delay="50">
+        <i class="fa fa-rss"></i>
+    </a>
+
+
+
+   <a href="https://github.com/DangoSky" class="tooltipped" target="_blank" data-tooltip="访问我的GitHub" data-position="top" data-delay="50">
+    <i class="fa fa-github"></i>
+</a>
+
+</div>
+    </div>
+</footer>
+
+<div class="progress-bar"></div>
+
+<script type="text/javascript">
+    function computed(){
+        let sum = new Date()-new Date(2018,9,3,23,3,38)
+        sum = parseInt(sum / 1000);
+        let d = zero(parseInt(sum / 3600 / 24));
+        let h = zero(parseInt(sum / 3600 % 24));
+        let m = zero(parseInt(sum / 60 % 60));
+        let s = zero(parseInt(sum % 60));
+        document.getElementById("timeDate").innerHTML = "DangoSky的博客已经诞生<strong>" + d + "</strong>天<strong>" + h + "</strong>小时<strong>" + m + "</strong>分钟<strong>" + s + "</strong>秒了。"; 
+    }
+    function zero(i){
+        if(i < 10)  {
+            i = "0" + i;
+        }
+        return i;
+    }
+    setInterval("computed();",1000);
+</script>
+
+<!-- 搜索遮罩框 -->
+<div id="searchModal" class="modal">
+    <div class="modal-content">
+        <div class="search-header">
+            <span class="title"><i class="fa fa-search"></i>&nbsp;&nbsp;搜索</span>
+            <input type="search" id="searchInput" name="s" placeholder="请输入搜索的关键字"
+                   class="search-input">
+        </div>
+        <div id="searchResult"></div>
+    </div>
+</div>
+
+<script src="/js/search.js"></script>
+<script type="text/javascript">
+$(function () {
+    searchFunc("/" + "search.xml", 'searchInput', 'searchResult');
+});
+</script>
+<!-- 回到顶部按钮 -->
+<div id="backTop" class="top-scroll">
+    <a class="btn-floating btn-large waves-effect waves-light" href="#!">
+        <i class="fa fa-angle-up"></i>
+    </a>
+</div>
+
+
+<script src="/libs/materialize/materialize.min.js"></script>
+<script src="/libs/masonry/masonry.pkgd.min.js"></script>
+<script src="/libs/aos/aos.js"></script>
+<script src="/libs/scrollprogress/scrollProgress.min.js"></script>
+<script src="/libs/lightGallery/js/lightgallery-all.min.js"></script>
+<script src="/js/matery.js"></script>
+
+<!-- Global site tag (gtag.js) - Google Analytics -->
+
+
+
+    <script src="/libs/others/clicklove.js"></script>
+
+
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"debug":false,"model":{"jsonPath":"live2d-widget-model-shizuku"},"display":{"position":"right","width":200,"height":400},"mobile":{"show":false},"log":false});</script></body>
+</html>

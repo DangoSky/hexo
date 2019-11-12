@@ -1,0 +1,832 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN">
+
+
+<head><meta name="generator" content="Hexo 3.9.0">
+    <meta charset="utf-8">
+    <meta name="keywords" content="Vue全家桶仿iOS版网易云音乐, DangoSky">
+    <meta name="description" content=" 前言&amp;emsp;&amp;emsp;使用vue全家桶开发这个仿网易云音乐进行实操。因所学有限，项目所包含的内容可能会比较简单，并没有涉及到服务器搭建以及webpack配置等，但整体的业务逻辑还是有的。(还是要多加学习啊，加油！)。
+介绍预览
+使用">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="renderer" content="webkit|ie-stand|ie-comp">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>Vue全家桶仿iOS版网易云音乐 | DangoSky</title>
+    <link rel="icon" type="image/jpeg" href="/favicon.jpg">
+
+    <link rel="stylesheet" type="text/css" href="/libs/awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="/libs/materialize/materialize.min.css">
+    <link rel="stylesheet" type="text/css" href="/libs/aos/aos.css">
+    <link rel="stylesheet" type="text/css" href="/libs/animate/animate.min.css">
+    <link rel="stylesheet" type="text/css" href="/libs/lightGallery/css/lightgallery.min.css">
+    <link rel="stylesheet" type="text/css" href="/css/matery.css">
+    <link rel="stylesheet" type="text/css" href="/css/my.css">
+    <style type="text/css">
+        
+    </style>
+
+    <script src="/libs/jquery/jquery-2.2.0.min.js"></script>
+<link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css"></head>
+
+
+<body>
+
+<header class="navbar-fixed">
+    <nav id="headNav" class="bg-color nav-transparent">
+        <div id="navContainer" class="nav-wrapper container">
+            <div class="brand-logo">
+                <a href="/" class="waves-effect waves-light">
+                    
+                    <span class="logo-span">DangoSky</span>
+                </a>
+            </div>
+            
+
+<a href="#" data-target="mobile-nav" class="sidenav-trigger button-collapse"><i class="fa fa-navicon"></i></a>
+<ul class="right">
+    
+    <li class="hide-on-med-and-down">
+        <a href="/" class="waves-effect waves-light">
+            
+            <i class="fa fa-home"></i>
+            
+            <span>首页</span>
+        </a>
+    </li>
+    
+    <li class="hide-on-med-and-down">
+        <a href="/tags" class="waves-effect waves-light">
+            
+            <i class="fa fa-tags"></i>
+            
+            <span>标签</span>
+        </a>
+    </li>
+    
+    <li class="hide-on-med-and-down">
+        <a href="/categories" class="waves-effect waves-light">
+            
+            <i class="fa fa-bookmark"></i>
+            
+            <span>分类</span>
+        </a>
+    </li>
+    
+    <li class="hide-on-med-and-down">
+        <a href="/archives" class="waves-effect waves-light">
+            
+            <i class="fa fa-archive"></i>
+            
+            <span>归档</span>
+        </a>
+    </li>
+    
+    <li class="hide-on-med-and-down">
+        <a href="/about" class="waves-effect waves-light">
+            
+            <i class="fa fa-user-circle-o"></i>
+            
+            <span>关于</span>
+        </a>
+    </li>
+    
+    <li class="hide-on-med-and-down">
+        <a href="/friends" class="waves-effect waves-light">
+            
+            <i class="fa fa-address-book"></i>
+            
+            <span>友情链接</span>
+        </a>
+    </li>
+    
+    <li>
+        <a href="#searchModal" class="modal-trigger waves-effect waves-light">
+            <i id="searchIcon" class="fa fa-search" title="搜索"></i>
+        </a>
+    </li>
+</ul>
+
+<div id="mobile-nav" class="side-nav sidenav">
+
+    <div class="mobile-head bg-color">
+        
+        <div class="logo-name">DangoSky</div>
+        <div class="logo-desc">
+            
+            但愿日子清净，抬头遇见的都是柔情。
+            
+        </div>
+    </div>
+
+    
+
+    <ul class="menu-list mobile-menu-list">
+        
+        <li>
+            <a href="/" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-home"></i>
+                
+                首页
+            </a>
+        </li>
+        
+        <li>
+            <a href="/tags" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-tags"></i>
+                
+                标签
+            </a>
+        </li>
+        
+        <li>
+            <a href="/categories" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-bookmark"></i>
+                
+                分类
+            </a>
+        </li>
+        
+        <li>
+            <a href="/archives" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-archive"></i>
+                
+                归档
+            </a>
+        </li>
+        
+        <li>
+            <a href="/about" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-user-circle-o"></i>
+                
+                关于
+            </a>
+        </li>
+        
+        <li>
+            <a href="/friends" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-address-book"></i>
+                
+                友情链接
+            </a>
+        </li>
+        
+        
+    </ul>
+</div>
+
+        </div>
+
+        
+    </nav>
+
+</header>
+
+
+
+
+
+<div class="bg-cover pd-header post-cover" style="background-image: url('http://p1.pstatp.com/large/pgc-image/1539560119468feb70b785e')">
+    <div class="container">
+        <div class="row">
+            <div class="col s12 m12 l12">
+                <div class="brand">
+                    <div class="description center-align post-title">
+                        Vue全家桶仿iOS版网易云音乐
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<main class="post-container content">
+
+    
+    <link rel="stylesheet" href="/libs/tocbot/tocbot.css">
+<style>
+    #articleContent h1::before,
+    #articleContent h2::before,
+    #articleContent h3::before,
+    #articleContent h4::before,
+    #articleContent h5::before,
+    #articleContent h6::before {
+        display: block;
+        content: " ";
+        height: 100px;
+        margin-top: -100px;
+        visibility: hidden;
+    }
+
+    #articleContent :focus {
+        outline: none;
+    }
+
+    .toc-fixed {
+        position: fixed;
+        top: 64px;
+    }
+
+    .toc-widget {
+        padding-left: 20px;
+    }
+
+    .toc-widget .toc-title {
+        margin: 35px 0 15px 0;
+        padding-left: 17px;
+        font-size: 1.5rem;
+        font-weight: bold;
+        line-height: 1.5rem;
+    }
+
+    .toc-widget ol {
+        padding: 0;
+        list-style: none;
+    }
+
+    #toc-content ol {
+        padding-left: 10px;
+    }
+
+    #toc-content ol li {
+        padding-left: 10px;
+    }
+
+    #toc-content .toc-link:hover {
+        color: #42b983;
+        font-weight: 700;
+        text-decoration: underline;
+    }
+
+    #toc-content .toc-link::before {
+        background-color: transparent;
+        max-height: 25px;
+    }
+
+    #toc-content .is-active-link {
+        color: #42b983;
+    }
+
+    #toc-content .is-active-link::before {
+        background-color: #42b983;
+    }
+
+    #floating-toc-btn {
+        position: fixed;
+        right: 20px;
+        bottom: 76px;
+        padding-top: 15px;
+        margin-bottom: 0;
+        z-index: 998;
+    }
+
+    #floating-toc-btn .btn-floating {
+        width: 48px;
+        height: 48px;
+    }
+
+    #floating-toc-btn .btn-floating i {
+        line-height: 48px;
+        font-size: 1.4rem;
+    }
+</style>
+<div class="row">
+    <div id="main-content" class="col s12 m12 l9">
+        <!-- 文章内容详情 -->
+<div id="artDetail">
+    <div class="card">
+        <div class="card-content article-info">
+            <div class="row tag-cate">
+                <div class="col s7">
+                    
+                    <div class="article-tag">
+                        
+                            <a href="/tags/JavaScript/" target="_blank">
+                                <span class="chip bg-color">JavaScript</span>
+                            </a>
+                        
+                            <a href="/tags/Web-Project/" target="_blank">
+                                <span class="chip bg-color">Web Project</span>
+                            </a>
+                        
+                            <a href="/tags/Vue/" target="_blank">
+                                <span class="chip bg-color">Vue</span>
+                            </a>
+                        
+                    </div>
+                    
+                </div>
+                <div class="col s5 right-align">
+                    
+                    <div class="post-cate">
+                        <i class="fa fa-bookmark fa-fw icon-category"></i>
+                        
+                            <a href="/categories/Web-Project/" class="post-category" target="_blank">
+                                Web Project
+                            </a>
+                        
+                    </div>
+                    
+                </div>
+            </div>
+
+            <div class="post-info">
+                <div class="post-date info-break-policy">
+                    <i class="fa fa-calendar-minus-o fa-fw"></i>发布日期:&nbsp;&nbsp;
+                    2019-02-25
+                </div>
+
+                
+                    
+                    <div class="info-break-policy">
+                        <i class="fa fa-file-word-o fa-fw"></i>文章字数:&nbsp;&nbsp;
+                        1.7k
+                    </div>
+                    
+
+                    
+                    <div class="info-break-policy">
+                        <i class="fa fa-clock-o fa-fw"></i>阅读时长:&nbsp;&nbsp;
+                        6 分
+                    </div>
+                    
+                
+				
+				
+            </div>
+        </div>
+        <hr class="clearfix">
+        <div class="card-content article-card-content">
+            <div id="articleContent">
+                <script src="/assets/js/APlayer.min.js"> </script><h1 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h1><p>&emsp;&emsp;使用vue全家桶开发这个仿网易云音乐进行实操。因所学有限，项目所包含的内容可能会比较简单，并没有涉及到服务器搭建以及webpack配置等，但整体的业务逻辑还是有的。(还是要多加学习啊，加油！)。</p>
+<h1 id="介绍"><a href="#介绍" class="headerlink" title="介绍"></a>介绍</h1><h2 id="预览"><a href="#预览" class="headerlink" title="预览"></a>预览</h2><blockquote>
+<p>使用的是学生服务器,带宽较小，初次体验可能会加载得比较慢 </p>
+</blockquote>
+<p>&emsp;&emsp;<a href="https://github.com/DangoSky/cloud-music" target="_blank" rel="noopener">项目地址</a><br>&emsp;&emsp;<a href="vue全家桶仿iOS版网易云音乐/QRcode.png">在线体验</a></p>
+<blockquote>
+<p>PC端推荐使用chrome或firefox预览</p>
+</blockquote>
+<p><img src="https://user-gold-cdn.xitu.io/2019/3/10/1696339dfe78e0d4?w=320&amp;h=319&amp;f=png&amp;s=7499" alt></p>
+<blockquote>
+<p>移动端推荐使用Android手机微信扫码预览,暂不支持iOS播放   </p>
+</blockquote>
+<h2 id="安装运行"><a href="#安装运行" class="headerlink" title="安装运行"></a>安装运行</h2><pre><code>克隆项目     
+git clone https://github.com/DangoSky/cloud-music.git
+
+安装依赖   
+npm install   
+
+开发环境运行    
+npm run serve   
+
+生产环境构建   
+npm run build 
+</code></pre><h2 id="技术栈"><a href="#技术栈" class="headerlink" title="技术栈"></a>技术栈</h2><p>&emsp;&emsp;vue2 + vue-cli3 + vue-router + vuex + axios</p>
+<h2 id="使用到的工具"><a href="#使用到的工具" class="headerlink" title="使用到的工具"></a>使用到的工具</h2><p>&emsp;&emsp;<code>vue-lazyload</code>: 实现图片懒加载<br>&emsp;&emsp;<code>fastclick</code>: 解决移动端点击300ms延迟<br>&emsp;&emsp;<code>Iconfont</code>: 本项目包含的所有图标均来源于此<br>&emsp;&emsp;(本项目未使用UI框架)</p>
+<h2 id="api调用"><a href="#api调用" class="headerlink" title="api调用"></a>api调用</h2><p>  &emsp;&emsp;<a href="https://github.com/Binaryify/NeteaseCloudMusicApi" target="_blank" rel="noopener">网易云音乐 NodeJS 版 API</a><br>  &emsp;&emsp;<a href="https://zhuanlan.zhihu.com/p/30246788" target="_blank" rel="noopener">网易云音乐（Cloudmusic）API</a>   </p>
+<h2 id="项目截图"><a href="#项目截图" class="headerlink" title="项目截图"></a>项目截图</h2><p><img src="https://user-gold-cdn.xitu.io/2019/3/10/169633ba1c662491?w=279&amp;h=502&amp;f=png&amp;s=183089" alt><br><img src="https://user-gold-cdn.xitu.io/2019/3/10/169633bc0bda3c19?w=281&amp;h=504&amp;f=png&amp;s=191437" alt><br><img src="https://user-gold-cdn.xitu.io/2019/3/10/169633bcc1b60036?w=280&amp;h=503&amp;f=png&amp;s=48341" alt><br><img src="https://user-gold-cdn.xitu.io/2019/3/10/169633bdf34cdbdd?w=279&amp;h=500&amp;f=png&amp;s=252193" alt><br><img src="https://user-gold-cdn.xitu.io/2019/3/10/169633be8170cd45?w=279&amp;h=500&amp;f=png&amp;s=217948" alt></p>
+<h2 id="功能实现"><a href="#功能实现" class="headerlink" title="功能实现"></a>功能实现</h2><ul>
+<li>ios版网易云音乐界面的五个模块</li>
+<li>基本的播放暂停、上下一曲</li>
+<li>播放顺序调整、进度条拖拽</li>
+<li>歌词滚动   </li>
+<li>音乐搜索</li>
+<li>推荐歌单  </li>
+<li>推荐MV  </li>
+<li>增删改查歌单(使用localStorage存储，右滑可以删除歌单或将歌曲移出歌单)  <blockquote>
+<p>因要开始准备学校挑战杯，所以本项目开发暂告一顿落，等以后有时间还会继续开发新功能，预期添加的功能包括：查看歌曲评论、用户登陆、每日推荐、查看动态…</p>
+</blockquote>
+</li>
+</ul>
+<h2 id="目录结构"><a href="#目录结构" class="headerlink" title="目录结构"></a>目录结构</h2><pre><code>src  
+|—— api 调用api
+|—— assets 图标库
+|—— components 组件库
+|   |——base 基础组件
+|   |——explore 发现页面
+|   |——video 视频页面
+|   |——myself 我的页面
+|   |——friend 朋友页面
+|   |——user 账号页面
+|—— css 各个组件的样式 
+|   |——base
+|   |——explore
+|   |——video
+|   |——myself
+|   |——friend
+|   |——user
+|—— router  路由配置
+|—— store  vuex状态管理
+|—— App.vue  根组件
+|—— main.js 入口
+</code></pre><h1 id="遇到的问题"><a href="#遇到的问题" class="headerlink" title="遇到的问题"></a>遇到的问题</h1><ol>
+<li><p>iOS上无法播放音乐，不论是用微信打开还是用safari、Firefox打开都没有声音，测试了一下是取得到音乐的url的。问题应该是audiod的paly方法失效了，原因未明，谷歌也未果，而且我看GitHub上别人的仿网易云貌似没有这个问题，未解。安卓的情况比较复杂，拿了几台手机测试，在微信上打开全部功能都正常运行。用浏览器则一些型号的手机可以，一些不可以，而且有的手机用UC打开无法播放，用系统自带的浏览器则可以播放。原因也未明，不过这倒是在意料之中，因为在代码中还没有做兼容性处理，等以后有时间再继续完善吧。</p>
+</li>
+<li><p>偶尔会出现疑似跨域资源共享的问题(见下图)，说疑似是因为这个报错只有小概率会出现，而且即使出现了只要过一会再刷新就不会报错了，不像是跨域的问题。因为api是别人写好的，也不知道是不是后端接口的问题，原因未接。在GitHub上有和一个也在做仿网易云的人交流过，他也偶尔会出现这个cors问题，但也不知道怎么解决。<br><img src="/2019/02/25/vue全家桶仿iOS版网易云音乐/cors.png" alt></p>
+</li>
+<li><p>fixed定位的问题。网易云很多个界面上都有一个用于路由跳转的footer，并且是固定定位的。因为固定定位在文档流中不占据位置，所以会造成上面排版下来的元素会被footer覆盖住，设置z-index也不管用（如果footer有背景色的话，则footer无法被完全覆盖住）。我的解决办法是使用一个空的div或一个伪元素占位，把宽高设得和footer一样加上相对定位，这样就可以把fixed定位的空间补回来了。但我感觉这只是一种hack，并没有根本上解决问题，每次在一个页面中遇到这种问题都得手动再去新增一个伪元素和空div，而且这样一个空div不太符合语义化。但fixed定位本就规定了在文档流中不占据位置，貌似也没有更好的解决办法了。</p>
+</li>
+</ol>
+<pre class=" language-css"><code class="language-css"><span class="token selector"><span class="token class">.userBar</span><span class="token pseudo-element">::after</span> </span><span class="token punctuation">{</span>   
+  <span class="token property">content</span><span class="token punctuation">:</span> <span class="token string">''</span><span class="token punctuation">;</span>    
+  <span class="token property">width</span><span class="token punctuation">:</span> <span class="token number">100%</span><span class="token punctuation">;</span>
+  <span class="token property">height</span><span class="token punctuation">:</span> <span class="token number">50</span>px<span class="token punctuation">;</span>
+  <span class="token property">position</span><span class="token punctuation">:</span> relative<span class="token punctuation">;</span>
+  <span class="token property">left</span><span class="token punctuation">:</span> <span class="token number">0</span><span class="token punctuation">;</span>
+  <span class="token property">bottom</span><span class="token punctuation">:</span> <span class="token number">0</span><span class="token punctuation">;</span>
+  <span class="token property">display</span><span class="token punctuation">:</span> block<span class="token punctuation">;</span>    
+<span class="token punctuation">}</span>
+</code></pre>
+<h1 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h1><p>&emsp;&emsp;有一个项目开发进行实操，有时候确实比一直看文档要有用的多。看文档和一些技术贴有时候会因为尚未接触到那些问题而没有什么想法，边在实操中发现问题边针对性地学习有时候不失为一种好的学习方法。本项目的开发过程也遇到过不少问题，几乎思考一阵子或是求助于Google和StackOverflow就可以解决掉了，也算是锻炼了一下在项目开发中发现问题和解决问题的能力吧。有些可惜的是，因所学有限，该项目尚未进行性能优化以及兼容性处理，可能在不同的设备和浏览器上会有意料之外的效果，等以后学到了更多后再陆续优化吧，目前得把时间投入到新任务中去了，现在写下这篇总结算是对这阵子开发的收官吧。</p>
+<p>&emsp;&emsp;如果您发现有什么问题或是有什么想法，欢迎issues和PR。    </p>
+<p>&emsp;&emsp;如果您觉得这个仿网易云音乐还算不错，可以在<a href="https://github.com/DangoSky/cloud-music" target="_blank" rel="noopener">GitHub</a>上点个star，非常感谢您的认可和鼓励，谢谢~</p>
+<hr>
+<p><strong>后话</strong>：<br>&emsp;&emsp;接下来就开始向react进军了，虽然是打算等暑假或是大三再学习react的，但挑战杯的项目需要，既然决定要用react native开发app了，就顺道一起把react学了吧。其实还是很满意这个进程的，使用react native进行app开发挺契合我原先的技术栈的，而且这样就不用原生的app开发那一套，也就不用学Java啦，几乎没有额外的学习成本。所以啊，要继续加油啦，保持这几个月来的学习状态，继续前进吧！接下来这阵子的学习目标，边学习react后开始练手react native弄个demo熟悉熟悉，边巩固原先的js基础好为之后的实习僧面试做准备(暑假应该找得到实习吧，不知道外面的行情怎么样)。还得注意下时间准备做小程序了，虽然还有一个多月的时间，用mpvue搭建也几乎和用vue没啥差别，但还是得先安排好时间，免得到时出了什么岔子才行啊。   </p>
+<p>&emsp;&emsp;以上。   </p>
+<p>&emsp;&emsp;向前有路，未来可期！</p>
+
+            </div>
+            <hr/>
+
+            
+
+            <link rel="stylesheet" type="text/css" href="/libs/share/css/share.min.css">
+
+<div id="article-share">
+    
+    <div class="social-share" data-disabled="qzone" data-wechat-qrcode-helper="<p>微信里点“发现”->“扫一扫”二维码便可查看分享。</p>"></div>
+    
+</div>
+
+<script src="/libs/share/js/social-share.min.js"></script>
+
+            <div class="reprint">
+                <p>
+                    <span class="reprint-tip">
+                        <i class="fa fa-exclamation-circle"></i>&nbsp;&nbsp;转载请注明:
+                    </span>
+                    <a href="http://blog.dangosky.com" class="b-link-green">DangoSky</a>
+                    <i class="fa fa-angle-right fa-lg fa-fw text-color"></i>
+                    <a href="/2019/02/25/vue全家桶仿iOS版网易云音乐/" class="b-link-green">Vue全家桶仿iOS版网易云音乐</a>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    
+
+    
+
+    
+        <div class="disqus-card card" data-aos="fade-up">
+    <div id="disqus_thread" class="card-content">
+        <noscript>Please enable JavaScript to view the
+            <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+    </div>
+</div>
+
+<script type="text/javascript">
+    disqus_config = function () {
+        this.page.url = 'http://blog.dangosky.com/2019/02/25/vue全家桶仿iOS版网易云音乐/';
+        this.page.identifier = '/2019/02/25/vue全家桶仿iOS版网易云音乐/';
+        this.page.title = 'Vue全家桶仿iOS版网易云音乐';
+    };
+    let disqus_shortname = 'dangosky';
+
+    (function () { // DON'T EDIT BELOW THIS LINE
+        let d = document, s = d.createElement('script');
+        // 如：s.src = 'https://blinkfox.disqus.com/embed.js';
+        s.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+    
+
+    
+
+    
+
+    
+
+<article id="prenext-posts" class="prev-next articles">
+    <div class="row article-row">
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge left-badge text-color">
+                <i class="fa fa-chevron-left"></i>&nbsp;上一篇</div>
+            <div class="card">
+                <a href="/2019/02/28/==中的类型转换/">
+                    <div class="card-image">
+                        
+                        <img src="https://github.com/DangoSky/practices-for-web/blob/master/images/1.jpg?raw=true" class="responsive-img" alt="==中的类型转换">
+                        
+                        <span class="card-title">==中的类型转换</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary"> [] == []        // false
+[] == ![]       // true
+{} == !{}       // false
+[] == !{}       // true
+![] == {}       // fa</div>
+                    <div class="publish-info">
+                        <span class="publish-date">
+                            <i class="fa fa-clock-o fa-fw icon-date"></i>2019-02-28
+                        </span>
+                        <span class="publish-author">
+                            
+                            <i class="fa fa-bookmark fa-fw icon-category"></i>
+                            
+                            <a href="/categories/JavaScript/" class="post-category" target="_blank">
+                                    JavaScript
+                                </a>
+                            
+                            
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/JavaScript/" target="_blank">
+                        <span class="chip bg-color">JavaScript</span>
+                    </a>
+                    
+                    <a href="/tags/前端基础/" target="_blank">
+                        <span class="chip bg-color">前端基础</span>
+                    </a>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge right-badge text-color">
+                下一篇&nbsp;<i class="fa fa-chevron-right"></i>
+            </div>
+            <div class="card">
+                <a href="/2018/12/25/CSS制作三角形/">
+                    <div class="card-image">
+                        
+                        <img src="https://github.com/DangoSky/practices-for-web/blob/master/images/8.jpg?raw=true" class="responsive-img" alt="CSS制作各种图形">
+                        
+                        <span class="card-title">CSS制作各种图形</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary"> 三角形原理&emsp;&emsp;有时候代码和效果图可以比文字更清楚地表达我们想说明的意思，所以我们先上一段样式再看看效果。
+&lt;div class="square">&lt;/div>  
+
+.square {
+  width: 5</div>
+                    <div class="publish-info">
+                            <span class="publish-date">
+                                <i class="fa fa-clock-o fa-fw icon-date"></i>2018-12-25
+                            </span>
+                        <span class="publish-author">
+                            
+                            <i class="fa fa-bookmark fa-fw icon-category"></i>
+                            
+                            <a href="/categories/CSS/" class="post-category" target="_blank">
+                                    CSS
+                                </a>
+                            
+                            
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/CSS/" target="_blank">
+                        <span class="chip bg-color">CSS</span>
+                    </a>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+    </div>
+</article>
+</div>
+
+
+    </div>
+    <div id="toc-aside" class="expanded col l3 hide-on-med-and-down">
+        <div class="toc-widget">
+            <div class="toc-title"><i class="fa fa-list-alt"></i>&nbsp;&nbsp;目录</div>
+            <div id="toc-content"></div>
+        </div>
+    </div>
+</div>
+
+<!-- TOC 悬浮按钮. -->
+
+<div id="floating-toc-btn" class="hide-on-med-and-down">
+    <a class="btn-floating btn-large bg-color">
+        <i class="fa fa-list"></i>
+    </a>
+</div>
+
+
+<script src="/libs/tocbot/tocbot.min.js"></script>
+<script>
+    $(function () {
+        tocbot.init({
+            tocSelector: '#toc-content',
+            contentSelector: '#articleContent',
+            headingsOffset: -($(window).height() * 0.4 - 45),
+            // headingsOffset: -205,
+            headingSelector: 'h1, h2, h3'
+        });
+
+        // modify the toc link href to support Chinese.
+        let i = 0;
+        let tocHeading = 'toc-heading-';
+        $('#toc-content a').each(function () {
+            $(this).attr('href', '#' + tocHeading + (++i));
+        });
+
+        // modify the heading title id to support Chinese.
+        i = 0;
+        $('#articleContent').children('h1, h2, h3').each(function () {
+            $(this).attr('id', tocHeading + (++i));
+        });
+
+        // Set scroll toc fixed.
+        let tocHeight = parseInt($(window).height() * 0.4 - 64);
+        let $tocWidget = $('.toc-widget');
+        $(window).scroll(function () {
+            let scroll = $(window).scrollTop();
+            /* add post toc fixed. */
+            if (scroll > tocHeight) {
+                $tocWidget.addClass('toc-fixed');
+            } else {
+                $tocWidget.removeClass('toc-fixed');
+            }
+        });
+
+        
+        /* 修复文章卡片 div 的宽度. */
+        let fixPostCardWidth = function (srcId, targetId) {
+            let srcDiv = $('#' + srcId);
+            if (srcDiv.length === 0) {
+                return;
+            }
+
+            let w = srcDiv.width();
+            if (w >= 450) {
+                w = w + 21;
+            } else if (w >= 350 && w < 450) {
+                w = w + 18;
+            } else if (w >= 300 && w < 350) {
+                w = w + 16;
+            } else {
+                w = w + 14;
+            }
+            $('#' + targetId).width(w);
+        };
+
+        // 切换TOC目录展开收缩的相关操作.
+        const expandedClass = 'expanded';
+        let $tocAside = $('#toc-aside');
+        let $mainContent = $('#main-content');
+        $('#floating-toc-btn .btn-floating').click(function () {
+            if ($tocAside.hasClass(expandedClass)) {
+                $tocAside.removeClass(expandedClass).slideUp(500);
+                $mainContent.removeClass('l9');
+            } else {
+                $tocAside.addClass(expandedClass).slideDown(500);
+                $mainContent.addClass('l9');
+            }
+            fixPostCardWidth('artDetail', 'prenext-posts');
+        });
+        
+    });
+</script>
+    
+
+</main>
+
+
+<footer class="page-footer bg-color">
+    <div class="container row center-align">
+        <div class="col s12 m8 l8 copy-right">
+            本站由&copy;<a href="https://blinkfox.github.io/" target="_blank">Blinkfox</a>基于
+            <a href="https://hexo.io/" target="_blank">Hexo</a> 的
+            <a href="https://github.com/blinkfox/hexo-theme-matery" target="_blank">hexo-theme-matery</a>主题搭建.
+
+            
+                &nbsp;<i class="fa fa-area-chart"></i>&nbsp;站点总字数:&nbsp;
+                <span class="white-color">68.8k</span>
+            
+
+            <!-- <p id="timeDate">DangoSky的博客诞生已经</p><p id="times">载入时分秒...</p> -->
+            <!-- <p>DangoSky的博客已经诞生<strong><i><span id="day"></span><span id="hour"></span></span><span id="minutes"></span><span id="seconds"></span> </strong><i></p> -->
+                <p id="timeDate"></p>
+
+            <!-- 
+			 -->
+        </div>
+        <div class="col s12 m4 l4 social-link ">
+
+    <a href="mailto:1341514988@qq.com" class="tooltipped" target="_blank" data-tooltip="邮件联系我" data-position="top" data-delay="50">
+        <i class="fa fa-envelope-open"></i>
+    </a>
+
+
+
+    <a href="/atom.xml" class="tooltipped" target="_blank" data-tooltip="RSS 订阅" data-position="top" data-delay="50">
+        <i class="fa fa-rss"></i>
+    </a>
+
+
+
+   <a href="https://github.com/DangoSky" class="tooltipped" target="_blank" data-tooltip="访问我的GitHub" data-position="top" data-delay="50">
+    <i class="fa fa-github"></i>
+</a>
+
+</div>
+    </div>
+</footer>
+
+<div class="progress-bar"></div>
+
+<script type="text/javascript">
+    function computed(){
+        let sum = new Date()-new Date(2018,9,3,23,3,38)
+        sum = parseInt(sum / 1000);
+        let d = zero(parseInt(sum / 3600 / 24));
+        let h = zero(parseInt(sum / 3600 % 24));
+        let m = zero(parseInt(sum / 60 % 60));
+        let s = zero(parseInt(sum % 60));
+        document.getElementById("timeDate").innerHTML = "DangoSky的博客已经诞生<strong>" + d + "</strong>天<strong>" + h + "</strong>小时<strong>" + m + "</strong>分钟<strong>" + s + "</strong>秒了。"; 
+    }
+    function zero(i){
+        if(i < 10)  {
+            i = "0" + i;
+        }
+        return i;
+    }
+    setInterval("computed();",1000);
+</script>
+
+<!-- 搜索遮罩框 -->
+<div id="searchModal" class="modal">
+    <div class="modal-content">
+        <div class="search-header">
+            <span class="title"><i class="fa fa-search"></i>&nbsp;&nbsp;搜索</span>
+            <input type="search" id="searchInput" name="s" placeholder="请输入搜索的关键字"
+                   class="search-input">
+        </div>
+        <div id="searchResult"></div>
+    </div>
+</div>
+
+<script src="/js/search.js"></script>
+<script type="text/javascript">
+$(function () {
+    searchFunc("/" + "search.xml", 'searchInput', 'searchResult');
+});
+</script>
+<!-- 回到顶部按钮 -->
+<div id="backTop" class="top-scroll">
+    <a class="btn-floating btn-large waves-effect waves-light" href="#!">
+        <i class="fa fa-angle-up"></i>
+    </a>
+</div>
+
+
+<script src="/libs/materialize/materialize.min.js"></script>
+<script src="/libs/masonry/masonry.pkgd.min.js"></script>
+<script src="/libs/aos/aos.js"></script>
+<script src="/libs/scrollprogress/scrollProgress.min.js"></script>
+<script src="/libs/lightGallery/js/lightgallery-all.min.js"></script>
+<script src="/js/matery.js"></script>
+
+<!-- Global site tag (gtag.js) - Google Analytics -->
+
+
+
+    <script src="/libs/others/clicklove.js"></script>
+
+
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"debug":false,"model":{"jsonPath":"live2d-widget-model-shizuku"},"display":{"position":"right","width":200,"height":400},"mobile":{"show":false},"log":false});</script></body>
+</html>
