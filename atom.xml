@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://blog.dangosky.com/"/>
-  <updated>2019-11-21T11:47:35.537Z</updated>
+  <updated>2020-01-11T09:33:26.765Z</updated>
   <id>http://blog.dangosky.com/</id>
   
   <author>
@@ -15,6 +15,34 @@
   </author>
   
   <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>跨域解决方案实践</title>
+    <link href="http://blog.dangosky.com/2020/01/10/%E8%B7%A8%E5%9F%9F%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88%E5%AE%9E%E8%B7%B5/"/>
+    <id>http://blog.dangosky.com/2020/01/10/跨域解决方案实践/</id>
+    <published>2020-01-10T02:20:33.000Z</published>
+    <updated>2020-01-11T09:33:26.765Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        
+        
+          &lt;script src=&quot;/assets/js/APlayer.min.js&quot;&gt; &lt;/script&gt;&lt;h2 id=&quot;同源策略&quot;&gt;&lt;a href=&quot;#同源策略&quot; class=&quot;headerlink&quot;
+        
+      
+    
+    </summary>
+    
+      <category term="前端基础" scheme="http://blog.dangosky.com/categories/%E5%89%8D%E7%AB%AF%E5%9F%BA%E7%A1%80/"/>
+    
+    
+      <category term="前端基础" scheme="http://blog.dangosky.com/tags/%E5%89%8D%E7%AB%AF%E5%9F%BA%E7%A1%80/"/>
+    
+      <category term="Node" scheme="http://blog.dangosky.com/tags/Node/"/>
+    
+  </entry>
   
   <entry>
     <title>React Hook 中的闭包问题</title>
@@ -529,34 +557,6 @@
         
         
           &lt;script src=&quot;/assets/js/APlayer.min.js&quot;&gt; &lt;/script&gt;&lt;h1 id=&quot;盒模型&quot;&gt;&lt;a href=&quot;#盒模型&quot; class=&quot;headerlink&quot;
-        
-      
-    
-    </summary>
-    
-      <category term="CSS" scheme="http://blog.dangosky.com/categories/CSS/"/>
-    
-    
-      <category term="前端基础" scheme="http://blog.dangosky.com/tags/%E5%89%8D%E7%AB%AF%E5%9F%BA%E7%A1%80/"/>
-    
-      <category term="CSS" scheme="http://blog.dangosky.com/tags/CSS/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>CSS常见的几种布局方式</title>
-    <link href="http://blog.dangosky.com/2019/03/07/%E6%9C%AA%E7%9F%A5%E5%AE%BD%E9%AB%98%E5%85%83%E7%B4%A0%E7%9A%84%E6%B0%B4%E5%B9%B3%E5%9E%82%E7%9B%B4%E5%B1%85%E4%B8%AD%E5%B8%83%E5%B1%80/"/>
-    <id>http://blog.dangosky.com/2019/03/07/未知宽高元素的水平垂直居中布局/</id>
-    <published>2019-03-07T05:32:35.000Z</published>
-    <updated>2019-11-21T02:53:21.846Z</updated>
-    
-    <summary type="html">
-    
-      
-      
-        
-        
-          &lt;script src=&quot;/assets/js/APlayer.min.js&quot;&gt; &lt;/script&gt;&lt;h1 id=&quot;未知宽高元素的水平垂直居中&quot;&gt;&lt;a href=&quot;#未知宽高元素的水平垂直居中&quot; class=&quot;headerlink&quot;
         
       
     
