@@ -346,14 +346,14 @@
                     
                     <div class="info-break-policy">
                         <i class="fa fa-file-word-o fa-fw"></i>文章字数:&nbsp;&nbsp;
-                        3.2k
+                        3.4k
                     </div>
                     
 
                     
                     <div class="info-break-policy">
                         <i class="fa fa-clock-o fa-fw"></i>阅读时长:&nbsp;&nbsp;
-                        12 分
+                        13 分
                     </div>
                     
                 
@@ -411,13 +411,14 @@ obj<span class="token punctuation">.</span>constructor <span class="token operat
 </code></pre>
 <p>&emsp;&emsp;原型上的 constructor 属性也指向了构造函数，即该函数本身，<code>Fn.prototype.constructor === Fn)  // true</code>。不过说 constructor 属性，存在于所有数据类型上不是很严谨， 并不是那些基本数据类型上自己有 constructor 属性，我们对其使用 constructor 属性时，实际是到它们的原型上获取到 constructor 属性的。<br>&emsp;&emsp;我们用一张关系图来总结 <code>prototype</code> 、 <code>__proto__</code> 和 <code>constructor</code> 的关系。</p>
 <p><img src="/2019/03/20/JS之原型和原型链/1.jpg" alt></p>
-<h1 id="instanceof"><a href="#instanceof" class="headerlink" title="instanceof"></a>instanceof</h1><p>&emsp;&emsp;我们可以使用<code>instanceof</code>来判断一个对象在其原型链中是否存在一个构造函数的 prototype 属性。如 A instanceof B，即判断  B.prototype 是否在 对象A 的原型链上。在判定过程中会循着A的原型链上去查找，只要该对象出现在其原型链上的任一位置，就会判定为 true。当然也可以借此判断某一个数据的数据类型，不过这还是会有些不足，虽然判断一个数据是否为数组时<code>[] instanceof Array</code>会返回 true，但判定<code>[] instanceof  Object</code>也还是会返回 true，所以判定数据类型的时候还是采用<code>Object.prototype.toString.call()</code>的好。现在我们再来看下面的几个等式。</p>
+<h1 id="instanceof"><a href="#instanceof" class="headerlink" title="instanceof"></a>instanceof</h1><p>&emsp;&emsp;我们可以使用<code>instanceof</code>来判断一个对象的原型链上是否存在一个构造函数的原型。如 A instanceof B，即判断  B.prototype 是否在对象 A 的原型链上。在判定过程中会循着 A 的原型链上去查找，只要该对象出现在其原型链上的任一位置，就会判定为 true。当然也可以借此判断某一个数据的数据类型，不过这还是会有些不足，虽然判断一个数据是否为数组时<code>[] instanceof Array</code>会返回 true，但判定<code>[] instanceof Object</code>也还是会返回 true，所以判定数据类型的时候还是采用<code>Object.prototype.toString.call()</code>的好。现在我们再来看下面的几个等式。</p>
 <pre class=" language-js"><code class="language-js">Object <span class="token keyword">instanceof</span> <span class="token class-name">Function</span>
 Function <span class="token keyword">instanceof</span> <span class="token class-name">Function</span> 
 Function <span class="token keyword">instanceof</span> <span class="token class-name">Object</span> 
-Object <span class="token keyword">instanceof</span> <span class="token class-name">Object</span>       <span class="token comment" spellcheck="true">// 上述几个式子都为true</span>
+Object <span class="token keyword">instanceof</span> <span class="token class-name">Object</span>
+<span class="token comment" spellcheck="true">// 上述几个式子都为true</span>
 </code></pre>
-<p>&emsp;&emsp;前两个式子之所以会返回 true，是因为 Object 和 Function 等构造函数都继承自 <code>Function.prototype</code>，所以所有的函数都能通过原型链找到创建它们的 Function 构造函数，自然也就返回了 true。而 <code>Function.prototype</code>是一个对象，它的构造函数是 Object，所以在对 Function、Object等的原型链上寻找时会找到它们的构造函数 Object，自然也就返回了 true。</p>
+<p>&emsp;&emsp;前两个式子之所以会返回 true，是因为 Object 和 Function 等构造函数都继承自 <code>Function.prototype</code>，所以所有的函数都能通过原型链找到创建它们的 Function 构造函数，自然也就返回了 true。而 <code>Function.prototype</code>是一个对象，它的构造函数是 Object，所以在对 Function、Object 等的原型链上寻找时会找到它们的构造函数 Object，自然也就返回了 true。</p>
 <p>&emsp;&emsp;我们可以根据 instanceof 的工作原理来模拟实现 instanceof。</p>
 <pre class=" language-js"><code class="language-js"><span class="token keyword">function</span> <span class="token function">_instanceof</span><span class="token punctuation">(</span>left<span class="token punctuation">,</span> right<span class="token punctuation">)</span> <span class="token punctuation">{</span>
   <span class="token comment" spellcheck="true">// 左值需要是函数或非null的对象，右值需要是函数。</span>
@@ -437,6 +438,17 @@ Object <span class="token keyword">instanceof</span> <span class="token class-na
   <span class="token punctuation">}</span>
 <span class="token punctuation">}</span>
 </code></pre>
+<p><code>instanceof</code> 的工作原理是调用对象内置的 <a href="https://developer.mozilla.org/zh-CN/docs/Web/JavaScript/Reference/Global_Objects/Symbol/hasInstance" target="_blank" rel="noopener">Symbol.hasInstance</a> 方法，我们可以通过改写 <code>Symbol.hasInstance</code> 来自定义的 <code>instanceof</code> 行为。</p>
+<pre class=" language-js"><code class="language-js"><span class="token keyword">class</span> <span class="token class-name">PrimitiveNumber</span> <span class="token punctuation">{</span>
+  <span class="token keyword">static</span> <span class="token punctuation">[</span>Symbol<span class="token punctuation">.</span>hasInstance<span class="token punctuation">]</span><span class="token punctuation">(</span>x<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">return</span> <span class="token keyword">typeof</span> x <span class="token operator">===</span> <span class="token string">'number'</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token number">111</span> <span class="token keyword">instanceof</span> <span class="token class-name">PrimitiveNumber</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment" spellcheck="true">// true</span>
+</code></pre>
+<h1 id="判断数据类型的方法"><a href="#判断数据类型的方法" class="headerlink" title="判断数据类型的方法"></a>判断数据类型的方法</h1><h4 id="typeof"><a href="#typeof" class="headerlink" title="typeof"></a>typeof</h4><p>可以判断基本数据类型，但判断数组、对象和 null 时得到的都是 Object，并且 <code>typeof NaN</code> 会得到 Number。可以在 typeof 的基础上再使用 Array.isArray 加以区分。</p>
+<h4 id="instanceof-1"><a href="#instanceof-1" class="headerlink" title="instanceof"></a>instanceof</h4><p>可以判断基本数据类型，但判断引用类型的话，因为所有原型都继承自 Object，所以 <code>函数/数组 instanceof Object</code> 都会得到 true。</p>
+<h4 id="toString-NaN"><a href="#toString-NaN" class="headerlink" title="toString"></a>toString</h4><p>通过 <code>Object.prototype.toString.call()</code> 来判断数据类型，不仅是基本数据类型还是引用数据类型，都可以得到正确结果。而且对于 Map、Set 等数据结构也能准确判断。</p>
 <h1 id="JS继承的几种方式"><a href="#JS继承的几种方式" class="headerlink" title="JS继承的几种方式"></a>JS继承的几种方式</h1><h2 id="构造函数继承"><a href="#构造函数继承" class="headerlink" title="构造函数继承"></a>构造函数继承</h2><p>&emsp;&emsp;直接在子构造函数中调用父构造函数，这样可以使子类继承了父构造函数的属性和方法。</p>
 <pre class=" language-js"><code class="language-js"><span class="token keyword">function</span> <span class="token function">Parent</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
   <span class="token keyword">this</span><span class="token punctuation">.</span>name <span class="token operator">=</span> <span class="token string">"Parent"</span><span class="token punctuation">;</span>
@@ -523,10 +535,9 @@ Child<span class="token punctuation">.</span>prototype <span class="token operat
 <span class="token keyword">let</span> child <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Child</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>   
 child<span class="token punctuation">.</span>arr<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token number">10</span><span class="token punctuation">;</span>        
 <span class="token keyword">let</span> child1 <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Child</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>  <span class="token comment" spellcheck="true">// child.arr -> [10, 3]，child1.arr -> [1, 3]</span>
-<span class="token template-string"><span class="token string">``</span></span><span class="token template-string"><span class="token string">`js
-&amp;emsp;&amp;emsp;现在可以看到，即使在 Child 的一个实例上修改了 arr 的值，也不会影响到 其他实例上 arr 的值了。不过问题又来了，当我们`</span></span><span class="token template-string"><span class="token string">`console.log(child.constructor)`</span></span><span class="token template-string"><span class="token string">`的时候，发现输出的会是 Parent 构造函数。这问题也很好理解，因为我们修改了 child.prototype 的原型，而我们对某一个对象或函数使用 constructor 属性时是到它们的原型上去读取的，所以 child 的构造函数自然也就成了 Parent。既然如此，我们可以手动把它的构造函数改回来，设置`</span></span><span class="token template-string"><span class="token string">`Child.prototype.constructor = Child`</span></span><span class="token template-string"><span class="token string">`。
-`</span></span><span class="token template-string"><span class="token string">``</span></span>js
-Child<span class="token punctuation">.</span>prototype<span class="token punctuation">.</span>constructor <span class="token operator">=</span> Child
+</code></pre>
+<p>&emsp;&emsp;现在可以看到，即使在 Child 的一个实例上修改了 arr 的值，也不会影响到 其他实例上 arr 的值了。不过问题又来了，当我们<code>console.log(child.constructor)</code>的时候，发现输出的会是 Parent 构造函数。这问题也很好理解，因为我们修改了 child.prototype 的原型，而我们对某一个对象或函数使用 constructor 属性时是到它们的原型上去读取的，所以 child 的构造函数自然也就成了 Parent。既然如此，我们可以手动把它的构造函数改回来，设置<code>Child.prototype.constructor = Child</code>。</p>
+<pre class=" language-js"><code class="language-js">Child<span class="token punctuation">.</span>prototype<span class="token punctuation">.</span>constructor <span class="token operator">=</span> Child
 console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>child<span class="token punctuation">.</span>constructor<span class="token punctuation">)</span><span class="token punctuation">;</span>    <span class="token comment" spellcheck="true">// Child函数</span>
 <span class="token keyword">let</span> parent <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Parent</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>parent<span class="token punctuation">.</span>constructor<span class="token punctuation">)</span><span class="token punctuation">;</span>  <span class="token comment" spellcheck="true">// Child函数</span>
@@ -824,7 +835,7 @@ Child<span class="token punctuation">.</span>prototype<span class="token punctua
 
             
                 &nbsp;<i class="fa fa-area-chart"></i>&nbsp;站点总字数:&nbsp;
-                <span class="white-color">72.8k</span>
+                <span class="white-color">74.7k</span>
             
 
             <!-- <p id="timeDate">DangoSky的博客诞生已经</p><p id="times">载入时分秒...</p> -->

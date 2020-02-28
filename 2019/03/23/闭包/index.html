@@ -352,7 +352,7 @@
                     
                     <div class="info-break-policy">
                         <i class="fa fa-clock-o fa-fw"></i>阅读时长:&nbsp;&nbsp;
-                        14 分
+                        13 分
                     </div>
                     
                 
@@ -364,7 +364,7 @@
         <div class="card-content article-card-content">
             <div id="articleContent">
                 <script src="/assets/js/APlayer.min.js"> </script><h1 id="闭包的原理"><a href="#闭包的原理" class="headerlink" title="闭包的原理"></a>闭包的原理</h1><p>&emsp;&emsp;说闭包之前，需要先说一下变量作用域。在JS中作用域分为全局作用域和局部作用域，决定了变量和函数的可见范围。定义在函数内部的变量一般情况下只对当前所在函数可见，在函数外部是无法读取到函数内部的变量的。不过 JavaScript 是门神奇的语言，若是在函数内没有声明一个变量便对其赋值的话，实际上会默认将该变量声明为全局变量。而作用域链，是指在函数内部查找某一个变量的时候，先会在当前函数内寻找查找，若是找不到则会循着它的父级外部函数一直向上，直到找到该值或是到全局环境为止，也就是说外部父级函数和全局变量对某一函数而言都是可见的，这就形成了一条作用域链。而且在 Javascript 中，函数是一等公民，即函数可以被赋值，可以作为参数传递，也可以作为函数结果被 return 回去。根据这几点，我们就可以设置出一种方法，使得在函数外部依旧可以使用到函数内部的变量（这种需求也还是很常见的），而这种方法，就是闭包。</p>
-<p>&emsp;&emsp;我对闭包的理解是，<strong>在一个函数中使用了一个内部函数，而且在这个内部函数中使用到了外部函数的变量</strong>。在一般情况下，函数一旦执行完毕其内部的变量就会被销毁无法再被访问到，但通过返回一个函数可以使得该函数作用域链上可见的变量在函数外依旧可见，而我们只要在函数外使用一个变量来接受该返回结果就可以延长它们的生命周期了。这也就是闭包的两个作用： </p>
+<p>&emsp;&emsp;我对闭包的理解是，<strong>在一个函数中使用了一个内部函数，而且在这个内部函数中使用到了外部函数的变量</strong>。在一般情况下，函数一旦执行完毕其内部的变量就会被销毁无法再被访问到，但通过返回一个函数（或者让一个全局变量接受这个函数，所以并不是只有返回函数才算是闭包）就可以使得该函数作用域链上可见的变量在函数外依旧可见，而我们只要在函数外使用一个变量来接受该返回结果就可以延长它们的生命周期了。这也就是闭包的两个作用： </p>
 <ol>
 <li><p><strong>可以在函数外部读取到函数内部的变量</strong>。</p>
 </li>
@@ -417,50 +417,44 @@ counter<span class="token punctuation">.</span><span class="token function">setN
 console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>counter<span class="token punctuation">.</span><span class="token function">getNum</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>    <span class="token comment" spellcheck="true">// 11</span>
 </code></pre>
 <p>&emsp;&emsp;通过闭包我们可以模仿 C++ 里面类的私有成员，使其在函数外部只能通过函数返回的对象来操纵，保持数据的私有性。而且每一次调用都是在前面一次调用的基础上进行的，变量的内容会被保留。</p>
-<h2 id="绑定循环变量"><a href="#绑定循环变量" class="headerlink" title="绑定循环变量"></a>绑定循环变量</h2><pre class=" language-js"><code class="language-js"><span class="token keyword">function</span> <span class="token function">fn</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-  <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">var</span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> <span class="token number">5</span><span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-    <span class="token keyword">var</span> btn <span class="token operator">=</span> document<span class="token punctuation">.</span><span class="token function">createElement</span><span class="token punctuation">(</span><span class="token string">'button'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    btn<span class="token punctuation">.</span><span class="token function">appendChild</span><span class="token punctuation">(</span>document<span class="token punctuation">.</span><span class="token function">createTextNode</span><span class="token punctuation">(</span><span class="token string">'Button '</span> <span class="token operator">+</span> i<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    btn<span class="token punctuation">.</span><span class="token function">addEventListener</span><span class="token punctuation">(</span><span class="token string">'click'</span><span class="token punctuation">,</span> <span class="token keyword">function</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span> 
-      console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>i<span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    document<span class="token punctuation">.</span>body<span class="token punctuation">.</span><span class="token function">appendChild</span><span class="token punctuation">(</span>btn<span class="token punctuation">)</span><span class="token punctuation">;</span>
-  <span class="token punctuation">}</span>
+<h2 id="绑定循环变量"><a href="#绑定循环变量" class="headerlink" title="绑定循环变量"></a>绑定循环变量</h2><pre class=" language-js"><code class="language-js"><span class="token keyword">for</span><span class="token punctuation">(</span><span class="token keyword">var</span> i<span class="token operator">=</span><span class="token number">1</span><span class="token punctuation">;</span> i<span class="token operator">&lt;=</span><span class="token number">5</span><span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+  <span class="token function">setTimeout</span><span class="token punctuation">(</span><span class="token keyword">function</span> <span class="token function">timer</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>i<span class="token punctuation">)</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">)</span>
 <span class="token punctuation">}</span>
-<span class="token function">fn</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 </code></pre>
-<p>&emsp;&emsp;上面的代码中我们动态创建了五个按钮，每次点击时显示它们所对应的循环变量 i 的值。然而我们可以发现每次点击按钮打印出来的都是 5，而不是在 for 循环中给它们指定的 i 的值。这里需要注意的是，我们给按钮绑定点击事件的时候，该监听事件是不会执行的，只会等事后我们点击了按钮才会触发到，而那时候 for 循环已经执行完毕，监听函数到该作用域中去取 i 值时就得到 5 了。对此解决办法大致有两种：</p>
+<p>&emsp;&emsp;上面的代码中我们本来想着会依次打印 1、2、3、4、5 的，但实际上它打印出来的是 5 个 6。这是因为当开始执行定时器中的代码时，此时 for 循环已经运行完毕了，循环变量 i 也变成了 6。所以定时器的回调函数再去取 i 的值就只能取到当前的值 6 了。对此解决办法大致有以下几种：</p>
 <ul>
-<li><p>使用 let 代替 var 声明 循环变量 i。原理是利用 let 在每一趟循环中都会生成一个块级作用域，这样执行点击事件的时候到该作用域中取值时就是相应的 i 值了。</p>
+<li><p>使用 let 代替 var 声明 循环变量 i。原理是利用 let 在每一趟循环中都会生成一个块级作用域，这样执行定时器的回调函数时取到的 i 值就是这个块级作用域中相应的 i 值了。</p>
 </li>
-<li><p>使用闭包，在监听函数中返回一个内部函数，再在内部函数中打印 i 值。原理是利用闭包可以读取到外部函数的变量并将其保留在内存中，使 i 的值可以被记忆住。</p>
+<li><p>给定时器传入第三个参数, 作为 timer 函数的函数参数。</p>
 </li>
 </ul>
-<pre class=" language-js"><code class="language-js">btn<span class="token punctuation">.</span><span class="token function">addEventListener</span><span class="token punctuation">(</span><span class="token string">'click'</span><span class="token punctuation">,</span> <span class="token punctuation">(</span><span class="token keyword">function</span><span class="token punctuation">(</span>i<span class="token punctuation">)</span> <span class="token punctuation">{</span> 
-  <span class="token keyword">return</span> <span class="token keyword">function</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-    console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>i<span class="token punctuation">)</span><span class="token punctuation">;</span> 
-  <span class="token punctuation">}</span>
-<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">(</span>i<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-
-<span class="token comment" spellcheck="true">// 或者也可以直接对整个监听事件使用闭包。</span>
-<span class="token punctuation">(</span><span class="token keyword">function</span><span class="token punctuation">(</span>i<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-  btn<span class="token punctuation">.</span><span class="token function">addEventListener</span><span class="token punctuation">(</span><span class="token string">'click'</span><span class="token punctuation">,</span> <span class="token keyword">function</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span> 
-    console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>i<span class="token punctuation">)</span><span class="token punctuation">;</span>
-  <span class="token punctuation">}</span><span class="token punctuation">)</span>
-<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">(</span>i<span class="token punctuation">)</span>
+<pre class=" language-js"><code class="language-js"><span class="token keyword">for</span><span class="token punctuation">(</span><span class="token keyword">var</span> i<span class="token operator">=</span><span class="token number">1</span><span class="token punctuation">;</span> i<span class="token operator">&lt;=</span><span class="token number">5</span><span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token function">setTimeout</span><span class="token punctuation">(</span><span class="token keyword">function</span> <span class="token function">timer</span><span class="token punctuation">(</span>j<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>j<span class="token punctuation">)</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">,</span> i<span class="token punctuation">)</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<ul>
+<li>使用闭包，原理是利用闭包可以读取到外部函数的变量并将其保留在内存中，使 i 的值可以被记忆住。</li>
+</ul>
+<pre class=" language-js"><code class="language-js"><span class="token keyword">for</span><span class="token punctuation">(</span><span class="token keyword">var</span> i<span class="token operator">=</span><span class="token number">1</span><span class="token punctuation">;</span> i<span class="token operator">&lt;=</span><span class="token number">5</span><span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span><span class="token punctuation">{</span>
+  <span class="token punctuation">(</span><span class="token keyword">function</span><span class="token punctuation">(</span>j<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token function">setTimeout</span><span class="token punctuation">(</span><span class="token keyword">function</span> <span class="token function">timer</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>j<span class="token punctuation">)</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">)</span>
+  <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">(</span>i<span class="token punctuation">)</span>
+<span class="token punctuation">}</span>
 </code></pre>
 <blockquote>
 <p>我还看到一种方法，是使用 forEach 来循环的，不过我也不知道原理是啥，暂且贴一下代码。</p>
 </blockquote>
-<pre class=" language-js"><code class="language-js"><span class="token keyword">function</span> <span class="token function">fn</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-  <span class="token punctuation">[</span><span class="token string">'a'</span><span class="token punctuation">,</span> <span class="token string">'b'</span><span class="token punctuation">,</span> <span class="token string">'c'</span><span class="token punctuation">,</span> <span class="token string">'d'</span><span class="token punctuation">,</span> <span class="token string">'e'</span><span class="token punctuation">]</span><span class="token punctuation">.</span><span class="token function">forEach</span><span class="token punctuation">(</span><span class="token keyword">function</span> <span class="token punctuation">(</span>value<span class="token punctuation">,</span> i<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-    <span class="token keyword">var</span> btn <span class="token operator">=</span> document<span class="token punctuation">.</span><span class="token function">createElement</span><span class="token punctuation">(</span><span class="token string">'button'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    btn<span class="token punctuation">.</span><span class="token function">appendChild</span><span class="token punctuation">(</span>document<span class="token punctuation">.</span><span class="token function">createTextNode</span><span class="token punctuation">(</span><span class="token string">'Button '</span> <span class="token operator">+</span> i<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    btn<span class="token punctuation">.</span><span class="token function">addEventListener</span><span class="token punctuation">(</span><span class="token string">'click'</span><span class="token punctuation">,</span> <span class="token keyword">function</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span> console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>i<span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    document<span class="token punctuation">.</span>body<span class="token punctuation">.</span><span class="token function">appendChild</span><span class="token punctuation">(</span>btn<span class="token punctuation">)</span><span class="token punctuation">;</span>
-  <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-<span class="token punctuation">}</span>
-<span class="token function">fn</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+<pre class=" language-js"><code class="language-js"><span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">,</span> <span class="token number">3</span><span class="token punctuation">,</span> <span class="token number">4</span><span class="token punctuation">,</span> <span class="token number">5</span><span class="token punctuation">]</span><span class="token punctuation">.</span><span class="token function">forEach</span><span class="token punctuation">(</span>val <span class="token operator">=</span><span class="token operator">></span> <span class="token punctuation">{</span>
+  <span class="token function">setTimeout</span><span class="token punctuation">(</span><span class="token keyword">function</span> <span class="token function">timer</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>val<span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">)</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span>
 </code></pre>
 <h1 id="一道有关闭包的题目："><a href="#一道有关闭包的题目：" class="headerlink" title="一道有关闭包的题目："></a>一道有关闭包的题目：</h1><pre class=" language-js"><code class="language-js"><span class="token keyword">function</span> <span class="token function">fun</span><span class="token punctuation">(</span>n<span class="token punctuation">,</span>o<span class="token punctuation">)</span><span class="token punctuation">{</span>
   console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>o<span class="token punctuation">)</span><span class="token punctuation">;</span>
@@ -683,8 +677,10 @@ console<span class="token punctuation">.</span><span class="token function">log<
                     </div>
                 </a>
                 <div class="card-content article-content">
-                    <div class="summary"> call&emsp;&emsp; 利用函数作为对象方法的时候 this 指向了该对象，所以给目标对象添加要调用的函数并执行，了事后再删除该对象中这个方法就可以了。
-Function.prototype._call = function(.</div>
+                    <div class="summary"> Object.isfunction is(x, y) {
+  // 修正 +0 === -0 为 true 的 bug
+  if (x === y) {
+    // 运行到 1/x === 1/y 的时候x和y都为0，但是 1/+0 =</div>
                     <div class="publish-info">
                         <span class="publish-date">
                             <i class="fa fa-clock-o fa-fw icon-date"></i>2019-03-28
@@ -875,7 +871,7 @@ Function.prototype._call = function(.</div>
 
             
                 &nbsp;<i class="fa fa-area-chart"></i>&nbsp;站点总字数:&nbsp;
-                <span class="white-color">72.8k</span>
+                <span class="white-color">74.7k</span>
             
 
             <!-- <p id="timeDate">DangoSky的博客诞生已经</p><p id="times">载入时分秒...</p> -->
