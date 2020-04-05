@@ -404,7 +404,7 @@ console<span class="token punctuation">.</span><span class="token function">log<
 <li>把执行栈中所有的同步任务都执行完。</li>
 <li>先处理<strong>所有</strong>微任务事件队列中的事件。</li>
 <li>在宏任务事件队列中取出<strong>一个</strong>事件放入到执行栈中执行。</li>
-<li>不断重复 2、3 的过程。</li>
+<li>不断重复 1、2、3 的过程。</li>
 </ol>
 <p>&emsp;&emsp;我还看到一个点：<strong>浏览器是在每一次事件循环之间渲染页面的</strong>。不过这点我也不知道怎么验证，就暂且先记着吧。</p>
 <h2 id="Node10-x-和浏览器环境下的不同"><a href="#Node10-x-和浏览器环境下的不同" class="headerlink" title="Node10.x 和浏览器环境下的不同"></a>Node10.x 和浏览器环境下的不同</h2><p>&emsp;&emsp;说完宏任务和微任务的运行机制后就要敲黑板了：<strong>上面所述是针对浏览器环境而言的！上面所述是针对浏览器环境而言的！上面所述是针对浏览器环境而言的！</strong>重要的事情说三次！为什么说是针对浏览器环境而言呢？因为<strong>在 node 环境下，宏任务和微任务的运行机制是不同的！</strong>这里的 node 环境指的是 node10.x，node10 以下的我就不清楚了（原谅我缺乏打破砂锅问到底的精神就不回退版本去验证了Orz，有兴趣的看客可以自行验证，不过我估计跟 node10.x 是一样的）。当前 node 最新版本是 node11.x，<strong>在 node11.x 就将宏任务和微任务的运行机制统一得跟浏览器环境一样了</strong>。</p>
@@ -760,7 +760,7 @@ process<span class="token punctuation">.</span><span class="token function">next
 
             
                 &nbsp;<i class="fa fa-area-chart"></i>&nbsp;站点总字数:&nbsp;
-                <span class="white-color">76.5k</span>
+                <span class="white-color">76.8k</span>
             
 
             <!-- <p id="timeDate">DangoSky的博客诞生已经</p><p id="times">载入时分秒...</p> -->

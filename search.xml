@@ -688,7 +688,7 @@ window<span class="token punctuation">.</span>onresize <span class="token operat
 <p> 解决方案：使用正则匹配 { {} } 之间的内容，改用数组的形式传递给处理指令的函数，批量更新。</p>
 </li>
 </ul>
-<h2 id="参考资料："><a href="#参考资料：" class="headerlink" title="参考资料："></a>参考资料：</h2><ul>
+<h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><ul>
 <li><p><a href="https://www.bilibili.com/video/av24099073/?p=49" target="_blank" rel="noopener">尚硅谷_Vue核心技术</a></p>
 </li>
 <li><p><a href="https://github.com/DMQ/mvvm" target="_blank" rel="noopener">mvvm</a></p>
@@ -934,7 +934,8 @@ window<span class="token punctuation">.</span>onresize <span class="token operat
 <li><code>symbol</code> 有什么用处<br>&emsp;&emsp;可以用来表示一个独一无二的变量防止命名冲突。但是面试官问还有吗？我没想出其他的用处就直接答我不知道了，还可以利用 <code>symbol</code> 不会被常规的方法（除了 <code>Object.getOwnPropertySymbols</code> 外）遍历到，所以可以用来模拟私有变量。</li>
 <li>ES6 的遍历器了解吗，<code>symbol.iterator</code> 是用来做什么的<br>&emsp;&emsp;主要用来提供遍历接口，布置了 <code>symbol.iterator</code> 的对象才可以使用 <code>for···of</code> 循环，可以统一处理数据结构。调用之后回返回一个遍历器对象，包含有一个 next 方法，使用 next 方法后有两个返回值 value 和 done 分别表示函数当前执行位置的值和是否遍历完毕。</li>
 <li><code>localstorage</code>、<code>sessionstorage</code>、<code>indexDB</code> 的区别</li>
-<li>为什么用 <code>canvas</code><br>&emsp;&emsp;因为简历上写了之前用 <code>jQuery</code> 做的中国象棋，棋盘是用 canvas 画的。我就回答说当时想着顺带实践一下 <code>canvas</code>，所以就没有使用 border 来画棋盘。然而面试官说 <code>jQuery</code> 已经被淘汰了问我为什么还要学 <code>jQuery</code>，我解释说因为上学期开始学的时候还什么都不会，经常看到 <code>jQuery</code> 这个名字就顺带学了一点，但现在已经没用 <code>jQuery</code> 了。+手写 bind</li>
+<li>为什么用 <code>canvas</code><br>&emsp;&emsp;因为简历上写了之前用 <code>jQuery</code> 做的中国象棋，棋盘是用 canvas 画的。我就回答说当时想着顺带实践一下 <code>canvas</code>，所以就没有使用 border 来画棋盘。然而面试官说 <code>jQuery</code> 已经被淘汰了问我为什么还要学 <code>jQuery</code>，我解释说因为上学期开始学的时候还什么都不会，经常看到 <code>jQuery</code> 这个名字就顺带学了一点，但现在已经没用 <code>jQuery</code> 了。</li>
+<li>手写 bind</li>
 <li>区间排序<br>&emsp;&emsp;面试官给了一个情景，大致的意思就是给了一个二维数组，比如 <code>[[20, 30], [1, 10], [10, 20]]</code>，每个数组元素表示一个区间，区间之间不重叠。要求写一个函数来排序这个二维数组，使得这个二维数组表示的区间有序，例如 <code>[[1, 10], [10, 20], [20, 30]]</code>。</li>
 </ul>
 <p>&emsp;&emsp;面试的时候我的思路是先将每一个数组元素的第一个值作为下标存储进一个临时数组，值为它所在原数组的索引，之后再遍历数组根据值从小到大排序。然而当时我遇到的问题是，数组元素的值是被我作为下标存进临时数组的，要怎么给这个临时数组排序？用 map ？当时我就这里想了许久也没想出来，最后因为面试官给的例子中区间的间隔是 10，所以我就赖着头皮直接从 0 开始每次累加 10 了。结果自然是被面试官戳破了，他说其实就是简单的排序而已（想桶排序那样）。然而我以为他是在考冒泡这些排序算法就往十大排序上去想解决方法，不过没想出来 Orz。之后面试官就问我有没有什么想问的，我问了我表现得怎么样有什么需要改进的吗。面试官说我面试得还不错（估计是安慰吧，我觉得我答得很糟糕啊啊啊），不过对问题的解决方法有点单一，思维没能转过来。直到现在我才理解面试官这句话的意思，因为现在我重新看这道区间排序，没想多久就想出方法了啊，直接一个 <code>sort</code> 函数排序就可以了啊啊啊。</p>
@@ -1723,7 +1724,7 @@ console<span class="token punctuation">.</span><span class="token function">log<
 </ol>
 <h3 id="refs-的获取"><a href="#refs-的获取" class="headerlink" title="$refs 的获取"></a>$refs 的获取</h3><p>&emsp;&emsp;因为要分割成的碎片数量取决于用户的选择，所以所有的碎片都是动态加载的。<strong>而<code>$refs</code>不是响应式的，只能在组件渲染完成后才能获取到，所有动态加载的模板更新时<code>$refs</code>都无法相应地及时变化</strong>（<a href="https://cn.vuejs.org/v2/api/index.html#ref" target="_blank" rel="noopener">可见官方文档</a>）。所以需要等 DOM 更新后才能获取到<code>$refs</code>，可以利用<code>Vue.$nextTick(callback)</code>实现。</p>
 <h3 id="对-background-position-理解出错"><a href="#对-background-position-理解出错" class="headerlink" title="对 background-position 理解出错"></a>对 background-position 理解出错</h3><p>&emsp;&emsp;说到这个就有些尴尬了，我之前以为<code>background-position</code>的两个属性值 x 和 y 代表的是在这张图片上定位到（x, y）这个坐标的位置上再显示背景图片，结果导致使用<code>background-position</code>定位到的碎片显示的图片位置错位。又因为我老是以为是我中间哪里出问题了所以一直没有想到是我自己对<code>background-position</code>理解出错上去（Orz），最后单独起了个 demo 实验才发现问题所在。<strong>原来<code>background-position</code>的两个属性值 x 和 y 代表的是将这张图片向右移动和向下移动指定的距离后再显示背景图片</strong>。和我之前理解的恰恰相反，而且因为我之前没有设置<code>background-repeat: no-repeat</code>所以如果只有四个碎片的话是不会表现出什么问题的。知道了<code>background-position</code>的真正意思后要解决就很容易了，只要把 x 和 y 都变成负值就可以啦。</p>
-<h1 id="后记"><a href="#后记" class="headerlink" title="后记"></a>后记</h1><p>&emsp;&emsp;<strong>Puzzle Game</strong> 写起来还是挺简单的，主要是一时兴起练练手吧。中午去食堂的时候才想起来我在写一个<a href="http://blog.dangosky.com/tags/WebProject/">Web Project</a>的时候应该边写边记录的才对啊。像这个 <strong>Puzzle Game</strong> 就是边写代码的过程中边三言两语记录下遇到的问题和解决方案，这样事后才可以总结成一篇博客，记录自己遇到的坑点和盲点。不然就跟之前写的<a href="http://blog.dangosky.com/2019/03/10/vue%E5%85%A8%E5%AE%B6%E6%A1%B6%E4%BB%BFiOS%E7%89%88%E7%BD%91%E6%98%93%E4%BA%91%E9%9F%B3%E4%B9%90/">cloud music</a>一样，没有边写代码边记录遇到的问题，所以等写完代码后都差不多忘记中间遇到的很多问题了，写成的博客也就很空淡。好吧，吸收经验，下次就要记得正确的学习姿势了！</p>
+<h1 id="后记"><a href="#后记" class="headerlink" title="后记"></a>后记</h1><p>&emsp;&emsp;<strong>Puzzle Game</strong> 写起来还是挺简单的，主要是一时兴起练练手吧。中午去食堂的时候才想起来我在写一个<a href="http://blog.dangosky.com/categories/Web-Project/">Web Project</a>的时候应该边写边记录的才对啊。像这个 <strong>Puzzle Game</strong> 就是边写代码的过程中边三言两语记录下遇到的问题和解决方案，这样事后才可以总结成一篇博客，记录自己遇到的坑点和盲点。不然就跟之前写的<a href="http://blog.dangosky.com/2019/02/25/vue%E5%85%A8%E5%AE%B6%E6%A1%B6%E4%BB%BFiOS%E7%89%88%E7%BD%91%E6%98%93%E4%BA%91%E9%9F%B3%E4%B9%90/">cloud music</a>一样，没有边写代码边记录遇到的问题，所以等写完代码后都差不多忘记中间遇到的很多问题了，写成的博客也就很空淡。好吧，吸收经验，下次就要记得正确的学习姿势了！</p>
 <p>&emsp;&emsp;花了三天的时间写完 <strong>Puzzle Game</strong> 和这篇博客，五一假期就只剩下这半天了啊。我还是滚回去写我的数据结构实验了，挥挥。</p>
 ]]></content>
       <categories>
@@ -1764,7 +1765,7 @@ console<span class="token punctuation">.</span><span class="token function">log<
 </li>
 </ol>
 <p><img src="/2019/04/19/从浏览器的渲染机制谈起/6.png" alt></p>
-<h1 id="JS-脚本和-CSS-样式表对-DOM-的阻塞"><a href="#JS-脚本和-CSS-样式表对-DOM-的阻塞" class="headerlink" title="JS 脚本和 CSS 样式表对 DOM 的阻塞"></a>JS 脚本和 CSS 样式表对 DOM 的阻塞</h1><h2 id="JS-会阻塞-DOM-的解析和页面渲染"><a href="#JS-会阻塞-DOM-的解析和页面渲染" class="headerlink" title="JS 会阻塞 DOM 的解析和页面渲染"></a>JS 会阻塞 DOM 的解析和页面渲染</h2><p>&emsp;&emsp;在构建 DOM 树时，如果遇到了<code>&lt;script&gt;</code>加载 JS 脚本，那么 DOM 树会暂停构建，先执行 JS 代码。如果 JS 脚本是通过外部引入的，则是等待 JS 先下载再执行。为什么 JS 脚本会阻塞到 DOM 树的构建呢？看客应该都知道，JavaScript的一个强大之处在于它可以操纵页面中的每一个节点并对其进行增删改查操作，其中也包括修改节点对应的 CSS 样式信息。所以<strong>为了防止要执行的 JS 代码和正在构建的 DOM 树起冲突</strong>，DOM 树的构建是会先被挂起的，等到 JS 代码执行完毕才会继续构建 DOM 树。如果 JS 脚本加载时间很长，页面无法继续渲染下去就会造成浏览器失去响应处于假死状态。（不知道看客们有没有联想到什么？<a href="http://blog.dangosky.com/2019/04/07/%E4%BA%8B%E4%BB%B6%E9%98%9F%E5%88%97%E5%92%8C%E4%BA%8B%E4%BB%B6%E5%BE%AA%E7%8E%AF/">前面一篇讲事件循环的博客</a>里有提到浏览器的两个线程：<strong>GUI 线程</strong>和 <strong>JavaScript</strong> 引擎线程。这两个线程是互斥的，其中原因和 JS 代码阻塞 DOM 是一样的）。平时我们常说不要把 JS 文件放在<code>&lt;head&gt;</code>头部而要放到<code>&lt;body&gt;</code>尾部防止首屏加载时间过长，就是基于 JS 会阻塞 DOM 的解析和渲染这一个原因。JS 文件放到了<code>&lt;body&gt;</code>的尾部，这样即使 JS 代码长时间加载也不会影响到首屏显示，因为这时候页面已经渲染完毕了。如果有一些 JS 代码必须先行加载（放在<code>&lt;head&gt;</code>头部）的话，最好直接将代码写在页面中而不是以外联载入的形式，这样可以节省加载 JS 文件所消耗的时长（不过 JS 代码放在<code>&lt;body&gt;</code>前面好像没什么用处吧，这时候页面还没有渲染又不能获取到 DOM 节点，通过 CDN 加载第三方库除外）。</p>
+<h1 id="JS-和-CSS-对-DOM-的阻塞"><a href="#JS-和-CSS-对-DOM-的阻塞" class="headerlink" title="JS 和 CSS 对 DOM 的阻塞"></a>JS 和 CSS 对 DOM 的阻塞</h1><h2 id="JS-会阻塞-DOM-的解析和页面渲染"><a href="#JS-会阻塞-DOM-的解析和页面渲染" class="headerlink" title="JS 会阻塞 DOM 的解析和页面渲染"></a>JS 会阻塞 DOM 的解析和页面渲染</h2><p>&emsp;&emsp;在构建 DOM 树时，如果遇到了<code>&lt;script&gt;</code>加载 JS 脚本，那么 DOM 树会暂停构建，先执行 JS 代码。如果 JS 脚本是通过外部引入的，则是等待 JS 先下载再执行。为什么 JS 脚本会阻塞到 DOM 树的构建呢？看客应该都知道，JavaScript的一个强大之处在于它可以操纵页面中的每一个节点并对其进行增删改查操作，其中也包括修改节点对应的 CSS 样式信息。所以<strong>为了防止要执行的 JS 代码和正在构建的 DOM 树起冲突</strong>，DOM 树的构建是会先被挂起的，等到 JS 代码执行完毕才会继续构建 DOM 树。如果 JS 脚本加载时间很长，页面无法继续渲染下去就会造成浏览器失去响应处于假死状态。（不知道看客们有没有联想到什么？<a href="http://blog.dangosky.com/2019/04/07/%E4%BA%8B%E4%BB%B6%E9%98%9F%E5%88%97%E5%92%8C%E4%BA%8B%E4%BB%B6%E5%BE%AA%E7%8E%AF/">前面一篇讲事件循环的博客</a>里有提到浏览器的两个线程：<strong>GUI 线程</strong>和 <strong>JavaScript</strong> 引擎线程。这两个线程是互斥的，其中原因和 JS 代码阻塞 DOM 是一样的）。平时我们常说不要把 JS 文件放在<code>&lt;head&gt;</code>头部而要放到<code>&lt;body&gt;</code>尾部防止首屏加载时间过长，就是基于 JS 会阻塞 DOM 的解析和渲染这一个原因。JS 文件放到了<code>&lt;body&gt;</code>的尾部，这样即使 JS 代码长时间加载也不会影响到首屏显示，因为这时候页面已经渲染完毕了。如果有一些 JS 代码必须先行加载（放在<code>&lt;head&gt;</code>头部）的话，最好直接将代码写在页面中而不是以外联载入的形式，这样可以节省加载 JS 文件所消耗的时长（不过 JS 代码放在<code>&lt;body&gt;</code>前面好像没什么用处吧，这时候页面还没有渲染又不能获取到 DOM 节点，通过 CDN 加载第三方库除外）。</p>
 <p>&emsp;&emsp;如果页面中有多个<code>&lt;script&gt;</code>标签要加载 JS 文件，例如：</p>
 <pre class=" language-js"><code class="language-js"><span class="token operator">&lt;</span>script src<span class="token operator">=</span><span class="token string">"a.js"</span><span class="token operator">></span><span class="token operator">&lt;</span><span class="token operator">/</span>script<span class="token operator">></span>
 <span class="token operator">&lt;</span>script src<span class="token operator">=</span><span class="token string">"b.js"</span><span class="token operator">></span><span class="token operator">&lt;</span><span class="token operator">/</span>script<span class="token operator">></span>
@@ -2019,7 +2020,7 @@ console<span class="token punctuation">.</span><span class="token function">log<
 <li>把执行栈中所有的同步任务都执行完。</li>
 <li>先处理<strong>所有</strong>微任务事件队列中的事件。</li>
 <li>在宏任务事件队列中取出<strong>一个</strong>事件放入到执行栈中执行。</li>
-<li>不断重复 2、3 的过程。</li>
+<li>不断重复 1、2、3 的过程。</li>
 </ol>
 <p>&emsp;&emsp;我还看到一个点：<strong>浏览器是在每一次事件循环之间渲染页面的</strong>。不过这点我也不知道怎么验证，就暂且先记着吧。</p>
 <h2 id="Node10-x-和浏览器环境下的不同"><a href="#Node10-x-和浏览器环境下的不同" class="headerlink" title="Node10.x 和浏览器环境下的不同"></a>Node10.x 和浏览器环境下的不同</h2><p>&emsp;&emsp;说完宏任务和微任务的运行机制后就要敲黑板了：<strong>上面所述是针对浏览器环境而言的！上面所述是针对浏览器环境而言的！上面所述是针对浏览器环境而言的！</strong>重要的事情说三次！为什么说是针对浏览器环境而言呢？因为<strong>在 node 环境下，宏任务和微任务的运行机制是不同的！</strong>这里的 node 环境指的是 node10.x，node10 以下的我就不清楚了（原谅我缺乏打破砂锅问到底的精神就不回退版本去验证了Orz，有兴趣的看客可以自行验证，不过我估计跟 node10.x 是一样的）。当前 node 最新版本是 node11.x，<strong>在 node11.x 就将宏任务和微任务的运行机制统一得跟浏览器环境一样了</strong>。</p>
@@ -2533,7 +2534,7 @@ person<span class="token punctuation">.</span><span class="token function">foo</
   <span class="token punctuation">}</span>
 <span class="token punctuation">}</span>
 </code></pre>
-<h1 id="深拷贝"><a href="#深拷贝" class="headerlink" title="深拷贝"></a>深拷贝</h1><p>&emsp;&emsp; 递归拷贝每一个引用类型数据即可。</p>
+<h1 id="基础版深拷贝"><a href="#基础版深拷贝" class="headerlink" title="基础版深拷贝"></a>基础版深拷贝</h1><p>&emsp;&emsp; 递归拷贝每一个引用类型数据即可。</p>
 <pre class=" language-js"><code class="language-js"><span class="token keyword">function</span> <span class="token function">deepCopy</span><span class="token punctuation">(</span>obj<span class="token punctuation">)</span> <span class="token punctuation">{</span>
   <span class="token keyword">if</span><span class="token punctuation">(</span><span class="token keyword">typeof</span> obj <span class="token operator">!==</span> <span class="token string">'object'</span><span class="token punctuation">)</span>  <span class="token keyword">return</span> obj<span class="token punctuation">;</span>
   <span class="token keyword">let</span> res <span class="token operator">=</span> obj<span class="token punctuation">.</span>constructor <span class="token operator">===</span> Array <span class="token operator">?</span> <span class="token punctuation">[</span><span class="token punctuation">]</span> <span class="token punctuation">:</span> <span class="token punctuation">{</span><span class="token punctuation">}</span><span class="token punctuation">;</span>
@@ -2559,8 +2560,43 @@ console<span class="token punctuation">.</span><span class="token function">log<
 <span class="token keyword">let</span> obj1 <span class="token operator">=</span> JSON<span class="token punctuation">.</span><span class="token function">parse</span><span class="token punctuation">(</span>JSON<span class="token punctuation">.</span><span class="token function">stringify</span><span class="token punctuation">(</span>obj<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 </code></pre>
 <blockquote>
-<p>至于这两种方法的不足，请看 <a href="http://blog.dangosky.com/2019/04/01/shen-kao-bei-shi-xian/">我的另一篇文章</a> 介绍。</p>
+<p>至于这两种方法的不足，请看<a href="http://blog.dangosky.com/2019/04/01/%E6%B7%B1%E6%8B%B7%E8%B4%9D%E5%AE%9E%E7%8E%B0/">我的另一篇文章</a> 介绍。</p>
 </blockquote>
+<h1 id="优化版深拷贝"><a href="#优化版深拷贝" class="headerlink" title="优化版深拷贝"></a>优化版深拷贝</h1><blockquote>
+<p>优化方向和思路还是参考<a href="http://blog.dangosky.com/2019/04/01/%E6%B7%B1%E6%8B%B7%E8%B4%9D%E5%AE%9E%E7%8E%B0/#toc-heading-6">我的另一篇文章</a> 介绍。</p>
+</blockquote>
+<pre class=" language-js"><code class="language-js"><span class="token keyword">function</span> <span class="token function">deepCopy</span><span class="token punctuation">(</span>obj<span class="token punctuation">,</span> map <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">WeakMap</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">if</span> <span class="token punctuation">(</span>map<span class="token punctuation">.</span><span class="token keyword">get</span><span class="token punctuation">(</span>obj<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">return</span> obj<span class="token punctuation">;</span>
+  <span class="token punctuation">}</span>
+  <span class="token comment" spellcheck="true">// 如果 obj 只是基本类型的话，就直接返回</span>
+  <span class="token keyword">if</span><span class="token punctuation">(</span><span class="token keyword">typeof</span> obj <span class="token operator">!==</span> <span class="token string">'object'</span> <span class="token operator">||</span> obj <span class="token operator">===</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token keyword">return</span> obj<span class="token punctuation">;</span>
+  <span class="token keyword">const</span> objType <span class="token operator">=</span> Object<span class="token punctuation">.</span>prototype<span class="token punctuation">.</span>toString<span class="token punctuation">.</span><span class="token function">call</span><span class="token punctuation">(</span>obj<span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token comment" spellcheck="true">// 根据 obj 的数据类型获取到它的构造函数</span>
+  <span class="token keyword">const</span> constructorFn <span class="token operator">=</span> Object<span class="token punctuation">.</span><span class="token function">getPrototypeOf</span><span class="token punctuation">(</span>obj<span class="token punctuation">)</span><span class="token punctuation">.</span>constructor<span class="token punctuation">;</span>
+  <span class="token comment" spellcheck="true">// 根据构造器创建不同的数据类型，并注意需要传递 obj 为参数。如果是 Date、Error 等数据类型才可以获取到这个值</span>
+  <span class="token keyword">const</span> res <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">constructorFn</span><span class="token punctuation">(</span>obj<span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token comment" spellcheck="true">// 标记 obj 已经拷贝过了</span>
+  map<span class="token punctuation">.</span><span class="token keyword">set</span><span class="token punctuation">(</span>obj<span class="token punctuation">,</span> <span class="token boolean">true</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token keyword">if</span> <span class="token punctuation">(</span>objType <span class="token operator">===</span> <span class="token string">"[object Array]"</span> <span class="token operator">||</span> objType <span class="token operator">===</span> <span class="token string">"[object Object]"</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">for</span><span class="token punctuation">(</span><span class="token keyword">let</span> key <span class="token keyword">in</span> obj<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      <span class="token comment" spellcheck="true">// 因为 in 方法会遍历到 obj 的原型连上，所以需要判 key 是不是 obj 自己的属性</span>
+      <span class="token keyword">if</span> <span class="token punctuation">(</span>obj<span class="token punctuation">.</span><span class="token function">hasOwnProperty</span><span class="token punctuation">(</span>key<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        res<span class="token punctuation">[</span>key<span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token function">deepCopy</span><span class="token punctuation">(</span>obj<span class="token punctuation">[</span>key<span class="token punctuation">]</span><span class="token punctuation">,</span> map<span class="token punctuation">)</span><span class="token punctuation">;</span>
+      <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token keyword">if</span> <span class="token punctuation">(</span>objType <span class="token operator">===</span> <span class="token string">"[object Map]"</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    obj<span class="token punctuation">.</span><span class="token function">forEach</span><span class="token punctuation">(</span><span class="token punctuation">(</span>item<span class="token punctuation">,</span> key<span class="token punctuation">)</span> <span class="token operator">=</span><span class="token operator">></span> <span class="token punctuation">{</span>
+      res<span class="token punctuation">.</span><span class="token keyword">set</span><span class="token punctuation">(</span><span class="token function">deepCopy</span><span class="token punctuation">(</span>key<span class="token punctuation">)</span><span class="token punctuation">,</span> <span class="token function">deepCopy</span><span class="token punctuation">(</span>item<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span><span class="token punctuation">)</span>
+  <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token keyword">if</span> <span class="token punctuation">(</span>objType <span class="token operator">===</span> <span class="token string">"[object Set]"</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    obj<span class="token punctuation">.</span><span class="token function">forEach</span><span class="token punctuation">(</span>item <span class="token operator">=</span><span class="token operator">></span> <span class="token punctuation">{</span>
+      res<span class="token punctuation">.</span><span class="token function">add</span><span class="token punctuation">(</span><span class="token function">deepCopy</span><span class="token punctuation">(</span>item<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span><span class="token punctuation">)</span>
+  <span class="token punctuation">}</span>
+  <span class="token keyword">return</span> res<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+</code></pre>
 <h1 id="记忆函数"><a href="#记忆函数" class="headerlink" title="记忆函数"></a>记忆函数</h1><p>&emsp;&emsp; 记忆函数的功能在于缓存先前操作得到的结果，避免对同一个值进行重复计算浪费时间，比如斐波那契数列和阶乘等运算，算是用空间换时间吧。</p>
 <pre class=" language-js"><code class="language-js"><span class="token comment" spellcheck="true">// 记忆函数</span>
 <span class="token keyword">function</span> <span class="token function">memoize</span><span class="token punctuation">(</span>res<span class="token punctuation">,</span> fn<span class="token punctuation">)</span> <span class="token punctuation">{</span>
@@ -3572,6 +3608,7 @@ Child<span class="token punctuation">.</span>prototype <span class="token operat
 <span class="token comment" spellcheck="true">// 修正实例构造函数的指向错误</span>
 Child<span class="token punctuation">.</span>prototype<span class="token punctuation">.</span>constructor <span class="token operator">=</span> Child<span class="token punctuation">;</span>
 </code></pre>
+<p>（如果要实现多继承的话，貌似只能通过 <code>__proto__</code> 将一个个父类连接到子类上，或者通过 <code>Object.assign</code> 方法将所有父类的原型都集中到一个上，再将这个集万千个原型于一体的父类 通过 <code>Object.create</code> 方法赋给子类）</p>
 ]]></content>
       <categories>
         <category>JavaScript</category>

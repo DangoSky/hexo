@@ -421,7 +421,7 @@
 </ol>
 <h3 id="refs-的获取"><a href="#refs-的获取" class="headerlink" title="$refs 的获取"></a>$refs 的获取</h3><p>&emsp;&emsp;因为要分割成的碎片数量取决于用户的选择，所以所有的碎片都是动态加载的。<strong>而<code>$refs</code>不是响应式的，只能在组件渲染完成后才能获取到，所有动态加载的模板更新时<code>$refs</code>都无法相应地及时变化</strong>（<a href="https://cn.vuejs.org/v2/api/index.html#ref" target="_blank" rel="noopener">可见官方文档</a>）。所以需要等 DOM 更新后才能获取到<code>$refs</code>，可以利用<code>Vue.$nextTick(callback)</code>实现。</p>
 <h3 id="对-background-position-理解出错"><a href="#对-background-position-理解出错" class="headerlink" title="对 background-position 理解出错"></a>对 background-position 理解出错</h3><p>&emsp;&emsp;说到这个就有些尴尬了，我之前以为<code>background-position</code>的两个属性值 x 和 y 代表的是在这张图片上定位到（x, y）这个坐标的位置上再显示背景图片，结果导致使用<code>background-position</code>定位到的碎片显示的图片位置错位。又因为我老是以为是我中间哪里出问题了所以一直没有想到是我自己对<code>background-position</code>理解出错上去（Orz），最后单独起了个 demo 实验才发现问题所在。<strong>原来<code>background-position</code>的两个属性值 x 和 y 代表的是将这张图片向右移动和向下移动指定的距离后再显示背景图片</strong>。和我之前理解的恰恰相反，而且因为我之前没有设置<code>background-repeat: no-repeat</code>所以如果只有四个碎片的话是不会表现出什么问题的。知道了<code>background-position</code>的真正意思后要解决就很容易了，只要把 x 和 y 都变成负值就可以啦。</p>
-<h1 id="后记"><a href="#后记" class="headerlink" title="后记"></a>后记</h1><p>&emsp;&emsp;<strong>Puzzle Game</strong> 写起来还是挺简单的，主要是一时兴起练练手吧。中午去食堂的时候才想起来我在写一个<a href="http://blog.dangosky.com/tags/WebProject/">Web Project</a>的时候应该边写边记录的才对啊。像这个 <strong>Puzzle Game</strong> 就是边写代码的过程中边三言两语记录下遇到的问题和解决方案，这样事后才可以总结成一篇博客，记录自己遇到的坑点和盲点。不然就跟之前写的<a href="http://blog.dangosky.com/2019/03/10/vue%E5%85%A8%E5%AE%B6%E6%A1%B6%E4%BB%BFiOS%E7%89%88%E7%BD%91%E6%98%93%E4%BA%91%E9%9F%B3%E4%B9%90/">cloud music</a>一样，没有边写代码边记录遇到的问题，所以等写完代码后都差不多忘记中间遇到的很多问题了，写成的博客也就很空淡。好吧，吸收经验，下次就要记得正确的学习姿势了！</p>
+<h1 id="后记"><a href="#后记" class="headerlink" title="后记"></a>后记</h1><p>&emsp;&emsp;<strong>Puzzle Game</strong> 写起来还是挺简单的，主要是一时兴起练练手吧。中午去食堂的时候才想起来我在写一个<a href="http://blog.dangosky.com/categories/Web-Project/">Web Project</a>的时候应该边写边记录的才对啊。像这个 <strong>Puzzle Game</strong> 就是边写代码的过程中边三言两语记录下遇到的问题和解决方案，这样事后才可以总结成一篇博客，记录自己遇到的坑点和盲点。不然就跟之前写的<a href="http://blog.dangosky.com/2019/02/25/vue%E5%85%A8%E5%AE%B6%E6%A1%B6%E4%BB%BFiOS%E7%89%88%E7%BD%91%E6%98%93%E4%BA%91%E9%9F%B3%E4%B9%90/">cloud music</a>一样，没有边写代码边记录遇到的问题，所以等写完代码后都差不多忘记中间遇到的很多问题了，写成的博客也就很空淡。好吧，吸收经验，下次就要记得正确的学习姿势了！</p>
 <p>&emsp;&emsp;花了三天的时间写完 <strong>Puzzle Game</strong> 和这篇博客，五一假期就只剩下这半天了啊。我还是滚回去写我的数据结构实验了，挥挥。</p>
 
             </div>
@@ -704,7 +704,7 @@
 
             
                 &nbsp;<i class="fa fa-area-chart"></i>&nbsp;站点总字数:&nbsp;
-                <span class="white-color">76.5k</span>
+                <span class="white-color">76.8k</span>
             
 
             <!-- <p id="timeDate">DangoSky的博客诞生已经</p><p id="times">载入时分秒...</p> -->

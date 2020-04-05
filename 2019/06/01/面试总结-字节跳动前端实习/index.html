@@ -476,7 +476,8 @@
 <li><code>symbol</code> 有什么用处<br>&emsp;&emsp;可以用来表示一个独一无二的变量防止命名冲突。但是面试官问还有吗？我没想出其他的用处就直接答我不知道了，还可以利用 <code>symbol</code> 不会被常规的方法（除了 <code>Object.getOwnPropertySymbols</code> 外）遍历到，所以可以用来模拟私有变量。</li>
 <li>ES6 的遍历器了解吗，<code>symbol.iterator</code> 是用来做什么的<br>&emsp;&emsp;主要用来提供遍历接口，布置了 <code>symbol.iterator</code> 的对象才可以使用 <code>for···of</code> 循环，可以统一处理数据结构。调用之后回返回一个遍历器对象，包含有一个 next 方法，使用 next 方法后有两个返回值 value 和 done 分别表示函数当前执行位置的值和是否遍历完毕。</li>
 <li><code>localstorage</code>、<code>sessionstorage</code>、<code>indexDB</code> 的区别</li>
-<li>为什么用 <code>canvas</code><br>&emsp;&emsp;因为简历上写了之前用 <code>jQuery</code> 做的中国象棋，棋盘是用 canvas 画的。我就回答说当时想着顺带实践一下 <code>canvas</code>，所以就没有使用 border 来画棋盘。然而面试官说 <code>jQuery</code> 已经被淘汰了问我为什么还要学 <code>jQuery</code>，我解释说因为上学期开始学的时候还什么都不会，经常看到 <code>jQuery</code> 这个名字就顺带学了一点，但现在已经没用 <code>jQuery</code> 了。+手写 bind</li>
+<li>为什么用 <code>canvas</code><br>&emsp;&emsp;因为简历上写了之前用 <code>jQuery</code> 做的中国象棋，棋盘是用 canvas 画的。我就回答说当时想着顺带实践一下 <code>canvas</code>，所以就没有使用 border 来画棋盘。然而面试官说 <code>jQuery</code> 已经被淘汰了问我为什么还要学 <code>jQuery</code>，我解释说因为上学期开始学的时候还什么都不会，经常看到 <code>jQuery</code> 这个名字就顺带学了一点，但现在已经没用 <code>jQuery</code> 了。</li>
+<li>手写 bind</li>
 <li>区间排序<br>&emsp;&emsp;面试官给了一个情景，大致的意思就是给了一个二维数组，比如 <code>[[20, 30], [1, 10], [10, 20]]</code>，每个数组元素表示一个区间，区间之间不重叠。要求写一个函数来排序这个二维数组，使得这个二维数组表示的区间有序，例如 <code>[[1, 10], [10, 20], [20, 30]]</code>。</li>
 </ul>
 <p>&emsp;&emsp;面试的时候我的思路是先将每一个数组元素的第一个值作为下标存储进一个临时数组，值为它所在原数组的索引，之后再遍历数组根据值从小到大排序。然而当时我遇到的问题是，数组元素的值是被我作为下标存进临时数组的，要怎么给这个临时数组排序？用 map ？当时我就这里想了许久也没想出来，最后因为面试官给的例子中区间的间隔是 10，所以我就赖着头皮直接从 0 开始每次累加 10 了。结果自然是被面试官戳破了，他说其实就是简单的排序而已（想桶排序那样）。然而我以为他是在考冒泡这些排序算法就往十大排序上去想解决方法，不过没想出来 Orz。之后面试官就问我有没有什么想问的，我问了我表现得怎么样有什么需要改进的吗。面试官说我面试得还不错（估计是安慰吧，我觉得我答得很糟糕啊啊啊），不过对问题的解决方法有点单一，思维没能转过来。直到现在我才理解面试官这句话的意思，因为现在我重新看这道区间排序，没想多久就想出方法了啊，直接一个 <code>sort</code> 函数排序就可以了啊啊啊。</p>
@@ -776,7 +777,7 @@ console<span class="token punctuation">.</span><span class="token function">log<
 
             
                 &nbsp;<i class="fa fa-area-chart"></i>&nbsp;站点总字数:&nbsp;
-                <span class="white-color">76.5k</span>
+                <span class="white-color">76.8k</span>
             
 
             <!-- <p id="timeDate">DangoSky的博客诞生已经</p><p id="times">载入时分秒...</p> -->
