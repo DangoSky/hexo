@@ -349,7 +349,7 @@
                     
                     <div class="info-break-policy">
                         <i class="fa fa-file-word-o fa-fw"></i>文章字数:&nbsp;&nbsp;
-                        2.6k
+                        2.7k
                     </div>
                     
 
@@ -413,7 +413,7 @@
   <span class="token punctuation">}</span>
 <span class="token punctuation">}</span>
 </code></pre>
-<h1 id="节流"><a href="#节流" class="headerlink" title="节流"></a>节流</h1><p>&emsp;&emsp;说完防抖我们再说说节流，节流和防抖功能大致相同，不同点在于如果持续触发一个事件，防抖只会执行一次 fn，而节流则是每隔指定的时间就执行一次，保证每次执行 fn 的间隔时间相同。防抖和节流都可以降低函数的执行频率，而实际写代码的时候是选择防抖还是节流，还得要取决于具体的需求。</p>
+<h1 id="节流"><a href="#节流" class="headerlink" title="节流"></a>节流</h1><p>&emsp;&emsp;说完防抖我们再说说节流，节流和防抖功能大致相同，不同点在于如果持续触发一个事件，防抖只会执行一次 fn（因为每次触发时都以当前的时间点开始重新计时）。而节流则是每隔指定的时间就执行一次，保证每次执行 fn 的间隔时间相同（每次触发不会重新开始计时）。防抖和节流都可以降低函数的执行频率，而实际写代码的时候是选择防抖还是节流，还得要取决于具体的需求。</p>
 <p>&emsp;&emsp;节流有两种实现方式，一种是使用时间戳，另一种是使用定时器。使用时间戳的话，因为开始时间被初始化为 0，所以第一次触发时会马上执行 fn，并且停止触发后不会再执行。而使用定时器的话，第一次触发则会延迟执行，而停止触发后因为还有定时器的存在，所以会再执行一次 fn。下面给出两种实现方式的代码。</p>
 <pre class=" language-js"><code class="language-js"><span class="token comment" spellcheck="true">// 使用时间戳</span>
 <span class="token keyword">function</span> <span class="token function">throttle</span><span class="token punctuation">(</span>fn<span class="token punctuation">,</span> wait<span class="token punctuation">)</span> <span class="token punctuation">{</span>
@@ -810,7 +810,7 @@
 
             
                 &nbsp;<i class="fa fa-area-chart"></i>&nbsp;站点总字数:&nbsp;
-                <span class="white-color">76.8k</span>
+                <span class="white-color">82.3k</span>
             
 
             <!-- <p id="timeDate">DangoSky的博客诞生已经</p><p id="times">载入时分秒...</p> -->

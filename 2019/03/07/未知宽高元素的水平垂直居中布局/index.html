@@ -349,14 +349,14 @@
                     
                     <div class="info-break-policy">
                         <i class="fa fa-file-word-o fa-fw"></i>文章字数:&nbsp;&nbsp;
-                        4.5k
+                        5k
                     </div>
                     
 
                     
                     <div class="info-break-policy">
                         <i class="fa fa-clock-o fa-fw"></i>阅读时长:&nbsp;&nbsp;
-                        20 分
+                        21 分
                     </div>
                     
                 
@@ -425,6 +425,27 @@
   <span class="token property">align-items</span><span class="token punctuation">:</span> center<span class="token punctuation">;</span>
 <span class="token punctuation">}</span>
 </code></pre>
+<h1 id="元素宽高成比例"><a href="#元素宽高成比例" class="headerlink" title="元素宽高成比例"></a>元素宽高成比例</h1><p>比如说实现一个宽度自适应，高度为宽度一半的矩形。</p>
+<h2 id="padding"><a href="#padding" class="headerlink" title="padding"></a>padding</h2><p>利用 padding 设置为百分比时是相对于父元素的宽度而言的，所以可以给矩形设置一个父元素，由父元素来控制矩形的大小。而矩形的宽度设置为 100，高度通过 padding-bottom: 50% 撑开就行了。需要注意的是要同时将矩形的 height 设置为 0，以此将矩形的高度完全交给 padding 负责（如果要设置成宽高比成其他比例比如 4:3 的话也是同理，修改 padding-bottom 的百分比就可以了）。</p>
+<pre class=" language-css"><code class="language-css"><span class="token selector">&lt;div class="parent">
+  &lt;div class="child">&lt;/div>
+&lt;/div>
+
+<span class="token class">.parent</span> </span><span class="token punctuation">{</span>
+  <span class="token property">background-color</span><span class="token punctuation">:</span> red<span class="token punctuation">;</span>
+  <span class="token property">width</span><span class="token punctuation">:</span> <span class="token number">200</span>px<span class="token punctuation">;</span>
+  <span class="token property">height</span><span class="token punctuation">:</span> <span class="token number">200</span>px<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+<span class="token selector"><span class="token class">.child</span> </span><span class="token punctuation">{</span>
+  <span class="token property">width</span><span class="token punctuation">:</span> <span class="token number">100%</span><span class="token punctuation">;</span>
+  <span class="token property">padding-bottom</span><span class="token punctuation">:</span> <span class="token number">50%</span><span class="token punctuation">;</span>
+  <span class="token property">height</span><span class="token punctuation">:</span> <span class="token number">0</span><span class="token punctuation">;</span>
+  <span class="token property">background-color</span><span class="token punctuation">:</span> blue<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<p>使用 padding 有个问题是，因为给矩形设置了 height: 0，所以如果这个矩形有子元素并且设置了 height: 100% 的话，子元素的高度也会是 0 而不是预期的 100px。这时需要给子元素绝对定位，给矩形相对定位才可以让子元素的高度保持和矩形一致（此时子元素脱离了文档流，宽高就相对于父元素的宽高来了）。</p>
+<h2 id="vw"><a href="#vw" class="headerlink" title="vw"></a>vw</h2><p>使用 vw 来给矩形的宽高设置为成比例的 vw 值。这个方法的问题在于 vw 是相对于屏幕宽度而言，不同设备有不同的宽度，所以无法控制矩形具体的宽度值。</p>
+<h2 id="rem"><a href="#rem" class="headerlink" title="rem"></a>rem</h2><p>给 html 根元素设置一个 font-size 值，矩形通过 rem 单位设置宽高，这样它的宽高就是相对于根元素的字体大小而言的，再给矩形的宽高设置成比例的 rem 值就可以了。</p>
 <h1 id="两栏等高"><a href="#两栏等高" class="headerlink" title="两栏等高"></a>两栏等高</h1><p><img src="/2019/03/07/未知宽高元素的水平垂直居中布局/1.png" alt></p>
 <h2 id="padding内补偿法"><a href="#padding内补偿法" class="headerlink" title="padding内补偿法"></a>padding内补偿法</h2><pre class=" language-css"><code class="language-css"><span class="token selector">&lt;div class="box">
   &lt;div class="left">
@@ -460,12 +481,8 @@
   <span class="token property">margin-bottom</span><span class="token punctuation">:</span> -<span class="token number">2000</span>px<span class="token punctuation">;</span>
 <span class="token punctuation">}</span>
 </code></pre>
-<blockquote>
-<p>两栏等高的原理是，给每一栏都设置一个很大的<code>padding-bottom</code>的值，以此来弥补高度较小的那一栏。再使用一个等大的负的<code>margin-bottom</code>来收缩，像在<a href="http://blog.dangosky.com/2019/03/12/css-fu-bian-ju/#toc-heading-9">另一篇文章</a>里我解释的，使用负margin-bottom收缩后，虽然元素自身的宽高没有改变，但它的元素框会随着减小，最终元素框的高度取决于两栏中较高一栏。这时如果给它们的父元素添加<code>overflow: hidden</code>，则会隐藏掉溢出元素框的部分内容，于是就达到了高度较低的一栏和较高的一栏等高的效果。</p>
-</blockquote>
-<blockquote>
+<p>两栏等高的原理是，给每一栏都设置一个很大的<code>padding-bottom</code>的值，以此来弥补高度较小的那一栏。再使用一个等大的负的<code>margin-bottom</code>来收缩，像在<a href="http://blog.dangosky.com/2019/03/12/CSS%E8%B4%9F%E8%BE%B9%E8%B7%9D/#toc-heading-1">另一篇文章</a>里我解释的，使用负margin-bottom收缩后，虽然元素自身的宽高没有改变，但它的元素框会随着减小，最终元素框的高度取决于两栏中较高一栏。这时如果给它们的父元素添加<code>overflow: hidden</code>，则会隐藏掉溢出元素框的部分内容，于是就达到了高度较低的一栏和较高的一栏等高的效果。</p>
 <p>但是使用padding内补偿法有一个缺陷，如果每一栏设置了border的话，因为每一栏的高被padding撑高而且隐藏了超出的内容，所以<strong>border-bottom是显示不出来的</strong>。解决办法是，再在每一栏的最后一个子元素<strong>设置一个div来模仿border-bottom</strong>。记得还要给父元素box设置为相对定位，才能让伪border-bottom定位到那一栏的底部。</p>
-</blockquote>
 <pre class=" language-css"><code class="language-css"><span class="token selector"><span class="token class">.border</span> </span><span class="token punctuation">{</span>
   <span class="token property">width</span><span class="token punctuation">:</span> <span class="token number">52</span>px<span class="token punctuation">;</span>
   <span class="token property">height</span><span class="token punctuation">:</span> <span class="token number">2</span>px<span class="token punctuation">;</span>
@@ -507,9 +524,7 @@
   <span class="token property">background-color</span><span class="token punctuation">:</span> yellow<span class="token punctuation">;</span>
 <span class="token punctuation">}</span>
 </code></pre>
-<h2 id="js-jq动态设置"><a href="#js-jq动态设置" class="headerlink" title="js / jq动态设置"></a>js / jq动态设置</h2><blockquote>
-<p>在js代码里去获取box里每一栏的高度并取它们的最大值，再将每一栏的高度设置为该最大值。但这不可避免会操作到DOM，难免对性能造成影响。</p>
-</blockquote>
+<h2 id="js-jq动态设置"><a href="#js-jq动态设置" class="headerlink" title="js / jq动态设置"></a>js / jq动态设置</h2><p>在 js 代码里去获取box里每一栏的高度并取它们的最大值，再将每一栏的高度设置为该最大值。但这不可避免会操作到DOM，难免对性能造成影响。</p>
 <h1 id="两栏布局"><a href="#两栏布局" class="headerlink" title="两栏布局"></a>两栏布局</h1><blockquote>
 <p>左栏固定宽度，右栏自适应。</p>
 </blockquote>
@@ -517,68 +532,68 @@
 <h3 id="利用负margin"><a href="#利用负margin" class="headerlink" title="利用负margin"></a>利用负margin</h3><blockquote>
 <p>实现逻辑请看<a href="http://blog.dangosky.com/2019/03/12/CSS%E8%B4%9F%E8%BE%B9%E8%B7%9D/#toc-heading-14">盒模型和负margin</a>这篇文章里的解释。</p>
 </blockquote>
-<pre class=" language-css"><code class="language-css"><span class="token selector">&lt;!-- content放在slider后面 -->
-&lt;div class="box">
-  &lt;div class="slider">
-    &lt;p>slider&lt;/p>
-  &lt;/div>
-  &lt;div class="content">
-    &lt;p>content&lt;/p>
-    &lt;p>content&lt;/p>
-    &lt;p>content&lt;/p>
-    &lt;p>content&lt;/p>
-  &lt;/div>
-&lt;/div>
+<pre class=" language-html"><code class="language-html"><span class="token comment" spellcheck="true">&lt;!-- content放在slider后面 --></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>box<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>slider<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>p</span><span class="token punctuation">></span></span>slider<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>p</span><span class="token punctuation">></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>content<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>p</span><span class="token punctuation">></span></span>content<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>p</span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>p</span><span class="token punctuation">></span></span>content<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>p</span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>p</span><span class="token punctuation">></span></span>content<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>p</span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>p</span><span class="token punctuation">></span></span>content<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>p</span><span class="token punctuation">></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
 
-<span class="token class">.box</span> </span><span class="token punctuation">{</span>
-  <span class="token property">overflow</span><span class="token punctuation">:</span> hidden
-<span class="token punctuation">}</span>
-<span class="token selector"><span class="token class">.slider</span> </span><span class="token punctuation">{</span>
-  <span class="token property">float</span><span class="token punctuation">:</span> left<span class="token punctuation">;</span>
-  <span class="token property">width</span><span class="token punctuation">:</span> <span class="token number">100</span>px<span class="token punctuation">;</span>
-  <span class="token property">height</span><span class="token punctuation">:</span> <span class="token number">200</span>px<span class="token punctuation">;</span>
-  <span class="token property">background-color</span><span class="token punctuation">:</span> blue<span class="token punctuation">;</span>
-<span class="token punctuation">}</span>
-<span class="token selector"><span class="token class">.content</span> </span><span class="token punctuation">{</span>
-  <span class="token property">float</span><span class="token punctuation">:</span> left<span class="token punctuation">;</span>
-  <span class="token property">width</span><span class="token punctuation">:</span> <span class="token number">100%</span><span class="token punctuation">;</span>
-  <span class="token property">height</span><span class="token punctuation">:</span> <span class="token number">200</span>px<span class="token punctuation">;</span>
-  <span class="token property">background-color</span><span class="token punctuation">:</span> yellow<span class="token punctuation">;</span>
-  <span class="token property">margin-right</span><span class="token punctuation">:</span> -<span class="token number">100</span>px<span class="token punctuation">;</span>
-<span class="token punctuation">}</span>
-<span class="token selector"><span class="token class">.content</span> p </span><span class="token punctuation">{</span>
-  <span class="token property">margin-right</span><span class="token punctuation">:</span> <span class="token number">100</span>px<span class="token punctuation">;</span>
-<span class="token punctuation">}</span>
+.box {
+  overflow: hidden
+}
+.slider {
+  float: left;
+  width: 100px;
+  height: 200px;
+  background-color: blue;
+}
+.content {
+  float: left;
+  width: 100%;
+  height: 200px;
+  background-color: yellow;
+  margin-right: -100px;
+}
+.content p {
+  margin-right: 100px;
+}
 </code></pre>
-<pre class=" language-css"><code class="language-css"><span class="token selector">&lt;!-- content放在slider前面 -->
-&lt;div class="box">
-  &lt;div class="content">
-    &lt;p>content&lt;/p>
-    &lt;p>content&lt;/p>
-    &lt;p>content&lt;/p>
-    &lt;p>content&lt;/p>
-  &lt;/div>
-  &lt;div class="slider">
-    &lt;p>slider&lt;/p>
-  &lt;/div>
-&lt;/div>
+<pre class=" language-html"><code class="language-html"><span class="token comment" spellcheck="true">&lt;!-- content放在slider前面 --></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>box<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>content<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>p</span><span class="token punctuation">></span></span>content<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>p</span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>p</span><span class="token punctuation">></span></span>content<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>p</span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>p</span><span class="token punctuation">></span></span>content<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>p</span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>p</span><span class="token punctuation">></span></span>content<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>p</span><span class="token punctuation">></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>slider<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>p</span><span class="token punctuation">></span></span>slider<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>p</span><span class="token punctuation">></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
 
-<span class="token class">.slider</span> </span><span class="token punctuation">{</span>
-  <span class="token property">float</span><span class="token punctuation">:</span> left<span class="token punctuation">;</span>
-  <span class="token property">width</span><span class="token punctuation">:</span> <span class="token number">100</span>px<span class="token punctuation">;</span>
-  <span class="token property">height</span><span class="token punctuation">:</span> <span class="token number">200</span>px<span class="token punctuation">;</span>
-  <span class="token property">background-color</span><span class="token punctuation">:</span> blue<span class="token punctuation">;</span>
-  <span class="token property">margin-left</span><span class="token punctuation">:</span> -<span class="token number">100%</span><span class="token punctuation">;</span>
-<span class="token punctuation">}</span>
-<span class="token selector"><span class="token class">.content</span> </span><span class="token punctuation">{</span>
-  <span class="token property">float</span><span class="token punctuation">:</span> left<span class="token punctuation">;</span>
-  <span class="token property">width</span><span class="token punctuation">:</span> <span class="token number">100%</span><span class="token punctuation">;</span>
-  <span class="token property">height</span><span class="token punctuation">:</span> <span class="token number">200</span>px<span class="token punctuation">;</span>
-  <span class="token property">background-color</span><span class="token punctuation">:</span> yellow<span class="token punctuation">;</span>
-<span class="token punctuation">}</span>
-<span class="token selector"><span class="token class">.content</span> p </span><span class="token punctuation">{</span>
-  <span class="token property">margin-left</span><span class="token punctuation">:</span> <span class="token number">100</span>px<span class="token punctuation">;</span>
-<span class="token punctuation">}</span>
+.slider {
+  float: left;
+  width: 100px;
+  height: 200px;
+  background-color: blue;
+  margin-left: -100%;
+}
+.content {
+  float: left;
+  width: 100%;
+  height: 200px;
+  background-color: yellow;
+}
+.content p {
+  margin-left: 100px;
+}
 </code></pre>
 <pre class=" language-css"><code class="language-css"><span class="token selector">// 或者更简单点，使用BFC 
 &lt;div class="box">
@@ -964,9 +979,7 @@
   <span class="token property">margin-right</span><span class="token punctuation">:</span> <span class="token number">100</span>px<span class="token punctuation">;</span>
 <span class="token punctuation">}</span>
 </code></pre>
-<blockquote>
 <p>同样是使用浮动，但双飞翼布局是对负margin的应用，实现详情请看<a href="http://blog.dangosky.com/2019/03/12/CSS%E8%B4%9F%E8%BE%B9%E8%B7%9D/#toc-heading-4">负margin实现两栏布局</a>。同样的是，在HTML代码部分也是把content放到left和right前面的优先渲染 ，否则left放前面的话会造成left被content覆盖或是内容超出视图，也存在前面的那两个问题。听说双飞翼布局是淘宝创造的？</p>
-</blockquote>
 <p><img src="https://upload-images.jianshu.io/upload_images/1747023-4b4ebc49181a2e4f.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1000/format/webp" alt></p>
 <h2 id="圣杯布局"><a href="#圣杯布局" class="headerlink" title="圣杯布局"></a>圣杯布局</h2><pre class=" language-css"><code class="language-css"><span class="token selector">&lt;div class="box">
   &lt;div class="content">
@@ -1016,9 +1029,7 @@ body </span><span class="token punctuation">{</span>
   <span class="token property">background-color</span><span class="token punctuation">:</span> blue<span class="token punctuation">;</span>
 <span class="token punctuation">}</span>
 </code></pre>
-<blockquote>
 <p>圣杯布局和双飞翼布局同样是对负margin的应用，区别在于解决中间栏内容不被左右侧边栏遮挡的方法不同。双飞翼布局是直接给content设置一个子div，利用margin-left和margin-right来间隔开彼此。而圣杯布局给父容器box设置padding来间隔开content主体内容和左右的距离，再给左右两栏分别相对定位设置left和right使其回到原先的位置。圣杯布局潜在的问题是，但浏览器缩小到一定程度后，左右两栏会被挤下来，不过可以给body设置<code>min-width</code>来解决这个问题。个人比较推荐双飞翼布局，两者实现的效果是一样的，而圣杯布局又要用到相对定位甚至min-width，为什么不简单点直接用margin解决同样的问题呢，不仅思路简单些代码也简洁。</p>
-</blockquote>
 <h1 id="三栏布局总结"><a href="#三栏布局总结" class="headerlink" title="三栏布局总结"></a>三栏布局总结</h1><ul>
 <li><p>普通的浮动布局和双飞翼布局圣杯布局：<br>在 HTML 代码上普通的浮动是把中间栏放到最后，左右两栏分别左右浮动后中间空出来的空间给中间栏。而双飞翼布局和圣杯布局是把中间栏放在最前面使其先渲染，让三栏都左浮动后再利用左栏<code>margin-left: -100%</code>，右栏<code>margin-left: -100px</code>使其都并排布局。因为普通浮动里是把中间栏放到最后才渲染的，所以当页面内容较多时可能会影响用户体验。</p>
 </li>
@@ -1449,7 +1460,7 @@ body </span><span class="token punctuation">{</span>
 
             
                 &nbsp;<i class="fa fa-area-chart"></i>&nbsp;站点总字数:&nbsp;
-                <span class="white-color">76.8k</span>
+                <span class="white-color">82.3k</span>
             
 
             <!-- <p id="timeDate">DangoSky的博客诞生已经</p><p id="times">载入时分秒...</p> -->

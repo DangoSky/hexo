@@ -1,0 +1,813 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN">
+
+
+<head><meta name="generator" content="Hexo 3.9.0">
+    <meta charset="utf-8">
+    <meta name="keywords" content="下拉刷新上拉加载更多的实现原理, DangoSky">
+    <meta name="description" content=" 背景最近有一个需求：大致是要展示一个列表信息，但每次接口只返回 20 条数据，当用户滑动到到页面底部并继续上拉页面时再继续调接口获取更多的数据（相当于分页）。这里就需要使用到一个上拉加载更多的功能，实现的效果可以看这里。考虑到项目时间比较">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="renderer" content="webkit|ie-stand|ie-comp">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>下拉刷新上拉加载更多的实现原理 | DangoSky</title>
+    <link rel="icon" type="image/jpeg" href="/favicon.jpg">
+
+    <link rel="stylesheet" type="text/css" href="/libs/awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="/libs/materialize/materialize.min.css">
+    <link rel="stylesheet" type="text/css" href="/libs/aos/aos.css">
+    <link rel="stylesheet" type="text/css" href="/libs/animate/animate.min.css">
+    <link rel="stylesheet" type="text/css" href="/libs/lightGallery/css/lightgallery.min.css">
+    <link rel="stylesheet" type="text/css" href="/css/matery.css">
+    <link rel="stylesheet" type="text/css" href="/css/my.css">
+    <style type="text/css">
+        
+    </style>
+
+    <script src="/libs/jquery/jquery-2.2.0.min.js"></script>
+<link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css"></head>
+
+
+<body>
+
+<header class="navbar-fixed">
+    <nav id="headNav" class="bg-color nav-transparent">
+        <div id="navContainer" class="nav-wrapper container">
+            <div class="brand-logo">
+                <a href="/" class="waves-effect waves-light">
+                    
+                    <span class="logo-span">DangoSky</span>
+                </a>
+            </div>
+            
+
+<a href="#" data-target="mobile-nav" class="sidenav-trigger button-collapse"><i class="fa fa-navicon"></i></a>
+<ul class="right">
+    
+    <li class="hide-on-med-and-down">
+        <a href="/" class="waves-effect waves-light">
+            
+            <i class="fa fa-home"></i>
+            
+            <span>首页</span>
+        </a>
+    </li>
+    
+    <li class="hide-on-med-and-down">
+        <a href="/tags" class="waves-effect waves-light">
+            
+            <i class="fa fa-tags"></i>
+            
+            <span>标签</span>
+        </a>
+    </li>
+    
+    <li class="hide-on-med-and-down">
+        <a href="/categories" class="waves-effect waves-light">
+            
+            <i class="fa fa-bookmark"></i>
+            
+            <span>分类</span>
+        </a>
+    </li>
+    
+    <li class="hide-on-med-and-down">
+        <a href="/archives" class="waves-effect waves-light">
+            
+            <i class="fa fa-archive"></i>
+            
+            <span>归档</span>
+        </a>
+    </li>
+    
+    <li class="hide-on-med-and-down">
+        <a href="/about" class="waves-effect waves-light">
+            
+            <i class="fa fa-user-circle-o"></i>
+            
+            <span>关于</span>
+        </a>
+    </li>
+    
+    <li class="hide-on-med-and-down">
+        <a href="/friends" class="waves-effect waves-light">
+            
+            <i class="fa fa-address-book"></i>
+            
+            <span>友情链接</span>
+        </a>
+    </li>
+    
+    <li>
+        <a href="#searchModal" class="modal-trigger waves-effect waves-light">
+            <i id="searchIcon" class="fa fa-search" title="搜索"></i>
+        </a>
+    </li>
+</ul>
+
+<div id="mobile-nav" class="side-nav sidenav">
+
+    <div class="mobile-head bg-color">
+        
+        <div class="logo-name">DangoSky</div>
+        <div class="logo-desc">
+            
+            但愿日子清净，抬头遇见的都是柔情。
+            
+        </div>
+    </div>
+
+    
+
+    <ul class="menu-list mobile-menu-list">
+        
+        <li>
+            <a href="/" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-home"></i>
+                
+                首页
+            </a>
+        </li>
+        
+        <li>
+            <a href="/tags" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-tags"></i>
+                
+                标签
+            </a>
+        </li>
+        
+        <li>
+            <a href="/categories" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-bookmark"></i>
+                
+                分类
+            </a>
+        </li>
+        
+        <li>
+            <a href="/archives" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-archive"></i>
+                
+                归档
+            </a>
+        </li>
+        
+        <li>
+            <a href="/about" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-user-circle-o"></i>
+                
+                关于
+            </a>
+        </li>
+        
+        <li>
+            <a href="/friends" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-address-book"></i>
+                
+                友情链接
+            </a>
+        </li>
+        
+        
+    </ul>
+</div>
+
+        </div>
+
+        
+    </nav>
+
+</header>
+
+
+
+
+
+<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/12.jpg')">
+    <div class="container">
+        <div class="row">
+            <div class="col s12 m12 l12">
+                <div class="brand">
+                    <div class="description center-align post-title">
+                        下拉刷新上拉加载更多的实现原理
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<main class="post-container content">
+
+    
+    <link rel="stylesheet" href="/libs/tocbot/tocbot.css">
+<style>
+    #articleContent h1::before,
+    #articleContent h2::before,
+    #articleContent h3::before,
+    #articleContent h4::before,
+    #articleContent h5::before,
+    #articleContent h6::before {
+        display: block;
+        content: " ";
+        height: 100px;
+        margin-top: -100px;
+        visibility: hidden;
+    }
+
+    #articleContent :focus {
+        outline: none;
+    }
+
+    .toc-fixed {
+        position: fixed;
+        top: 64px;
+    }
+
+    .toc-widget {
+        padding-left: 20px;
+    }
+
+    .toc-widget .toc-title {
+        margin: 35px 0 15px 0;
+        padding-left: 17px;
+        font-size: 1.5rem;
+        font-weight: bold;
+        line-height: 1.5rem;
+    }
+
+    .toc-widget ol {
+        padding: 0;
+        list-style: none;
+    }
+
+    #toc-content ol {
+        padding-left: 10px;
+    }
+
+    #toc-content ol li {
+        padding-left: 10px;
+    }
+
+    #toc-content .toc-link:hover {
+        color: #42b983;
+        font-weight: 700;
+        text-decoration: underline;
+    }
+
+    #toc-content .toc-link::before {
+        background-color: transparent;
+        max-height: 25px;
+    }
+
+    #toc-content .is-active-link {
+        color: #42b983;
+    }
+
+    #toc-content .is-active-link::before {
+        background-color: #42b983;
+    }
+
+    #floating-toc-btn {
+        position: fixed;
+        right: 20px;
+        bottom: 76px;
+        padding-top: 15px;
+        margin-bottom: 0;
+        z-index: 998;
+    }
+
+    #floating-toc-btn .btn-floating {
+        width: 48px;
+        height: 48px;
+    }
+
+    #floating-toc-btn .btn-floating i {
+        line-height: 48px;
+        font-size: 1.4rem;
+    }
+</style>
+<div class="row">
+    <div id="main-content" class="col s12 m12 l9">
+        <!-- 文章内容详情 -->
+<div id="artDetail">
+    <div class="card">
+        <div class="card-content article-info">
+            <div class="row tag-cate">
+                <div class="col s7">
+                    
+                    <div class="article-tag">
+                        
+                            <a href="/tags/JavaScript/" target="_blank">
+                                <span class="chip bg-color">JavaScript</span>
+                            </a>
+                        
+                            <a href="/tags/组件实现/" target="_blank">
+                                <span class="chip bg-color">组件实现</span>
+                            </a>
+                        
+                    </div>
+                    
+                </div>
+                <div class="col s5 right-align">
+                    
+                    <div class="post-cate">
+                        <i class="fa fa-bookmark fa-fw icon-category"></i>
+                        
+                            <a href="/categories/组件实现/" class="post-category" target="_blank">
+                                组件实现
+                            </a>
+                        
+                    </div>
+                    
+                </div>
+            </div>
+
+            <div class="post-info">
+                <div class="post-date info-break-policy">
+                    <i class="fa fa-calendar-minus-o fa-fw"></i>发布日期:&nbsp;&nbsp;
+                    2020-03-11
+                </div>
+
+                
+                    
+                    <div class="info-break-policy">
+                        <i class="fa fa-file-word-o fa-fw"></i>文章字数:&nbsp;&nbsp;
+                        1.9k
+                    </div>
+                    
+
+                    
+                    <div class="info-break-policy">
+                        <i class="fa fa-clock-o fa-fw"></i>阅读时长:&nbsp;&nbsp;
+                        6 分
+                    </div>
+                    
+                
+				
+				
+            </div>
+        </div>
+        <hr class="clearfix">
+        <div class="card-content article-card-content">
+            <div id="articleContent">
+                <script src="/assets/js/APlayer.min.js"> </script><h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><p>最近有一个需求：大致是要展示一个列表信息，但每次接口只返回 20 条数据，当用户滑动到到页面底部并继续上拉页面时再继续调接口获取更多的数据（相当于分页）。这里就需要使用到一个上拉加载更多的功能，实现的效果可以<a href="https://broltes.github.io/react-touch-loader/" target="_blank" rel="noopener">看这里</a>。考虑到项目时间比较紧而且可靠性问题，就没有自己去造轮子了，而是在 Github 上找<a href="https://github.com/Broltes/react-touch-loader" target="_blank" rel="noopener">现成的工具</a> 来用。这个库实现的功能主要有两个，一是上拉加载更多，另一个是下拉刷新。它提供的功能也算齐全，不过还是有几个小问题：</p>
+<ol>
+<li><p>它的文案是写死在 Less 中的，要修改文案的话只能去修改 Less，并且也只能写死在里面。如果要做国际化文案的话会比较麻烦，可能需要去手动操作下 DOM 修改内容了。</p>
+</li>
+<li><p>文案过渡效果不是很好。组件初始化时默认会渲染出上拉加载更多的提示语，导致从后端接口获取数据渲染的时候，会有一个提示语被下压到底部的突变过程，点用户体验不是很友好。</p>
+</li>
+<li><p>使用的是 JavaScript，在校验这块比较弱（不过这个也不算问题啦）。</p>
+</li>
+</ol>
+<h2 id="原理解析"><a href="#原理解析" class="headerlink" title="原理解析"></a>原理解析</h2><p>事后我去看了这个组件的实现源码以及其他一些参考资料，大致理解了下拉刷新和上拉加载更多的实现原理，并用 <code>TypeScript</code> 重写了这个组件（其实是因为组里刚好轮到我做技术分享，而我也没想到其他分享主题，就刚好拿这个来研究研究并当做分享主题了 Orz）。重写后的源代码可以看<a href="https://github.com/DangoSky/pull-to-refresh/tree/master/src/components/pull-to-refresh" target="_blank" rel="noopener">我的 Github</a>，具体支持的 Props 可以<a href="https://github.com/DangoSky/pull-to-refresh/blob/master/README.md" target="_blank" rel="noopener">看 README</a>。主要做的改动是：</p>
+<ol>
+<li><p>各个阶段的文案和 Icon 都作为 props 传递到组件内部，方便业务方自定义 Icon 和做国际化文案。</p>
+</li>
+<li><p>改善文案过渡的效果，避免初始化页面时文案突变。</p>
+</li>
+</ol>
+<h3 id="上拉加载更多"><a href="#上拉加载更多" class="headerlink" title="上拉加载更多"></a>上拉加载更多</h3><p>基本原理：监听 <code>scroll</code> 事件，判断页面是否达到底部，是的话则调用加载函数获取后面的数据，并将新拿到的数据拼接到现有的列表数组后面（一个列表信息通常都是使用一个数组来装的）。</p>
+<p>这里需要解决的问题是：</p>
+<h4 id="1-判断页面是否已经到达底部"><a href="#1-判断页面是否已经到达底部" class="headerlink" title="1.判断页面是否已经到达底部"></a>1.判断页面是否已经到达底部</h4><p>判断页面是否到达底部有一个专门的公式：<code>element.scrollHeight &lt;= element.scrollTop + element.clientHeight</code>，如果结果为 <code>true</code> 的话说明已经滚动到页面底部了。其中 <code>scrollHeight</code> 表示元素的全部高度，包含了因超出而隐藏部分的高度。取值上等于 <code>height</code> + <code>padding</code> + 被隐藏的内容高度，元素没有隐藏内容时等同于 <code>clientHeight</code>。<code>scrollTop</code> 表示元素已经滚动的距离。<code>clientHeight</code> 表示元素可见区域的高度，取值上等于 <code>height</code> + <code>padding</code>。</p>
+<p><img src="/2020/03/11/上拉刷新下拉加载更多的实现原理/./1.png" alt></p>
+<p>有时候我们不会等到页面滚动到底部才去加载更多数据，这样会给用户带来等待加载更多数据的时间。所以我们会使用一个变量，比如说是 <code>distance</code> 来表示距离底部还有多远时就开始加载更多数据，此时判断页面是否达到底部的公式就变成了 <code>element.scrollHeight - distance &lt;= element.scrollTop + element.clientHeight</code>。</p>
+<h4 id="2-在加载完成后如何改变加载状态"><a href="#2-在加载完成后如何改变加载状态" class="headerlink" title="2.在加载完成后如何改变加载状态"></a>2.在加载完成后如何改变加载状态</h4><p>当滚动到页面底部时，组件内部调用加载函数 <code>handleMore</code>，并将修改状态的代码写成函数作为 <code>handleMore</code> 的参数。父组件在加载完成数据后调用该函数，就可以在加载完成后修改一些状态变量，从而改变页面的文案显示。</p>
+<pre class=" language-js"><code class="language-js"><span class="token comment" spellcheck="true">// 子组件</span>
+ <span class="token keyword">this</span><span class="token punctuation">.</span>props<span class="token punctuation">.</span><span class="token function">handleMore</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=</span><span class="token operator">></span> <span class="token punctuation">{</span>
+  <span class="token keyword">this</span><span class="token punctuation">.</span><span class="token function">setState</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+    footerStatus<span class="token punctuation">:</span> <span class="token string">'finish'</span>
+  <span class="token punctuation">}</span><span class="token punctuation">)</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token comment" spellcheck="true">// 父组件</span>
+<span class="token keyword">async</span> <span class="token function">handleMore</span><span class="token punctuation">(</span>resolve<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">await</span> <span class="token keyword">this</span><span class="token punctuation">.</span><span class="token function">fetchData</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token function">resolve</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<h3 id="下拉刷新"><a href="#下拉刷新" class="headerlink" title="下拉刷新"></a>下拉刷新</h3><p>基本原理：监听 <code>touchStart</code>、<code>touchMove</code> 和 <code>touchEnd</code> 事件，判断手势是下拉并且到达了页面顶部，满足这两个条件的话下拉后拖动内容向下移动，并在释放后调用刷新函数。</p>
+<p>为了下文使用方便，先标记几个变量：</p>
+<ul>
+<li><code>startScrollTop</code> 表示触发 <code>touchStart</code> 事件时页面已经滚动的距离。</li>
+<li><code>startClientY</code> 表示触发 <code>touchStart</code> 事件时触发点距离视口顶部的距离.</li>
+<li><code>curScrollTop</code> 表示触发 <code>touchMove</code> 事件时页面已经滚动的距离。</li>
+<li><code>curClientY</code> 表示触发 <code>touchMove</code> 事件时触发点距离视口顶部的距离。</li>
+</ul>
+<p>这里需要解决的问题是：</p>
+<h4 id="1-判断手势是下拉页面-⏬"><a href="#1-判断手势是下拉页面-⏬" class="headerlink" title="1.判断手势是下拉页面 ⏬"></a>1.判断手势是下拉页面 ⏬</h4><p>如果 <code>curClientY - startClientY</code> 大于 0 说明手势是下拉 ⏬，小于 0 则是 ⏫。</p>
+<h4 id="2-判断页面此时是否位于顶部"><a href="#2-判断页面此时是否位于顶部" class="headerlink" title="2.判断页面此时是否位于顶部"></a>2.判断页面此时是否位于顶部</h4><p>如果 <code>curScrollTop ≤ 0</code>，则说明此时没有页面滚动，是处于顶部的。</p>
+<h4 id="3-拖动列表下拉移动的距离"><a href="#3-拖动列表下拉移动的距离" class="headerlink" title="3.拖动列表下拉移动的距离"></a>3.拖动列表下拉移动的距离</h4><p>当满足上述两个条件后，下拉页面就可以拖拽列表向下移动，此时需要计算列表移动的距离，需要移动的距离 = 手指在屏幕上移动的距离 - <code>touchStart</code> 时页面滚动的距离。用上面的变量来写成公式就是 <code>distance = (curClientY - startClientY) - startScrollTop</code>。</p>
+<p>详情可见下图，左图表示 <code>touchStart</code> 时的状态，右图表示 <code>touchEnd</code> 时的状态，圆圈表示当时手指所在的屏幕位置。<code>touchStart</code> 时有个列表，它的上面既滚动了一部分，下边也有因超出而隐藏的部分。随着手指慢慢向下移动，到了右图 <code>touchEnd</code> 的状态。此时随着手指移动，列表页也会向下移，其中 <code>distance</code> 就表示列表向下移动的距离。</p>
+<p><img src="/2020/03/11/上拉刷新下拉加载更多的实现原理/2.png" alt></p>
+<p>在这里父组件还可以传递一个 <code>distancePullDownRefresh</code> 参数过来，表示列表向下移动了多大距离后，释放时就调用刷新函数。所以需要在 <code>touchMove</code> 中计算出 <code>distance</code> 后判断两者的大小关系，如果 <code>distance</code> 大于 <code>distancePullDownRefresh</code> 的话，则将状态变量标记为释放刷新。在 <code>touchEnd</code> 中再判断该状态变量的值，决定是否要调用刷新函数。</p>
+<h2 id="FAQ"><a href="#FAQ" class="headerlink" title="FAQ"></a>FAQ</h2><ol>
+<li>为什么下拉刷新和上拉加载更多是监听不同的事件？</li>
+</ol>
+<p>因为在下拉刷新中，列表在到达顶部时需要向下移动。如果是监听 <code>scroll</code> 的话，因为已经到达顶部了，所以无法再向上滚动，也就导致计算不了列表需要移动的距离。而监听 <code>touch</code> 事件，可以通过计算手指在屏幕上移动的距离，从而得出列表向下移动的距离，</p>
+<ol start="2">
+<li>如何解决原来的组件在页面初始化时文案突变的问题？</li>
+</ol>
+<p>初始文案默认为空字符串，并且把数据初始化函数 <code>initData</code> 作为 <code>prop</code> 传递给组件。组件内部在 <code>componentDidMount</code> 时调用 <code>initData</code>，并将控制文案的变量状态修改写成函数作为参数传递给 <code>initData</code>。这样业务使用方在获取完成数据后调用该函数，就可以把改变状态变量，将其修改回其他的提示文案了。</p>
+<p>这样做的弊端是，数据初始化函数 <code>initData</code> 需要放到我们的组件内部去调用。如果不这样做的话，还有另一种方法是，依旧把初始文案默认为空字符串，但在 <code>scroll</code> 监听中再判断页面滚动是否快到底部了，是的话就将默认的空字符串文案修改为我们的提示语文案。</p>
+
+            </div>
+            <hr/>
+
+            
+
+            <link rel="stylesheet" type="text/css" href="/libs/share/css/share.min.css">
+
+<div id="article-share">
+    
+    <div class="social-share" data-disabled="qzone" data-wechat-qrcode-helper="<p>微信里点“发现”->“扫一扫”二维码便可查看分享。</p>"></div>
+    
+</div>
+
+<script src="/libs/share/js/social-share.min.js"></script>
+
+            <div class="reprint">
+                <p>
+                    <span class="reprint-tip">
+                        <i class="fa fa-exclamation-circle"></i>&nbsp;&nbsp;转载请注明:
+                    </span>
+                    <a href="http://blog.dangosky.com" class="b-link-green">DangoSky</a>
+                    <i class="fa fa-angle-right fa-lg fa-fw text-color"></i>
+                    <a href="/2020/03/11/上拉刷新下拉加载更多的实现原理/" class="b-link-green">下拉刷新上拉加载更多的实现原理</a>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    
+
+    
+
+    
+        <div class="disqus-card card" data-aos="fade-up">
+    <div id="disqus_thread" class="card-content">
+        <noscript>Please enable JavaScript to view the
+            <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+    </div>
+</div>
+
+<script type="text/javascript">
+    disqus_config = function () {
+        this.page.url = 'http://blog.dangosky.com/2020/03/11/上拉刷新下拉加载更多的实现原理/';
+        this.page.identifier = '/2020/03/11/上拉刷新下拉加载更多的实现原理/';
+        this.page.title = '下拉刷新上拉加载更多的实现原理';
+    };
+    let disqus_shortname = 'dangosky';
+
+    (function () { // DON'T EDIT BELOW THIS LINE
+        let d = document, s = d.createElement('script');
+        // 如：s.src = 'https://blinkfox.disqus.com/embed.js';
+        s.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+    
+
+    
+
+    
+
+    
+
+<article id="prenext-posts" class="prev-next articles">
+    <div class="row article-row">
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge left-badge text-color">
+                <i class="fa fa-chevron-left"></i>&nbsp;上一篇</div>
+            <div class="card">
+                <a href="/2020/04/11/颜色规范校验-lint/">
+                    <div class="card-image">
+                        
+                        
+                        <img src="/medias/featureimages/3.jpg" class="responsive-img" alt="颜色规范校验 Lint">
+                        
+                        <span class="card-title">颜色规范校验 Lint</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary"> 背景最近有一个需求，要做的工作是编写一个校验脚本，在代码提 commit 的时候去校验提交的样式文件里有没有不符合规范的色值。项目里会有一个统一的 normal-colors.less 文件，样式文件里使用到的色值都必须使用这个 norm</div>
+                    <div class="publish-info">
+                        <span class="publish-date">
+                            <i class="fa fa-clock-o fa-fw icon-date"></i>2020-04-11
+                        </span>
+                        <span class="publish-author">
+                            
+                            <i class="fa fa-bookmark fa-fw icon-category"></i>
+                            
+                            <a href="/categories/JavaScript/" class="post-category" target="_blank">
+                                    JavaScript
+                                </a>
+                            
+                            
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/Node/" target="_blank">
+                        <span class="chip bg-color">Node</span>
+                    </a>
+                    
+                    <a href="/tags/正则表达式/" target="_blank">
+                        <span class="chip bg-color">正则表达式</span>
+                    </a>
+                    
+                    <a href="/tags/AST/" target="_blank">
+                        <span class="chip bg-color">AST</span>
+                    </a>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge right-badge text-color">
+                下一篇&nbsp;<i class="fa fa-chevron-right"></i>
+            </div>
+            <div class="card">
+                <a href="/2020/01/10/跨域解决方案实践/">
+                    <div class="card-image">
+                        
+                        
+                        <img src="/medias/featureimages/17.jpg" class="responsive-img" alt="跨域解决方案实践">
+                        
+                        <span class="card-title">跨域解决方案实践</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary"> 同源策略
+什么时候会跨域：协议、域名、端口号三者有一个不同就是跨域。
+
+对跨域的辨析：跨域请求并非是浏览器限制了发起跨站请求，而是请求可以正常发起并到达目标服务器，但是服务器返回的结果会被浏览器拦截。
+
+
+先来看一下不进行额外处理的跨域请</div>
+                    <div class="publish-info">
+                            <span class="publish-date">
+                                <i class="fa fa-clock-o fa-fw icon-date"></i>2020-01-10
+                            </span>
+                        <span class="publish-author">
+                            
+                            <i class="fa fa-bookmark fa-fw icon-category"></i>
+                            
+                            <a href="/categories/前端基础/" class="post-category" target="_blank">
+                                    前端基础
+                                </a>
+                            
+                            
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/前端基础/" target="_blank">
+                        <span class="chip bg-color">前端基础</span>
+                    </a>
+                    
+                    <a href="/tags/Node/" target="_blank">
+                        <span class="chip bg-color">Node</span>
+                    </a>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+    </div>
+</article>
+</div>
+
+
+    </div>
+    <div id="toc-aside" class="expanded col l3 hide-on-med-and-down">
+        <div class="toc-widget">
+            <div class="toc-title"><i class="fa fa-list-alt"></i>&nbsp;&nbsp;目录</div>
+            <div id="toc-content"></div>
+        </div>
+    </div>
+</div>
+
+<!-- TOC 悬浮按钮. -->
+
+<div id="floating-toc-btn" class="hide-on-med-and-down">
+    <a class="btn-floating btn-large bg-color">
+        <i class="fa fa-list"></i>
+    </a>
+</div>
+
+
+<script src="/libs/tocbot/tocbot.min.js"></script>
+<script>
+    $(function () {
+        tocbot.init({
+            tocSelector: '#toc-content',
+            contentSelector: '#articleContent',
+            headingsOffset: -($(window).height() * 0.4 - 45),
+            // headingsOffset: -205,
+            headingSelector: 'h1, h2, h3'
+        });
+
+        // modify the toc link href to support Chinese.
+        let i = 0;
+        let tocHeading = 'toc-heading-';
+        $('#toc-content a').each(function () {
+            $(this).attr('href', '#' + tocHeading + (++i));
+        });
+
+        // modify the heading title id to support Chinese.
+        i = 0;
+        $('#articleContent').children('h1, h2, h3').each(function () {
+            $(this).attr('id', tocHeading + (++i));
+        });
+
+        // Set scroll toc fixed.
+        let tocHeight = parseInt($(window).height() * 0.4 - 64);
+        let $tocWidget = $('.toc-widget');
+        $(window).scroll(function () {
+            let scroll = $(window).scrollTop();
+            /* add post toc fixed. */
+            if (scroll > tocHeight) {
+                $tocWidget.addClass('toc-fixed');
+            } else {
+                $tocWidget.removeClass('toc-fixed');
+            }
+        });
+
+        
+        /* 修复文章卡片 div 的宽度. */
+        let fixPostCardWidth = function (srcId, targetId) {
+            let srcDiv = $('#' + srcId);
+            if (srcDiv.length === 0) {
+                return;
+            }
+
+            let w = srcDiv.width();
+            if (w >= 450) {
+                w = w + 21;
+            } else if (w >= 350 && w < 450) {
+                w = w + 18;
+            } else if (w >= 300 && w < 350) {
+                w = w + 16;
+            } else {
+                w = w + 14;
+            }
+            $('#' + targetId).width(w);
+        };
+
+        // 切换TOC目录展开收缩的相关操作.
+        const expandedClass = 'expanded';
+        let $tocAside = $('#toc-aside');
+        let $mainContent = $('#main-content');
+        $('#floating-toc-btn .btn-floating').click(function () {
+            if ($tocAside.hasClass(expandedClass)) {
+                $tocAside.removeClass(expandedClass).slideUp(500);
+                $mainContent.removeClass('l9');
+            } else {
+                $tocAside.addClass(expandedClass).slideDown(500);
+                $mainContent.addClass('l9');
+            }
+            fixPostCardWidth('artDetail', 'prenext-posts');
+        });
+        
+    });
+</script>
+    
+
+</main>
+
+
+<footer class="page-footer bg-color">
+    <div class="container row center-align">
+        <div class="col s12 m8 l8 copy-right">
+            本站由&copy;<a href="https://blinkfox.github.io/" target="_blank">Blinkfox</a>基于
+            <a href="https://hexo.io/" target="_blank">Hexo</a> 的
+            <a href="https://github.com/blinkfox/hexo-theme-matery" target="_blank">hexo-theme-matery</a>主题搭建.
+
+            
+                &nbsp;<i class="fa fa-area-chart"></i>&nbsp;站点总字数:&nbsp;
+                <span class="white-color">82.3k</span>
+            
+
+            <!-- <p id="timeDate">DangoSky的博客诞生已经</p><p id="times">载入时分秒...</p> -->
+            <!-- <p>DangoSky的博客已经诞生<strong><i><span id="day"></span><span id="hour"></span></span><span id="minutes"></span><span id="seconds"></span> </strong><i></p> -->
+                <p id="timeDate"></p>
+
+            <!-- 
+			 -->
+        </div>
+        <div class="col s12 m4 l4 social-link ">
+
+    <a href="mailto:1341514988@qq.com" class="tooltipped" target="_blank" data-tooltip="邮件联系我" data-position="top" data-delay="50">
+        <i class="fa fa-envelope-open"></i>
+    </a>
+
+
+
+    <a href="/atom.xml" class="tooltipped" target="_blank" data-tooltip="RSS 订阅" data-position="top" data-delay="50">
+        <i class="fa fa-rss"></i>
+    </a>
+
+
+
+   <a href="https://github.com/DangoSky" class="tooltipped" target="_blank" data-tooltip="访问我的GitHub" data-position="top" data-delay="50">
+    <i class="fa fa-github"></i>
+</a>
+
+
+
+    <a href="http://notes.dangosky.com/" class="tooltipped" target="_blank" data-tooltip="浏览我的笔记" data-position="top" data-delay="50">
+     <i class="fa fa-book"></i>
+ </a>
+ 
+</div>
+    </div>
+</footer>
+
+<div class="progress-bar"></div>
+
+<script type="text/javascript">
+    function computed(){
+        let sum = new Date()-new Date(2018,9,3,23,3,38)
+        sum = parseInt(sum / 1000);
+        let d = zero(parseInt(sum / 3600 / 24));
+        let h = zero(parseInt(sum / 3600 % 24));
+        let m = zero(parseInt(sum / 60 % 60));
+        let s = zero(parseInt(sum % 60));
+        document.getElementById("timeDate").innerHTML = "DangoSky的博客已经诞生<strong>" + d + "</strong>天<strong>" + h + "</strong>小时<strong>" + m + "</strong>分钟<strong>" + s + "</strong>秒了。"; 
+    }
+    function zero(i){
+        if(i < 10)  {
+            i = "0" + i;
+        }
+        return i;
+    }
+    setInterval("computed();",1000);
+</script>
+
+<!-- 搜索遮罩框 -->
+<div id="searchModal" class="modal">
+    <div class="modal-content">
+        <div class="search-header">
+            <span class="title"><i class="fa fa-search"></i>&nbsp;&nbsp;搜索</span>
+            <input type="search" id="searchInput" name="s" placeholder="请输入搜索的关键字"
+                   class="search-input">
+        </div>
+        <div id="searchResult"></div>
+    </div>
+</div>
+
+<script src="/js/search.js"></script>
+<script type="text/javascript">
+$(function () {
+    searchFunc("/" + "search.xml", 'searchInput', 'searchResult');
+});
+</script>
+<!-- 回到顶部按钮 -->
+<div id="backTop" class="top-scroll">
+    <a class="btn-floating btn-large waves-effect waves-light" href="#!">
+        <i class="fa fa-angle-up"></i>
+    </a>
+</div>
+
+
+<script src="/libs/materialize/materialize.min.js"></script>
+<script src="/libs/masonry/masonry.pkgd.min.js"></script>
+<script src="/libs/aos/aos.js"></script>
+<script src="/libs/scrollprogress/scrollProgress.min.js"></script>
+<script src="/libs/lightGallery/js/lightgallery-all.min.js"></script>
+<script src="/js/matery.js"></script>
+
+<!-- Global site tag (gtag.js) - Google Analytics -->
+
+
+
+    <script src="/libs/others/clicklove.js"></script>
+
+
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"debug":false,"model":{"jsonPath":"live2d-widget-model-shizuku"},"display":{"position":"right","width":200,"height":400},"mobile":{"show":false},"log":false});</script></body>
+</html>

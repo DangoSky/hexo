@@ -1,6 +1,278 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>颜色规范校验 Lint</title>
+    <url>/2020/04/11/%E9%A2%9C%E8%89%B2%E8%A7%84%E8%8C%83%E6%A0%A1%E9%AA%8C-lint/</url>
+    <content><![CDATA[<script src="/assets/js/APlayer.min.js"> </script><h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><p>最近有一个需求，要做的工作是编写一个校验脚本，在代码提 commit 的时候去校验提交的样式文件里有没有不符合规范的色值。项目里会有一个统一的 <code>normal-colors.less</code> 文件，样式文件里使用到的色值都必须使用这个 <code>normal-colors.less</code> 里的色值变量。对于不在规范里的色值，比如指定的十六进制、rgb、rgba、hsl、hsla 以及颜色名，都要检查出来并查找在 <code>normal-colors.less</code> 里有没有对应的色值变量，有的话则自动替换，没有则打印出所有不规范的色值。</p>
+<h2 id="技术实现"><a href="#技术实现" class="headerlink" title="技术实现"></a>技术实现</h2><h4 id="1-提取-commit-的样式文件"><a href="#1-提取-commit-的样式文件" class="headerlink" title="1. 提取 commit 的样式文件"></a>1. 提取 commit 的样式文件</h4><pre class=" language-js"><code class="language-js"><span class="token keyword">const</span> execSync <span class="token operator">=</span> <span class="token function">require</span><span class="token punctuation">(</span><span class="token string">'child_process'</span><span class="token punctuation">)</span><span class="token punctuation">.</span>execSync<span class="token punctuation">;</span>
+<span class="token keyword">const</span> files <span class="token operator">=</span> <span class="token function">execSync</span><span class="token punctuation">(</span><span class="token string">'git diff HEAD --name-only'</span><span class="token punctuation">,</span> <span class="token punctuation">{</span>
+  encoding<span class="token punctuation">:</span> <span class="token string">'utf8'</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">split</span><span class="token punctuation">(</span><span class="token string">'\n'</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">filter</span><span class="token punctuation">(</span>i <span class="token operator">=</span><span class="token operator">></span> i <span class="token operator">&amp;&amp;</span> <span class="token regex">/\.(c|le|sa|sc)ss$/</span><span class="token punctuation">.</span><span class="token function">test</span><span class="token punctuation">(</span>i<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+</code></pre>
+<h4 id="2-提取样式文件中使用到的色值"><a href="#2-提取样式文件中使用到的色值" class="headerlink" title="2. 提取样式文件中使用到的色值"></a>2. 提取样式文件中使用到的色值</h4><p>刚接到这个需求的时候，第一想法就是使用正则表达式去匹配。对颜色十六进制、常用的颜色名、rgb(a)、hsl(a) 这几种情况分别写正则表达式，再读取文件内容进行全局匹配。</p>
+<pre class=" language-js"><code class="language-js"><span class="token keyword">const</span> nameRegx <span class="token operator">=</span> <span class="token regex">/(black|silver|gray|white|maroon|red|purple|fuchsia|green|lime|olive|yellow|navy|blue|teal|aqua)/g</span><span class="token punctuation">;</span>
+
+<span class="token keyword">const</span> hexRegx <span class="token operator">=</span> <span class="token regex">/#([0-9a-fA-f]{6}|[0-9a-fA-f]{3})/g</span><span class="token punctuation">;</span>
+
+<span class="token keyword">const</span> rgbRegx <span class="token operator">=</span> <span class="token regex">/rgba?\((\d+)(\.\d+)?%?,\s*(\d+)(\.\d+)?%?,\s*(\d+)(\.\d+)?%?(,\s*((\d+)?)(\.\d+)?(%?))?\)/g</span><span class="token punctuation">;</span>
+
+<span class="token keyword">const</span> hslRegx <span class="token operator">=</span> <span class="token regex">/hsla?\((\d+)(\.\d+)?%?,\s*(\d+)(\.\d+)?%?,\s*(\d+)(\.\d+)?%?(,\s*((\d+)?)(\.\d+)?(%?))?\)/g</span><span class="token punctuation">;</span>
+</code></pre>
+<p>对于颜色名，只需要列举几个常用的颜色名就可以了。</p>
+<p>对于十六进制色值，可能是 6 位的字符串，也可能是缩写成 3 位而已，并且允许的字符只能是在 <code>0-9</code> 或 <code>a-f</code> 或 <code>A-F</code> 之间而已。</p>
+<p>对于 rgb(a) 和 hsl(a)，其实两者的格式是一样的，所以写出来的正则也就它们的前缀名不一样而已。但需要考虑到它里面使用的各个值可能是整数，也可能是小数、百分数，所以写出来的正则会复杂一些。为方便理解可将上面 rgb(a) 的正则拆分为以下几部分：</p>
+<ul>
+<li><code>rgba?\(</code></li>
+<li><code>(\d+)(\.\d+)?%?</code></li>
+<li><code>,\s*(\d+)(\.\d+)?%?</code></li>
+<li><code>,\s*(\d+)(\.\d+)?%?</code></li>
+<li><code>(,\s*((\d+)?)(\.\d+)?(%?))?</code></li>
+<li><code>\)</code></li>
+</ul>
+<h4 id="3-rgb-a-色值转换为十六进制"><a href="#3-rgb-a-色值转换为十六进制" class="headerlink" title="3. rgb(a) 色值转换为十六进制"></a>3. rgb(a) 色值转换为十六进制</h4><p>当检查到不规范的色值时，需要去 <code>normal-colors.less</code> 里查找有没有对应的色值变量。所以还要先读取 <code>normal-colors.less</code> 文件，将其中的色值变量和具体的色值号提取到一个对象里，并且是以色值为键名，色值变量为值。因为 <code>normal-colors.less</code> 里的色值都是使用的十六进制，所以对于检查出来的不规范色值，还需要再转换成十六进制才可以判断在 <code>normal-colors.less</code> 中是否有对应的色值变量（注意还需要对转换出来的十六进制再转换成小写形式），不过这里我只做了对 rgb(a) 的转换。rgb 转换为十六进制，其实只需要将其中的 r、g、b 值转换为十六进制，再加上前缀 <code>#</code> 就可以了，但要考虑到它们的值可能为小数和百分数的情况，以下是 rgb(a) 转换为十六进制的函数。</p>
+<pre class=" language-js"><code class="language-js"><span class="token comment" spellcheck="true">// rgb 和 rgba 转换为十六进制</span>
+<span class="token keyword">function</span> <span class="token function">rgbaToHex</span><span class="token punctuation">(</span>rgba<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">const</span> color <span class="token operator">=</span> rgba
+    <span class="token punctuation">.</span><span class="token function">replace</span><span class="token punctuation">(</span><span class="token regex">/rgba?\(/</span><span class="token punctuation">,</span> <span class="token string">''</span><span class="token punctuation">)</span>
+    <span class="token punctuation">.</span><span class="token function">replace</span><span class="token punctuation">(</span><span class="token regex">/\)/</span><span class="token punctuation">,</span> <span class="token string">''</span><span class="token punctuation">)</span>
+    <span class="token punctuation">.</span><span class="token function">replace</span><span class="token punctuation">(</span><span class="token regex">/[\s+]/g</span><span class="token punctuation">,</span> <span class="token string">''</span><span class="token punctuation">)</span>
+    <span class="token punctuation">.</span><span class="token function">split</span><span class="token punctuation">(</span><span class="token string">','</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token comment" spellcheck="true">// 如果是 rgb 的话，默认 alpha 透明度是 1</span>
+  <span class="token comment" spellcheck="true">// 考虑到值可能为百分数，所以还需要对百分数进行计算</span>
+  <span class="token keyword">const</span> alpha <span class="token operator">=</span> <span class="token function">formatPer</span><span class="token punctuation">(</span>color<span class="token punctuation">[</span><span class="token number">3</span><span class="token punctuation">]</span> <span class="token operator">||</span> <span class="token string">'1'</span><span class="token punctuation">,</span> <span class="token boolean">true</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token keyword">const</span> r <span class="token operator">=</span> <span class="token function">formatPer</span><span class="token punctuation">(</span>color<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">,</span> <span class="token boolean">false</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token keyword">const</span> g <span class="token operator">=</span> <span class="token function">formatPer</span><span class="token punctuation">(</span>color<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">,</span> <span class="token boolean">false</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token keyword">const</span> b <span class="token operator">=</span> <span class="token function">formatPer</span><span class="token punctuation">(</span>color<span class="token punctuation">[</span><span class="token number">2</span><span class="token punctuation">]</span><span class="token punctuation">,</span> <span class="token boolean">false</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token keyword">const</span> hex <span class="token operator">=</span> <span class="token string">'#'</span> <span class="token operator">+</span>
+    <span class="token punctuation">(</span><span class="token string">'0'</span> <span class="token operator">+</span> r<span class="token punctuation">.</span><span class="token function">toString</span><span class="token punctuation">(</span><span class="token number">16</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">slice</span><span class="token punctuation">(</span><span class="token operator">-</span><span class="token number">2</span><span class="token punctuation">)</span> <span class="token operator">+</span>
+    <span class="token punctuation">(</span><span class="token string">'0'</span> <span class="token operator">+</span> g<span class="token punctuation">.</span><span class="token function">toString</span><span class="token punctuation">(</span><span class="token number">16</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">slice</span><span class="token punctuation">(</span><span class="token operator">-</span><span class="token number">2</span><span class="token punctuation">)</span> <span class="token operator">+</span>
+    <span class="token punctuation">(</span><span class="token string">'0'</span> <span class="token operator">+</span> b<span class="token punctuation">.</span><span class="token function">toString</span><span class="token punctuation">(</span><span class="token number">16</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">slice</span><span class="token punctuation">(</span><span class="token operator">-</span><span class="token number">2</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token keyword">return</span> <span class="token punctuation">{</span>
+    hex<span class="token punctuation">,</span>
+    alpha
+  <span class="token punctuation">}</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+
+<span class="token comment" spellcheck="true">// 转换百分数</span>
+<span class="token keyword">function</span> <span class="token function">formatPer</span><span class="token punctuation">(</span>num<span class="token punctuation">,</span> isAlpha<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">if</span> <span class="token punctuation">(</span>num<span class="token punctuation">.</span><span class="token function">includes</span><span class="token punctuation">(</span><span class="token string">'%'</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    num <span class="token operator">=</span> <span class="token function">parseFloat</span><span class="token punctuation">(</span>num<span class="token punctuation">.</span><span class="token function">replace</span><span class="token punctuation">(</span><span class="token string">'%'</span><span class="token punctuation">,</span> <span class="token string">''</span><span class="token punctuation">)</span> <span class="token operator">/</span> <span class="token number">100</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">return</span> isAlpha <span class="token operator">?</span> num <span class="token punctuation">:</span> <span class="token function">parseInt</span><span class="token punctuation">(</span>num <span class="token operator">*</span> <span class="token number">255</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token punctuation">}</span>
+  <span class="token keyword">return</span> isAlpha <span class="token operator">?</span> <span class="token function">parseFloat</span><span class="token punctuation">(</span>num<span class="token punctuation">)</span> <span class="token punctuation">:</span> <span class="token function">parseInt</span><span class="token punctuation">(</span>num<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<h4 id="4-设置白名单"><a href="#4-设置白名单" class="headerlink" title="4. 设置白名单"></a>4. 设置白名单</h4><p>有时候因为一些特殊原因，比如历史遗留了太多不规范的色值，并且当前的代码又急需要合进 master 准备上线，这时候就需要一个给业务方提供一个跳过校验的功能了。当然可以通过 <code>git commit --no-verify -m &quot;&lt;commit message&gt;&quot;</code> 来跳过所有 lint 检查，但这样对所有的文件都跳过了检查，并且其他的一些 lint 校验也都被忽略了。所以可以通过给某个文件加白名单的方式来跳过颜色校验脚本，比如说在文件中写个注释 <code>/* disable-color-check  */</code>，在读取样式文件时，如果全局匹配到了这条注释的话，就直接 return 出校验函数跳过检查。</p>
+<h4 id="5-打印出不同颜色"><a href="#5-打印出不同颜色" class="headerlink" title="5. 打印出不同颜色"></a>5. 打印出不同颜色</h4><p>为了打印出来的信息可以清晰点提高辨识度，还可以对不同的信息打印出不同的颜色，比如文件名输出为红色，提示信息输出为绿色。这里貌似有专门的第三方库来控制打印的文本样式，还可以打印出一些 Icon 等。不过也没必要为此再引入一个库，我是直接对 <code>console.log</code> 做文章。</p>
+<pre class=" language-js"><code class="language-js">console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token string">'\x1B[32m%s\x1B[0m'</span><span class="token punctuation">,</span> <span class="token string">'打印出来是绿色的'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token string">'\x1B[31m%s\x1B[0m'</span><span class="token punctuation">,</span> <span class="token string">'打印出来是红色的'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+</code></pre>
+<h2 id="遇到的问题"><a href="#遇到的问题" class="headerlink" title="遇到的问题"></a>遇到的问题</h2><p>上述讲的方案是通过正则表达式去匹配样式文件中的不规范色值，这使用在 rgb(a)、hsl(a) 和十六进制上没有问题，但用在颜色名上就有问题了。比如我有一个选择器是 <code>.m-red</code>，类名中如果出现了颜色名的话，它也会被正则匹配到，而这是不符合预期的。之后我就想到颜色名作为类名出现就这些情况，<code>.m-red</code>、 <code>.red-box</code>，颜色名左右会有 <code>.</code> 或者 <code>-</code>。所以如果颜色名左右有 <code>.</code> 或者 <code>-</code> 的话，就认为它是作为类名出现的，不进行匹配。改造后的正则为： <code>/(?&lt;!(\.|-))(()bglack|silver|gray|white|maroon|red|purple|fuchsia|green|lime|olive|yellow|navy|blue|teal|aqua)/g</code>，也就是加了 <code>(?&lt;!(\.|-))</code> 来判断颜色名，<code>?&lt;!</code> 系列的作用如下。</p>
+<ul>
+<li><p><code>exp1(?=exp2)</code>：查找 exp2 前面的 exp1。</p>
+</li>
+<li><p><code>(?&lt;=exp2)exp1</code>：查找 exp2 后面的 exp1。</p>
+</li>
+<li><p><code>exp1(?!exp2)</code>：查找后面不是 exp2 的 exp1。</p>
+</li>
+<li><p><code>(?&lt;!exp2)exp1</code>：查找前面不是 exp2 的 exp1。</p>
+</li>
+</ul>
+<p>但是事实上，我们并不能保证类名中的颜色名就只是以上面说的两种情况出现，可能也是 <code>.m-xxxredxxx</code>，如果用正则表达式的话实在难以囊括所有可能的情况，所以只能另想实现方案了。</p>
+<h2 id="最终方案"><a href="#最终方案" class="headerlink" title="最终方案"></a>最终方案</h2><p>接着使用的方案是通过将样式文件解析成抽象语法树，通过递归遍历 AST 来提取所有 CSS 属性键值对，再用上面的正则表达式去匹配它的值。不过这里其实不用将键值对提取出来的，直接在遍历到键值对时进行正则匹配就够了。如果要提取出来的话，因为很多 CSS 属性是重复出现的，要区分的话只能通过它们的类名去区分。而对于 Less 而言存在着类嵌套（比如说 <code>.box p</code> 和 <code>.container p</code> 这两个选择器），为了避免类名重复就得将它的父级类名一起拼起来形成一个独一无而的值。但这样处理起来会比较麻烦，所以就放弃了提取所有的键值对，而是在遍历时判断就可以了。</p>
+<h4 id="对于-CSS-文件"><a href="#对于-CSS-文件" class="headerlink" title="对于 CSS 文件"></a>对于 CSS 文件</h4><p>因为项目里使用的是 CSS 和 Less，所以需要使用不同的工具来解析两者。对于 CSS 文件使用的解析工具是 <a href="https://github.com/reworkcss/css" target="_blank" rel="noopener">css</a>，它提供了简单的 api 来解析 CSS 文件，并且解析出来的 AST 结构也很清晰提取挺方便的。</p>
+<pre class=" language-js"><code class="language-js"><span class="token keyword">const</span> css <span class="token operator">=</span> <span class="token function">require</span><span class="token punctuation">(</span><span class="token string">'css'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword">const</span> fileContent <span class="token operator">=</span> fs<span class="token punctuation">.</span><span class="token function">readFileSync</span><span class="token punctuation">(</span>file<span class="token punctuation">,</span> <span class="token punctuation">{</span>
+  encoding<span class="token punctuation">:</span> <span class="token string">'utf8'</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword">const</span> res <span class="token operator">=</span> css<span class="token punctuation">.</span><span class="token function">parse</span><span class="token punctuation">(</span>fileContent<span class="token punctuation">,</span> <span class="token punctuation">{</span>source<span class="token punctuation">:</span> file<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment" spellcheck="true">// -> AST</span>
+</code></pre>
+<p><img src="/2020/04/11/颜色规范校验-lint/./1.png" alt></p>
+<h4 id="对于-Less-文件"><a href="#对于-Less-文件" class="headerlink" title="对于 Less 文件"></a>对于 Less 文件</h4><p><strong>第一个方案</strong></p>
+<p>将 Less 解析成 AST 有多种方法，一开始的做法是将 Less 编译成 CSS，再使用上述的 <code>css.parse</code> 解析成 AST。将 Less 编译成 CSS，可以使用 Less 提供的 <a href="http://lesscss.cn/#using-less-command-line-usage" target="_blank" rel="noopener">lessc</a> 命令编译，但 lessc 执行有些问题，所以就没采用 lessc 了。使用的是 Less 自带的 <a href="http://lesscss.org/usage/#programmatic-usage" target="_blank" rel="noopener">less.render</a> 函数编译。</p>
+<pre class=" language-js"><code class="language-js"><span class="token keyword">const</span> less <span class="token operator">=</span> <span class="token function">require</span><span class="token punctuation">(</span><span class="token string">'less'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+less<span class="token punctuation">.</span><span class="token function">render</span><span class="token punctuation">(</span>fileContent<span class="token punctuation">)</span>
+  <span class="token punctuation">.</span><span class="token function">then</span><span class="token punctuation">(</span><span class="token keyword">function</span><span class="token punctuation">(</span>output<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>output<span class="token punctuation">.</span>css<span class="token punctuation">)</span>； <span class="token comment" spellcheck="true">// -> 编译后的 Css</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span> <span class="token keyword">function</span><span class="token punctuation">(</span>error<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>error）；
+  <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+</code></pre>
+<p>但使用 <code>less.render</code> 中途又遇到了几个坑：</p>
+<ol>
+<li>如果 Less 文件中引入了其他的样式文件，<code>less.render</code> 会找不到引入的文件而报错。</li>
+</ol>
+<p>解决方法：<code>less.render</code> 中使用参数 filename，指定如果解析过程中遇到了引入的其他样式文件，就以该文件为相对路径去查找引入的路径。（参考 <a href="https://stackoverflow.com/questions/27501958/less-render-is-not-working-in-nodejs-with-multiple-import-files-which-are-in-dif" target="_blank" rel="noopener">StackOverflow</a>）。</p>
+<pre class=" language-js"><code class="language-js"><span class="token keyword">const</span> less <span class="token operator">=</span> <span class="token function">require</span><span class="token punctuation">(</span><span class="token string">'less'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+less<span class="token punctuation">.</span><span class="token function">render</span><span class="token punctuation">(</span>fileContent<span class="token punctuation">,</span> <span class="token punctuation">{</span>filename<span class="token punctuation">:</span> path<span class="token punctuation">.</span><span class="token function">resolve</span><span class="token punctuation">(</span>file<span class="token punctuation">)</span><span class="token punctuation">}</span><span class="token punctuation">)</span>
+  <span class="token punctuation">.</span><span class="token function">then</span><span class="token punctuation">(</span><span class="token keyword">function</span><span class="token punctuation">(</span>output<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>output<span class="token punctuation">.</span>css<span class="token punctuation">)</span>； <span class="token comment" spellcheck="true">// -> 编译后的 Css</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span> <span class="token keyword">function</span><span class="token punctuation">(</span>error<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>error）；
+  <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+</code></pre>
+<ol start="2">
+<li>如果引入的样式路径使用到了路径别名比如 <code>@import &#39;~css/base/norm-colors.less&#39;</code>，则还是会解析失败，因为 <code>less.render</code> 无法识别 <code>~css</code>。</li>
+</ol>
+<p>对此想到的解决方法是：在脚本中导入 <code>webpack.common.config.js</code> 文件，获取到其中的路径别名值后再对引用路径进行替换，将路径别名替换成完整的路径。感觉思路没问题，可问题在于 <code>less.render</code> 解析过程遇到其他引入的文件时，它内部自己去查找引入的文件，这个过程对我们是透明的，没有开放其它空间让我们去将引用路径中的路径别名替换成完整的路径！至此，这个方案卒（泣不成声.jpg）。</p>
+<p><strong>第二个方案</strong></p>
+<p>既然使用 <code>less.render</code> 行不通了，就只能使用专门的 Less 解析器，直接将 Less 解析成 AST 了。我使用的是这个 <a href="https://github.com/shellscape/postcss-less" target="_blank" rel="noopener">postcss-less</a>。它可以将 Less 文件解析成 AST，并且不存在方法一中引用其他文件的路径问题（因为 postcss-less 没有解析引用的其他样式文件）。</p>
+<pre class=" language-js"><code class="language-js"><span class="token keyword">const</span> postcss <span class="token operator">=</span> <span class="token function">require</span><span class="token punctuation">(</span><span class="token string">'postcss'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword">const</span> syntax <span class="token operator">=</span> <span class="token function">require</span><span class="token punctuation">(</span><span class="token string">'postcss-less'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token function">postcss</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">process</span><span class="token punctuation">(</span>fileContent<span class="token punctuation">,</span> <span class="token punctuation">{</span> syntax<span class="token punctuation">:</span> syntax <span class="token punctuation">}</span><span class="token punctuation">)</span>
+  <span class="token punctuation">.</span><span class="token function">then</span><span class="token punctuation">(</span><span class="token keyword">function</span> <span class="token punctuation">(</span>result<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>result<span class="token punctuation">)</span><span class="token punctuation">;</span>   <span class="token comment" spellcheck="true">// -> AST 对象</span>
+  <span class="token punctuation">}</span><span class="token punctuation">)</span>
+</code></pre>
+<p><img src="/2020/04/11/颜色规范校验-lint/./2.png" alt></p>
+<p>到这里就可以将 Less 成功解析成 AST 了，接着就是遍历 CSS 和 Less 解析出来的 AST，用上面的正则表达式去判断使用到的键值对里有没有不规范的色值。下面就不展开了，贴一下遍历两个 AST 的代码，方便以后有需要使用的话可以直接复用。</p>
+<p><strong>解析 CSS 文件</strong></p>
+<pre class=" language-js"><code class="language-js"><span class="token comment" spellcheck="true">/* 
+  file 是要解析的 CSS 文件
+  fileContent 是该 CSS 文件的内容
+  regxArr 是要匹配的正则规则，是一个数组支持匹配多项规则
+  返回值是一个数组，包含了命中 regxArr 中任一规则的 CSS 属性值
+*/</span>
+<span class="token keyword">const</span> css <span class="token operator">=</span> <span class="token function">require</span><span class="token punctuation">(</span><span class="token string">'css'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token keyword">function</span> <span class="token function">getCssColorArr</span><span class="token punctuation">(</span>file<span class="token punctuation">,</span> fileContent<span class="token punctuation">,</span> regxArr<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">const</span> res <span class="token operator">=</span> <span class="token punctuation">{</span><span class="token punctuation">}</span><span class="token punctuation">;</span>
+  <span class="token keyword">const</span> obj <span class="token operator">=</span> css<span class="token punctuation">.</span><span class="token function">parse</span><span class="token punctuation">(</span>fileContent<span class="token punctuation">,</span> <span class="token punctuation">{</span>source<span class="token punctuation">:</span> file<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token punctuation">(</span>obj<span class="token punctuation">.</span>stylesheet<span class="token punctuation">.</span>rules<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">forEach</span><span class="token punctuation">(</span>item <span class="token operator">=</span><span class="token operator">></span> <span class="token punctuation">{</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>item<span class="token punctuation">.</span>type <span class="token operator">===</span> <span class="token string">'rule'</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      item<span class="token punctuation">.</span>declarations<span class="token punctuation">.</span><span class="token function">forEach</span><span class="token punctuation">(</span>kv <span class="token operator">=</span><span class="token operator">></span> <span class="token punctuation">{</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>kv<span class="token punctuation">.</span>type <span class="token operator">===</span> <span class="token string">'declaration'</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+          regxArr<span class="token punctuation">.</span><span class="token function">forEach</span><span class="token punctuation">(</span>regx <span class="token operator">=</span><span class="token operator">></span> <span class="token punctuation">{</span>
+            <span class="token keyword">const</span> target <span class="token operator">=</span> <span class="token punctuation">(</span>kv<span class="token punctuation">.</span>value<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">match</span><span class="token punctuation">(</span>regx<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token comment" spellcheck="true">// 去重</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span>target <span class="token operator">&amp;&amp;</span> <span class="token operator">!</span>res<span class="token punctuation">[</span>target<span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+              res<span class="token punctuation">[</span>target<span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token boolean">true</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+          <span class="token punctuation">}</span><span class="token punctuation">)</span>
+        <span class="token punctuation">}</span>
+      <span class="token punctuation">}</span><span class="token punctuation">)</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">}</span><span class="token punctuation">)</span>
+  <span class="token keyword">return</span> Object<span class="token punctuation">.</span><span class="token function">keys</span><span class="token punctuation">(</span>res<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<p><strong>解析 Less 文件</strong></p>
+<pre class=" language-js"><code class="language-js"><span class="token keyword">const</span> postcss <span class="token operator">=</span> <span class="token function">require</span><span class="token punctuation">(</span><span class="token string">'postcss'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword">const</span> syntax <span class="token operator">=</span> <span class="token function">require</span><span class="token punctuation">(</span><span class="token string">'postcss-less'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token keyword">function</span> <span class="token function">getLessColorArr</span><span class="token punctuation">(</span>fileContent<span class="token punctuation">,</span> regxArr<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">let</span> res <span class="token operator">=</span> <span class="token punctuation">{</span><span class="token punctuation">}</span><span class="token punctuation">;</span>
+  <span class="token keyword">const</span> result <span class="token operator">=</span> <span class="token function">postcss</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">process</span><span class="token punctuation">(</span>fileContent<span class="token punctuation">,</span> <span class="token punctuation">{</span> syntax<span class="token punctuation">:</span> syntax <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token keyword">if</span> <span class="token punctuation">(</span>result<span class="token punctuation">.</span>root<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    res <span class="token operator">=</span> <span class="token function">formatLess</span><span class="token punctuation">(</span>result<span class="token punctuation">.</span>root<span class="token punctuation">,</span> regxArr<span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token punctuation">}</span>
+  <span class="token keyword">return</span> Object<span class="token punctuation">.</span><span class="token function">keys</span><span class="token punctuation">(</span>res<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+
+<span class="token keyword">function</span> <span class="token function">formatLess</span><span class="token punctuation">(</span>obj<span class="token punctuation">,</span> regxArr<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">let</span> res <span class="token operator">=</span> <span class="token punctuation">{</span><span class="token punctuation">}</span><span class="token punctuation">;</span>
+  obj<span class="token punctuation">.</span>nodes <span class="token operator">&amp;&amp;</span> obj<span class="token punctuation">.</span>nodes<span class="token punctuation">.</span><span class="token function">forEach</span><span class="token punctuation">(</span>item <span class="token operator">=</span><span class="token operator">></span> <span class="token punctuation">{</span>
+    <span class="token comment" spellcheck="true">// 嵌套的类则递归解析</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>item<span class="token punctuation">.</span>type <span class="token operator">===</span> <span class="token string">'rule'</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      res <span class="token operator">=</span> Object<span class="token punctuation">.</span><span class="token function">assign</span><span class="token punctuation">(</span>res<span class="token punctuation">,</span> <span class="token function">formatLess</span><span class="token punctuation">(</span>item<span class="token punctuation">,</span> regxArr<span class="token punctuation">)</span><span class="token punctuation">)</span>
+    <span class="token punctuation">}</span>
+    <span class="token comment" spellcheck="true">// 是 CSS 属性则进行正则匹配</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>item<span class="token punctuation">.</span>type <span class="token operator">===</span> <span class="token string">'decl'</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      regxArr<span class="token punctuation">.</span><span class="token function">forEach</span><span class="token punctuation">(</span>regx <span class="token operator">=</span><span class="token operator">></span> <span class="token punctuation">{</span>
+        <span class="token keyword">const</span> target <span class="token operator">=</span> <span class="token punctuation">(</span>item<span class="token punctuation">.</span>value<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">match</span><span class="token punctuation">(</span>regx<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>target <span class="token operator">&amp;&amp;</span> <span class="token operator">!</span>res<span class="token punctuation">[</span>target<span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+          res<span class="token punctuation">[</span>target<span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token boolean">true</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+      <span class="token punctuation">}</span><span class="token punctuation">)</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">}</span><span class="token punctuation">)</span>
+  <span class="token keyword">return</span> res<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<h2 id="方案总结"><a href="#方案总结" class="headerlink" title="方案总结"></a>方案总结</h2><p>对于 CSS 文件，使用 <code>css.parse</code> 解析成 AST 再提取出所有的 CSS 属性键值对，再用正则匹配其中用到的颜色名。</p>
+<p>对于 Less 文件，使用 <code>postcss().process</code> 解析成 AST 再提取出所有的 CSS 属性键值对，再用正则匹配其中用到的颜色名。</p>
+]]></content>
+      <categories>
+        <category>JavaScript</category>
+      </categories>
+      <tags>
+        <tag>Node</tag>
+        <tag>正则表达式</tag>
+        <tag>AST</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>下拉刷新上拉加载更多的实现原理</title>
+    <url>/2020/03/11/%E4%B8%8A%E6%8B%89%E5%88%B7%E6%96%B0%E4%B8%8B%E6%8B%89%E5%8A%A0%E8%BD%BD%E6%9B%B4%E5%A4%9A%E7%9A%84%E5%AE%9E%E7%8E%B0%E5%8E%9F%E7%90%86/</url>
+    <content><![CDATA[<script src="/assets/js/APlayer.min.js"> </script><h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><p>最近有一个需求：大致是要展示一个列表信息，但每次接口只返回 20 条数据，当用户滑动到到页面底部并继续上拉页面时再继续调接口获取更多的数据（相当于分页）。这里就需要使用到一个上拉加载更多的功能，实现的效果可以<a href="https://broltes.github.io/react-touch-loader/" target="_blank" rel="noopener">看这里</a>。考虑到项目时间比较紧而且可靠性问题，就没有自己去造轮子了，而是在 Github 上找<a href="https://github.com/Broltes/react-touch-loader" target="_blank" rel="noopener">现成的工具</a> 来用。这个库实现的功能主要有两个，一是上拉加载更多，另一个是下拉刷新。它提供的功能也算齐全，不过还是有几个小问题：</p>
+<ol>
+<li><p>它的文案是写死在 Less 中的，要修改文案的话只能去修改 Less，并且也只能写死在里面。如果要做国际化文案的话会比较麻烦，可能需要去手动操作下 DOM 修改内容了。</p>
+</li>
+<li><p>文案过渡效果不是很好。组件初始化时默认会渲染出上拉加载更多的提示语，导致从后端接口获取数据渲染的时候，会有一个提示语被下压到底部的突变过程，点用户体验不是很友好。</p>
+</li>
+<li><p>使用的是 JavaScript，在校验这块比较弱（不过这个也不算问题啦）。</p>
+</li>
+</ol>
+<h2 id="原理解析"><a href="#原理解析" class="headerlink" title="原理解析"></a>原理解析</h2><p>事后我去看了这个组件的实现源码以及其他一些参考资料，大致理解了下拉刷新和上拉加载更多的实现原理，并用 <code>TypeScript</code> 重写了这个组件（其实是因为组里刚好轮到我做技术分享，而我也没想到其他分享主题，就刚好拿这个来研究研究并当做分享主题了 Orz）。重写后的源代码可以看<a href="https://github.com/DangoSky/pull-to-refresh/tree/master/src/components/pull-to-refresh" target="_blank" rel="noopener">我的 Github</a>，具体支持的 Props 可以<a href="https://github.com/DangoSky/pull-to-refresh/blob/master/README.md" target="_blank" rel="noopener">看 README</a>。主要做的改动是：</p>
+<ol>
+<li><p>各个阶段的文案和 Icon 都作为 props 传递到组件内部，方便业务方自定义 Icon 和做国际化文案。</p>
+</li>
+<li><p>改善文案过渡的效果，避免初始化页面时文案突变。</p>
+</li>
+</ol>
+<h3 id="上拉加载更多"><a href="#上拉加载更多" class="headerlink" title="上拉加载更多"></a>上拉加载更多</h3><p>基本原理：监听 <code>scroll</code> 事件，判断页面是否达到底部，是的话则调用加载函数获取后面的数据，并将新拿到的数据拼接到现有的列表数组后面（一个列表信息通常都是使用一个数组来装的）。</p>
+<p>这里需要解决的问题是：</p>
+<h4 id="1-判断页面是否已经到达底部"><a href="#1-判断页面是否已经到达底部" class="headerlink" title="1.判断页面是否已经到达底部"></a>1.判断页面是否已经到达底部</h4><p>判断页面是否到达底部有一个专门的公式：<code>element.scrollHeight &lt;= element.scrollTop + element.clientHeight</code>，如果结果为 <code>true</code> 的话说明已经滚动到页面底部了。其中 <code>scrollHeight</code> 表示元素的全部高度，包含了因超出而隐藏部分的高度。取值上等于 <code>height</code> + <code>padding</code> + 被隐藏的内容高度，元素没有隐藏内容时等同于 <code>clientHeight</code>。<code>scrollTop</code> 表示元素已经滚动的距离。<code>clientHeight</code> 表示元素可见区域的高度，取值上等于 <code>height</code> + <code>padding</code>。</p>
+<p><img src="/2020/03/11/上拉刷新下拉加载更多的实现原理/./1.png" alt></p>
+<p>有时候我们不会等到页面滚动到底部才去加载更多数据，这样会给用户带来等待加载更多数据的时间。所以我们会使用一个变量，比如说是 <code>distance</code> 来表示距离底部还有多远时就开始加载更多数据，此时判断页面是否达到底部的公式就变成了 <code>element.scrollHeight - distance &lt;= element.scrollTop + element.clientHeight</code>。</p>
+<h4 id="2-在加载完成后如何改变加载状态"><a href="#2-在加载完成后如何改变加载状态" class="headerlink" title="2.在加载完成后如何改变加载状态"></a>2.在加载完成后如何改变加载状态</h4><p>当滚动到页面底部时，组件内部调用加载函数 <code>handleMore</code>，并将修改状态的代码写成函数作为 <code>handleMore</code> 的参数。父组件在加载完成数据后调用该函数，就可以在加载完成后修改一些状态变量，从而改变页面的文案显示。</p>
+<pre class=" language-js"><code class="language-js"><span class="token comment" spellcheck="true">// 子组件</span>
+ <span class="token keyword">this</span><span class="token punctuation">.</span>props<span class="token punctuation">.</span><span class="token function">handleMore</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=</span><span class="token operator">></span> <span class="token punctuation">{</span>
+  <span class="token keyword">this</span><span class="token punctuation">.</span><span class="token function">setState</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+    footerStatus<span class="token punctuation">:</span> <span class="token string">'finish'</span>
+  <span class="token punctuation">}</span><span class="token punctuation">)</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token comment" spellcheck="true">// 父组件</span>
+<span class="token keyword">async</span> <span class="token function">handleMore</span><span class="token punctuation">(</span>resolve<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">await</span> <span class="token keyword">this</span><span class="token punctuation">.</span><span class="token function">fetchData</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token function">resolve</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<h3 id="下拉刷新"><a href="#下拉刷新" class="headerlink" title="下拉刷新"></a>下拉刷新</h3><p>基本原理：监听 <code>touchStart</code>、<code>touchMove</code> 和 <code>touchEnd</code> 事件，判断手势是下拉并且到达了页面顶部，满足这两个条件的话下拉后拖动内容向下移动，并在释放后调用刷新函数。</p>
+<p>为了下文使用方便，先标记几个变量：</p>
+<ul>
+<li><code>startScrollTop</code> 表示触发 <code>touchStart</code> 事件时页面已经滚动的距离。</li>
+<li><code>startClientY</code> 表示触发 <code>touchStart</code> 事件时触发点距离视口顶部的距离.</li>
+<li><code>curScrollTop</code> 表示触发 <code>touchMove</code> 事件时页面已经滚动的距离。</li>
+<li><code>curClientY</code> 表示触发 <code>touchMove</code> 事件时触发点距离视口顶部的距离。</li>
+</ul>
+<p>这里需要解决的问题是：</p>
+<h4 id="1-判断手势是下拉页面-⏬"><a href="#1-判断手势是下拉页面-⏬" class="headerlink" title="1.判断手势是下拉页面 ⏬"></a>1.判断手势是下拉页面 ⏬</h4><p>如果 <code>curClientY - startClientY</code> 大于 0 说明手势是下拉 ⏬，小于 0 则是 ⏫。</p>
+<h4 id="2-判断页面此时是否位于顶部"><a href="#2-判断页面此时是否位于顶部" class="headerlink" title="2.判断页面此时是否位于顶部"></a>2.判断页面此时是否位于顶部</h4><p>如果 <code>curScrollTop ≤ 0</code>，则说明此时没有页面滚动，是处于顶部的。</p>
+<h4 id="3-拖动列表下拉移动的距离"><a href="#3-拖动列表下拉移动的距离" class="headerlink" title="3.拖动列表下拉移动的距离"></a>3.拖动列表下拉移动的距离</h4><p>当满足上述两个条件后，下拉页面就可以拖拽列表向下移动，此时需要计算列表移动的距离，需要移动的距离 = 手指在屏幕上移动的距离 - <code>touchStart</code> 时页面滚动的距离。用上面的变量来写成公式就是 <code>distance = (curClientY - startClientY) - startScrollTop</code>。</p>
+<p>详情可见下图，左图表示 <code>touchStart</code> 时的状态，右图表示 <code>touchEnd</code> 时的状态，圆圈表示当时手指所在的屏幕位置。<code>touchStart</code> 时有个列表，它的上面既滚动了一部分，下边也有因超出而隐藏的部分。随着手指慢慢向下移动，到了右图 <code>touchEnd</code> 的状态。此时随着手指移动，列表页也会向下移，其中 <code>distance</code> 就表示列表向下移动的距离。</p>
+<p><img src="/2020/03/11/上拉刷新下拉加载更多的实现原理/2.png" alt></p>
+<p>在这里父组件还可以传递一个 <code>distancePullDownRefresh</code> 参数过来，表示列表向下移动了多大距离后，释放时就调用刷新函数。所以需要在 <code>touchMove</code> 中计算出 <code>distance</code> 后判断两者的大小关系，如果 <code>distance</code> 大于 <code>distancePullDownRefresh</code> 的话，则将状态变量标记为释放刷新。在 <code>touchEnd</code> 中再判断该状态变量的值，决定是否要调用刷新函数。</p>
+<h2 id="FAQ"><a href="#FAQ" class="headerlink" title="FAQ"></a>FAQ</h2><ol>
+<li>为什么下拉刷新和上拉加载更多是监听不同的事件？</li>
+</ol>
+<p>因为在下拉刷新中，列表在到达顶部时需要向下移动。如果是监听 <code>scroll</code> 的话，因为已经到达顶部了，所以无法再向上滚动，也就导致计算不了列表需要移动的距离。而监听 <code>touch</code> 事件，可以通过计算手指在屏幕上移动的距离，从而得出列表向下移动的距离，</p>
+<ol start="2">
+<li>如何解决原来的组件在页面初始化时文案突变的问题？</li>
+</ol>
+<p>初始文案默认为空字符串，并且把数据初始化函数 <code>initData</code> 作为 <code>prop</code> 传递给组件。组件内部在 <code>componentDidMount</code> 时调用 <code>initData</code>，并将控制文案的变量状态修改写成函数作为参数传递给 <code>initData</code>。这样业务使用方在获取完成数据后调用该函数，就可以把改变状态变量，将其修改回其他的提示文案了。</p>
+<p>这样做的弊端是，数据初始化函数 <code>initData</code> 需要放到我们的组件内部去调用。如果不这样做的话，还有另一种方法是，依旧把初始文案默认为空字符串，但在 <code>scroll</code> 监听中再判断页面滚动是否快到底部了，是的话就将默认的空字符串文案修改为我们的提示语文案。</p>
+]]></content>
+      <categories>
+        <category>组件实现</category>
+      </categories>
+      <tags>
+        <tag>JavaScript</tag>
+        <tag>组件实现</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>跨域解决方案实践</title>
     <url>/2020/01/10/%E8%B7%A8%E5%9F%9F%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88%E5%AE%9E%E8%B7%B5/</url>
     <content><![CDATA[<script src="/assets/js/APlayer.min.js"> </script><h2 id="同源策略"><a href="#同源策略" class="headerlink" title="同源策略"></a>同源策略</h2><ul>
@@ -676,15 +948,15 @@ window<span class="token punctuation">.</span>onresize <span class="token operat
 <p><img src="https://raw.githubusercontent.com/DMQ/mvvm/master/img/2.png" alt="mvvm实现流程图"></p>
 <h2 id="存在的问题（toDo）"><a href="#存在的问题（toDo）" class="headerlink" title="存在的问题（toDo）"></a>存在的问题（toDo）</h2><ul>
 <li><p>{ {} } 当作数据绑定处理并有其他文本信息出现时，解析之后其他的文本信息会丢失。</p>
-<p>  例如： <code>&lt;p&gt;hello &lt;/p&gt;</code>。</p>
+<p>  例如： &lt;p>hello { {inputVal} }&lt;/p>。</p>
 <p>  解决方案：使用正则匹配大括号，只对 { {} } 之间的内容进行更新。但需要考虑到有多个大括号的情况。</p>
 </li>
 <li><p>在纯文本里面 { {} } 也会被解析成是数据绑定，从而丢失了原来的文本信息。</p>
-<p> 例如： <code>&lt;p&gt;这只是一个单纯的&lt;/p&gt;</code>。</p>
+<p> 例如： &lt;p>这只是一个单纯的文本{ {不是用解析双括号} }&lt;/p>。</p>
 <p>   解决方案：解析到 { {} } 时，判断 { {} } 里面的内容是否为 <code>data</code> 中的属性，是的话则处理为数据绑定；没有的话则不进行解析，当作纯文本内容处理。</p>
 </li>
 <li><p>在同一个标签里无法解析多个 { {} }。</p>
-<p> 例如：<code>&lt;p&gt; &lt;/p&gt;</code>。</p>
+<p> 例如：&lt;p>{ {a} } { {b} }&lt;/p>。</p>
 <p> 解决方案：使用正则匹配 { {} } 之间的内容，改用数组的形式传递给处理指令的函数，批量更新。</p>
 </li>
 </ul>
@@ -1379,7 +1651,7 @@ console<span class="token punctuation">.</span><span class="token function">log<
   <span class="token punctuation">}</span>
 <span class="token punctuation">}</span>
 </code></pre>
-<h1 id="节流"><a href="#节流" class="headerlink" title="节流"></a>节流</h1><p>&emsp;&emsp;说完防抖我们再说说节流，节流和防抖功能大致相同，不同点在于如果持续触发一个事件，防抖只会执行一次 fn，而节流则是每隔指定的时间就执行一次，保证每次执行 fn 的间隔时间相同。防抖和节流都可以降低函数的执行频率，而实际写代码的时候是选择防抖还是节流，还得要取决于具体的需求。</p>
+<h1 id="节流"><a href="#节流" class="headerlink" title="节流"></a>节流</h1><p>&emsp;&emsp;说完防抖我们再说说节流，节流和防抖功能大致相同，不同点在于如果持续触发一个事件，防抖只会执行一次 fn（因为每次触发时都以当前的时间点开始重新计时）。而节流则是每隔指定的时间就执行一次，保证每次执行 fn 的间隔时间相同（每次触发不会重新开始计时）。防抖和节流都可以降低函数的执行频率，而实际写代码的时候是选择防抖还是节流，还得要取决于具体的需求。</p>
 <p>&emsp;&emsp;节流有两种实现方式，一种是使用时间戳，另一种是使用定时器。使用时间戳的话，因为开始时间被初始化为 0，所以第一次触发时会马上执行 fn，并且停止触发后不会再执行。而使用定时器的话，第一次触发则会延迟执行，而停止触发后因为还有定时器的存在，所以会再执行一次 fn。下面给出两种实现方式的代码。</p>
 <pre class=" language-js"><code class="language-js"><span class="token comment" spellcheck="true">// 使用时间戳</span>
 <span class="token keyword">function</span> <span class="token function">throttle</span><span class="token punctuation">(</span>fn<span class="token punctuation">,</span> wait<span class="token punctuation">)</span> <span class="token punctuation">{</span>
@@ -2010,6 +2282,7 @@ console<span class="token punctuation">.</span><span class="token function">log<
 </code></pre>
 <p>&emsp;&emsp;我们可以分析一下上面代码的执行过程，JavaScript引擎开始解析代码，先生成全局执行上下文并把它压入到执行栈中（当然其中还有生成 VO、确定 this 指向和建立作用域链的环节，这不是本文重点就略过不提了。遇到<code>console.log(&quot;start&quot;, new Date())</code>发现这是一个同步事件后马上执行并输出 start 和当前的时间点。接着给 time 变量赋值后（注意是赋值，而不是声明，因为在创建全局执行上下文的时候就已经变量提前声明了）遇到了<code>setTimeout</code>事件，因为这是一个异步事件所以 JavaScript 引擎会把它挂起交由定时触发器线程进行计时操作。接着进入到 while 循环，我们手动地给 while 循环的持续时间设定为 2000ms，而在这 2000ms 内定时触发器线程已经完成了对<code>setTimeout</code>事件的计时并把它的回调函数放入到事件队列中了。但这时候因为执行栈中还有 while 循环在执行，所以<code>setTimeout</code>的回调函数还是留在事件队列中没能进入执行栈。2000ms 过后 JavaScript引擎继续向下解析，输出 end 和当前的时间点，之后执行栈中所有的同步事件便都执行完毕了，开始读取事件队列发现有<code>setTimeout</code>便把它取出放到执行栈中执行，所以最后输出“执行定时器的事件”和当前的时间点。</p>
 <p>&emsp;&emsp;通过上面的分析以及输出的三个时间点，我们可以发现<code>setTimeout</code>指定的执行延迟时间确实是不确切的，这依赖于执行栈中所有同步事件执行完毕所需的时间，执行<code>setTimeout</code>回调函数的延迟时间只会大于指定的延迟时间而不会小于延迟时间。</p>
+<p>&emsp;&emsp;<code>setTimeout</code> 设置的等待时间还有一个最大值限制，浏览器包括 IE、Chrome、Safari、Firefox 以 32 个字节来存储等待时间。这就会导致如果设置的等待时间大于 2^31 - 1 (大约 24.8 天)时就会溢出，导致定时器将会被立即执行。（参考 <a href="https://developer.mozilla.org/zh-CN/docs/Web/API/Window/setTimeout" target="_blank" rel="noopener">MDN</a>）</p>
 <p>&emsp;&emsp;在我写这篇博客的时候，我还有一个疑惑。我看到许多的博客说的都是异步事件的回调函数进入事件队列后，是等执行栈为空的时候才会取出事件队列中的事件放入到执行栈中去执行，不知到各位看客对此有没有什么疑问。<strong>如果事件队列中的事件是否进入执行栈的判断标准是执行栈是否为空的话，那就涉及到执行栈是否会为空了？</strong>想必大家都知道执行上下文吧，其中全局执行上下文在程序一开始执行就被创建，并且会被压入到执行栈中并一直存在执行栈底直到页面被关闭。是的，全局执行上下文一直存在执行栈底，这点应该没有什么争议。既然如此，是否意味着执行栈一直非空呢？这样的话事件队列中的事件还怎么通过判断执行栈是否为空来进入执行栈，不就一直进入不了执行栈了吗，这两者就冲突了啊！如果按执行栈是否为空为标准来判断事件队列中的事件是否进入执行栈，则势必要理清执行栈到底会不会为空的问题，如果不会为空的话怎么解释事件队列中的事件只有等到执行栈为空时才会进入执行栈中，如果会为空的话怎么解释全局执行上下文会一直存在执行栈栈底？所以我觉得以执行栈是否为空为标准来判断事件队列中的事件是否进入执行栈并不恰当，而是<strong>以执行栈中的同步事件是否都执行完毕为标准来判断</strong>（只剩下全局执行上下文）会更容易理解，这样就没有上面说的和全局执行上下文一直存在执行栈底的冲突了。</p>
 <h1 id="事件循环"><a href="#事件循环" class="headerlink" title="事件循环"></a>事件循环</h1><p>&emsp;&emsp;事件循环是建立在事件队列的基础上的，当执行栈中所有的同步事件都执行完毕后就会去读取事件队列中的事件，如果事件队列中有事件存在则取出放到执行栈中执行，否则的话就继续读取事件队列，这样不断地读取、执行、读取、执行的周而复始就成了事件循环。</p>
 <p>&emsp;&emsp;引用一张经典的图辅助吧：<br><img src="http://www.ruanyifeng.com/blogimg/asset/2014/bg2014100802.png" alt></p>
@@ -2333,15 +2606,23 @@ console<span class="token punctuation">.</span><span class="token function">log<
   <entry>
     <title>JS 之模拟实现</title>
     <url>/2019/03/28/JS%E4%B9%8B%E6%A8%A1%E6%8B%9F%E5%AE%9E%E7%8E%B0/</url>
-    <content><![CDATA[<script src="/assets/js/APlayer.min.js"> </script><h1 id="Object-is"><a href="#Object-is" class="headerlink" title="Object.is"></a>Object.is</h1><pre class=" language-js"><code class="language-js"><span class="token keyword">function</span> <span class="token function">is</span><span class="token punctuation">(</span>x<span class="token punctuation">,</span> y<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-  <span class="token comment" spellcheck="true">// 修正 +0 === -0 为 true 的 bug</span>
-  <span class="token keyword">if</span> <span class="token punctuation">(</span>x <span class="token operator">===</span> y<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-    <span class="token comment" spellcheck="true">// 运行到 1/x === 1/y 的时候x和y都为0，但是 1/+0 = +Infinity，1/-0 = -Infinity, 两者不相等</span>
-    <span class="token keyword">return</span> x <span class="token operator">!==</span> <span class="token number">0</span> <span class="token operator">||</span> y <span class="token operator">!==</span> <span class="token number">0</span> <span class="token operator">||</span> <span class="token number">1</span> <span class="token operator">/</span> x <span class="token operator">===</span> <span class="token number">1</span> <span class="token operator">/</span> y<span class="token punctuation">;</span>
-  <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
-    <span class="token comment" spellcheck="true">// 修正 NaN !== NaN 为 false 的 bug</span>
-    <span class="token keyword">return</span> x <span class="token operator">!==</span> x <span class="token operator">&amp;&amp;</span> y <span class="token operator">!==</span> y<span class="token punctuation">;</span>
+    <content><![CDATA[<script src="/assets/js/APlayer.min.js"> </script><h1 id="Object-is"><a href="#Object-is" class="headerlink" title="Object.is"></a>Object.is</h1><pre class=" language-js"><code class="language-js"><span class="token keyword">function</span> <span class="token function">is</span><span class="token punctuation">(</span>a<span class="token punctuation">,</span> b<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token comment" spellcheck="true">// 修正 NaN !== NaN 为 false 的 bug</span>
+  <span class="token keyword">if</span> <span class="token punctuation">(</span>a <span class="token operator">!==</span> a <span class="token operator">&amp;&amp;</span> b <span class="token operator">!==</span> b<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">return</span> <span class="token boolean">true</span><span class="token punctuation">;</span>
   <span class="token punctuation">}</span>
+  <span class="token comment" spellcheck="true">// 修正 +0 === -0 为 true 的 bug</span>
+  <span class="token comment" spellcheck="true">// 1/+0 = +Infinity，1/-0 = -Infinity</span>
+  <span class="token keyword">if</span> <span class="token punctuation">(</span>
+    a <span class="token operator">===</span> b <span class="token operator">&amp;&amp;</span>
+    a <span class="token operator">===</span> <span class="token number">0</span> <span class="token operator">&amp;&amp;</span>
+    b <span class="token operator">===</span> <span class="token number">0</span> <span class="token operator">&amp;&amp;</span>
+    <span class="token number">1</span> <span class="token operator">/</span> a <span class="token operator">!==</span> <span class="token number">1</span> <span class="token operator">/</span> b
+  <span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">return</span> <span class="token boolean">false</span><span class="token punctuation">;</span>
+  <span class="token punctuation">}</span>
+  <span class="token keyword">return</span> a <span class="token operator">===</span> b<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
 </code></pre>
 <h1 id="call"><a href="#call" class="headerlink" title="call"></a>call</h1><p>&emsp;&emsp; 利用函数作为对象方法的时候 this 指向了该对象，所以给目标对象添加要调用的函数并执行，了事后再删除该对象中这个方法就可以了。</p>
 <pre class=" language-js"><code class="language-js">Function<span class="token punctuation">.</span>prototype<span class="token punctuation">.</span>_call <span class="token operator">=</span> <span class="token keyword">function</span><span class="token punctuation">(</span>context<span class="token punctuation">,</span> <span class="token operator">...</span>arg<span class="token punctuation">)</span> <span class="token punctuation">{</span>
@@ -2361,6 +2642,8 @@ console<span class="token punctuation">.</span><span class="token function">log<
   <span class="token keyword">delete</span> context<span class="token punctuation">[</span>fn<span class="token punctuation">]</span><span class="token punctuation">;</span>
   <span class="token keyword">return</span> result<span class="token punctuation">;</span>
 <span class="token punctuation">}</span>
+
+<span class="token comment" spellcheck="true">/* test */</span>
 <span class="token keyword">let</span> name <span class="token operator">=</span> <span class="token string">"window"</span><span class="token punctuation">;</span>
 <span class="token keyword">let</span> obj <span class="token operator">=</span> <span class="token punctuation">{</span>
   name<span class="token punctuation">:</span> <span class="token string">"local"</span>
@@ -2403,6 +2686,7 @@ show<span class="token punctuation">.</span><span class="token function">_call</
   <span class="token keyword">return</span> fn<span class="token punctuation">;</span>
 <span class="token punctuation">}</span>
 
+<span class="token comment" spellcheck="true">/* test */</span>
 <span class="token keyword">let</span> obj <span class="token operator">=</span> <span class="token punctuation">{</span>
   name<span class="token punctuation">:</span> <span class="token string">"local"</span>
 <span class="token punctuation">}</span>
@@ -2432,6 +2716,25 @@ show<span class="token punctuation">.</span><span class="token function">_call</
 
 console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">,</span> <span class="token punctuation">[</span><span class="token number">3</span><span class="token punctuation">,</span> <span class="token number">4</span><span class="token punctuation">,</span> <span class="token punctuation">[</span><span class="token number">5</span><span class="token punctuation">,</span> <span class="token number">6</span><span class="token punctuation">]</span><span class="token punctuation">]</span><span class="token punctuation">]</span><span class="token punctuation">.</span><span class="token function">_flat</span><span class="token punctuation">(</span><span class="token number">Infinity</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token punctuation">[</span><span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">,</span> <span class="token punctuation">[</span><span class="token punctuation">[</span><span class="token number">2</span><span class="token punctuation">,</span> <span class="token number">3</span><span class="token punctuation">]</span><span class="token punctuation">,</span> <span class="token punctuation">[</span><span class="token number">4</span><span class="token punctuation">]</span><span class="token punctuation">]</span><span class="token punctuation">,</span> <span class="token number">5</span><span class="token punctuation">,</span> <span class="token number">6</span><span class="token punctuation">]</span><span class="token punctuation">.</span><span class="token function">_flat</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+</code></pre>
+<h2 id="迭代-map"><a href="#迭代-map" class="headerlink" title="迭代 + map"></a>迭代 + map</h2><pre class=" language-js"><code class="language-js">Array<span class="token punctuation">.</span>prototype<span class="token punctuation">.</span>_flat <span class="token operator">=</span> <span class="token keyword">function</span><span class="token punctuation">(</span>deep <span class="token operator">=</span> <span class="token number">1</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">let</span> res <span class="token operator">=</span> <span class="token keyword">this</span><span class="token punctuation">;</span>
+  <span class="token keyword">while</span><span class="token punctuation">(</span>deep<span class="token operator">--</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">let</span> isFinish <span class="token operator">=</span> <span class="token boolean">true</span><span class="token punctuation">;</span>
+    <span class="token keyword">let</span> temp <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+    res<span class="token punctuation">.</span><span class="token function">map</span><span class="token punctuation">(</span>item <span class="token operator">=</span><span class="token operator">></span> <span class="token punctuation">{</span>
+      <span class="token keyword">if</span> <span class="token punctuation">(</span>Array<span class="token punctuation">.</span><span class="token function">isArray</span><span class="token punctuation">(</span>item<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        isFinish <span class="token operator">=</span> <span class="token boolean">false</span><span class="token punctuation">;</span>
+      <span class="token punctuation">}</span>
+      temp <span class="token operator">=</span> temp<span class="token punctuation">.</span><span class="token function">concat</span><span class="token punctuation">(</span>item<span class="token punctuation">)</span><span class="token punctuation">;</span>    
+    <span class="token punctuation">}</span><span class="token punctuation">)</span>
+    res <span class="token operator">=</span> temp<span class="token punctuation">;</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>isFinish<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      <span class="token keyword">break</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">}</span>
+  <span class="token keyword">return</span> res<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
 </code></pre>
 <h2 id="递归"><a href="#递归" class="headerlink" title="递归"></a>递归</h2><pre class=" language-js"><code class="language-js">Array<span class="token punctuation">.</span>prototype<span class="token punctuation">.</span>_flat <span class="token operator">=</span> <span class="token keyword">function</span><span class="token punctuation">(</span>deep <span class="token operator">=</span> <span class="token number">1</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
   <span class="token keyword">let</span> result <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
@@ -2494,7 +2797,7 @@ console<span class="token punctuation">.</span><span class="token function">log<
     <span class="token keyword">throw</span> <span class="token template-string"><span class="token string">`</span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span>Constructor<span class="token interpolation-punctuation punctuation">}</span></span><span class="token string"> must be a function`</span></span><span class="token punctuation">;</span>
   <span class="token punctuation">}</span>
   <span class="token keyword">let</span> obj <span class="token operator">=</span> <span class="token punctuation">{</span><span class="token punctuation">}</span><span class="token punctuation">;</span>
-  obj<span class="token punctuation">.</span>__proto__ <span class="token operator">=</span> Object<span class="token punctuation">.</span><span class="token function">create</span><span class="token punctuation">(</span>Constructor<span class="token punctuation">.</span>prototype<span class="token punctuation">)</span><span class="token punctuation">;</span>
+  Object<span class="token punctuation">.</span><span class="token function">setPrototypeOf</span><span class="token punctuation">(</span>obj<span class="token punctuation">,</span> Object<span class="token punctuation">.</span><span class="token function">create</span><span class="token punctuation">(</span>Constructor<span class="token punctuation">.</span>prototype<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
   <span class="token keyword">let</span> result <span class="token operator">=</span> Constructor<span class="token punctuation">.</span><span class="token function">apply</span><span class="token punctuation">(</span>obj<span class="token punctuation">,</span> arg<span class="token punctuation">)</span><span class="token punctuation">;</span>
   <span class="token keyword">const</span> isObject <span class="token operator">=</span> <span class="token keyword">typeof</span> result <span class="token operator">===</span> <span class="token string">'object'</span> <span class="token operator">&amp;&amp;</span> result <span class="token operator">!==</span> <span class="token keyword">null</span><span class="token punctuation">;</span>
   <span class="token keyword">const</span> isFunction <span class="token operator">=</span> <span class="token keyword">typeof</span> result <span class="token operator">===</span> <span class="token string">'function'</span><span class="token punctuation">;</span>
@@ -2527,7 +2830,7 @@ person<span class="token punctuation">.</span><span class="token function">foo</
     <span class="token keyword">if</span><span class="token punctuation">(</span>_left <span class="token operator">===</span> _right<span class="token punctuation">)</span> <span class="token punctuation">{</span>
       <span class="token keyword">return</span> <span class="token boolean">true</span>
     <span class="token punctuation">}</span>
-    <span class="token keyword">else</span> <span class="token keyword">if</span><span class="token punctuation">(</span>_left <span class="token operator">===</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">if</span><span class="token punctuation">(</span>_left <span class="token operator">===</span> <span class="token keyword">null</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
       <span class="token keyword">return</span> <span class="token boolean">false</span>
     <span class="token punctuation">}</span>
     _left <span class="token operator">=</span> _left<span class="token punctuation">.</span>__proto__<span class="token punctuation">;</span>
@@ -2672,7 +2975,7 @@ console<span class="token punctuation">.</span><span class="token function">log<
   <span class="token keyword">const</span> res <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
   <span class="token keyword">for</span><span class="token punctuation">(</span><span class="token keyword">let</span> i<span class="token operator">=</span><span class="token number">0</span><span class="token punctuation">;</span> i<span class="token operator">&lt;</span>arr<span class="token punctuation">.</span>length<span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
     <span class="token keyword">const</span> mark <span class="token operator">=</span> fn<span class="token punctuation">.</span><span class="token function">call</span><span class="token punctuation">(</span>context<span class="token punctuation">,</span> arr<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">,</span> i<span class="token punctuation">,</span> arr<span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>mark<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>mark<span class="token punctuation">)</span> <span class="token punctuation">{</span>
       res<span class="token punctuation">.</span><span class="token function">push</span><span class="token punctuation">(</span>arr<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
     <span class="token punctuation">}</span>
   <span class="token punctuation">}</span>
@@ -2767,11 +3070,7 @@ console<span class="token punctuation">.</span><span class="token function">log<
     <span class="token keyword">const</span> handles <span class="token operator">=</span> <span class="token keyword">this</span><span class="token punctuation">.</span>events<span class="token punctuation">.</span><span class="token keyword">get</span><span class="token punctuation">(</span>name<span class="token punctuation">)</span><span class="token punctuation">;</span>
     <span class="token keyword">if</span> <span class="token punctuation">(</span>handles <span class="token operator">&amp;&amp;</span> handles<span class="token punctuation">.</span>length<span class="token punctuation">)</span> <span class="token punctuation">{</span>
       handles<span class="token punctuation">.</span><span class="token function">forEach</span><span class="token punctuation">(</span>fn <span class="token operator">=</span><span class="token operator">></span> <span class="token punctuation">{</span>
-        <span class="token keyword">if</span> <span class="token punctuation">(</span>arg<span class="token punctuation">.</span>length<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-          fn<span class="token punctuation">.</span><span class="token function">apply</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">,</span> arg<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
-          fn<span class="token punctuation">.</span><span class="token function">call</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
+        fn<span class="token punctuation">.</span><span class="token function">apply</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">,</span> arg<span class="token punctuation">)</span><span class="token punctuation">;</span>
       <span class="token punctuation">}</span><span class="token punctuation">)</span>
       <span class="token keyword">return</span> <span class="token boolean">true</span><span class="token punctuation">;</span>
     <span class="token punctuation">}</span>
@@ -4194,6 +4493,27 @@ console<span class="token punctuation">.</span><span class="token function">log<
   <span class="token property">align-items</span><span class="token punctuation">:</span> center<span class="token punctuation">;</span>
 <span class="token punctuation">}</span>
 </code></pre>
+<h1 id="元素宽高成比例"><a href="#元素宽高成比例" class="headerlink" title="元素宽高成比例"></a>元素宽高成比例</h1><p>比如说实现一个宽度自适应，高度为宽度一半的矩形。</p>
+<h2 id="padding"><a href="#padding" class="headerlink" title="padding"></a>padding</h2><p>利用 padding 设置为百分比时是相对于父元素的宽度而言的，所以可以给矩形设置一个父元素，由父元素来控制矩形的大小。而矩形的宽度设置为 100，高度通过 padding-bottom: 50% 撑开就行了。需要注意的是要同时将矩形的 height 设置为 0，以此将矩形的高度完全交给 padding 负责（如果要设置成宽高比成其他比例比如 4:3 的话也是同理，修改 padding-bottom 的百分比就可以了）。</p>
+<pre class=" language-css"><code class="language-css"><span class="token selector">&lt;div class="parent">
+  &lt;div class="child">&lt;/div>
+&lt;/div>
+
+<span class="token class">.parent</span> </span><span class="token punctuation">{</span>
+  <span class="token property">background-color</span><span class="token punctuation">:</span> red<span class="token punctuation">;</span>
+  <span class="token property">width</span><span class="token punctuation">:</span> <span class="token number">200</span>px<span class="token punctuation">;</span>
+  <span class="token property">height</span><span class="token punctuation">:</span> <span class="token number">200</span>px<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+<span class="token selector"><span class="token class">.child</span> </span><span class="token punctuation">{</span>
+  <span class="token property">width</span><span class="token punctuation">:</span> <span class="token number">100%</span><span class="token punctuation">;</span>
+  <span class="token property">padding-bottom</span><span class="token punctuation">:</span> <span class="token number">50%</span><span class="token punctuation">;</span>
+  <span class="token property">height</span><span class="token punctuation">:</span> <span class="token number">0</span><span class="token punctuation">;</span>
+  <span class="token property">background-color</span><span class="token punctuation">:</span> blue<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<p>使用 padding 有个问题是，因为给矩形设置了 height: 0，所以如果这个矩形有子元素并且设置了 height: 100% 的话，子元素的高度也会是 0 而不是预期的 100px。这时需要给子元素绝对定位，给矩形相对定位才可以让子元素的高度保持和矩形一致（此时子元素脱离了文档流，宽高就相对于父元素的宽高来了）。</p>
+<h2 id="vw"><a href="#vw" class="headerlink" title="vw"></a>vw</h2><p>使用 vw 来给矩形的宽高设置为成比例的 vw 值。这个方法的问题在于 vw 是相对于屏幕宽度而言，不同设备有不同的宽度，所以无法控制矩形具体的宽度值。</p>
+<h2 id="rem"><a href="#rem" class="headerlink" title="rem"></a>rem</h2><p>给 html 根元素设置一个 font-size 值，矩形通过 rem 单位设置宽高，这样它的宽高就是相对于根元素的字体大小而言的，再给矩形的宽高设置成比例的 rem 值就可以了。</p>
 <h1 id="两栏等高"><a href="#两栏等高" class="headerlink" title="两栏等高"></a>两栏等高</h1><p><img src="/2019/03/07/未知宽高元素的水平垂直居中布局/1.png" alt></p>
 <h2 id="padding内补偿法"><a href="#padding内补偿法" class="headerlink" title="padding内补偿法"></a>padding内补偿法</h2><pre class=" language-css"><code class="language-css"><span class="token selector">&lt;div class="box">
   &lt;div class="left">
@@ -4229,12 +4549,8 @@ console<span class="token punctuation">.</span><span class="token function">log<
   <span class="token property">margin-bottom</span><span class="token punctuation">:</span> -<span class="token number">2000</span>px<span class="token punctuation">;</span>
 <span class="token punctuation">}</span>
 </code></pre>
-<blockquote>
-<p>两栏等高的原理是，给每一栏都设置一个很大的<code>padding-bottom</code>的值，以此来弥补高度较小的那一栏。再使用一个等大的负的<code>margin-bottom</code>来收缩，像在<a href="http://blog.dangosky.com/2019/03/12/css-fu-bian-ju/#toc-heading-9">另一篇文章</a>里我解释的，使用负margin-bottom收缩后，虽然元素自身的宽高没有改变，但它的元素框会随着减小，最终元素框的高度取决于两栏中较高一栏。这时如果给它们的父元素添加<code>overflow: hidden</code>，则会隐藏掉溢出元素框的部分内容，于是就达到了高度较低的一栏和较高的一栏等高的效果。</p>
-</blockquote>
-<blockquote>
+<p>两栏等高的原理是，给每一栏都设置一个很大的<code>padding-bottom</code>的值，以此来弥补高度较小的那一栏。再使用一个等大的负的<code>margin-bottom</code>来收缩，像在<a href="http://blog.dangosky.com/2019/03/12/CSS%E8%B4%9F%E8%BE%B9%E8%B7%9D/#toc-heading-1">另一篇文章</a>里我解释的，使用负margin-bottom收缩后，虽然元素自身的宽高没有改变，但它的元素框会随着减小，最终元素框的高度取决于两栏中较高一栏。这时如果给它们的父元素添加<code>overflow: hidden</code>，则会隐藏掉溢出元素框的部分内容，于是就达到了高度较低的一栏和较高的一栏等高的效果。</p>
 <p>但是使用padding内补偿法有一个缺陷，如果每一栏设置了border的话，因为每一栏的高被padding撑高而且隐藏了超出的内容，所以<strong>border-bottom是显示不出来的</strong>。解决办法是，再在每一栏的最后一个子元素<strong>设置一个div来模仿border-bottom</strong>。记得还要给父元素box设置为相对定位，才能让伪border-bottom定位到那一栏的底部。</p>
-</blockquote>
 <pre class=" language-css"><code class="language-css"><span class="token selector"><span class="token class">.border</span> </span><span class="token punctuation">{</span>
   <span class="token property">width</span><span class="token punctuation">:</span> <span class="token number">52</span>px<span class="token punctuation">;</span>
   <span class="token property">height</span><span class="token punctuation">:</span> <span class="token number">2</span>px<span class="token punctuation">;</span>
@@ -4276,9 +4592,7 @@ console<span class="token punctuation">.</span><span class="token function">log<
   <span class="token property">background-color</span><span class="token punctuation">:</span> yellow<span class="token punctuation">;</span>
 <span class="token punctuation">}</span>
 </code></pre>
-<h2 id="js-jq动态设置"><a href="#js-jq动态设置" class="headerlink" title="js / jq动态设置"></a>js / jq动态设置</h2><blockquote>
-<p>在js代码里去获取box里每一栏的高度并取它们的最大值，再将每一栏的高度设置为该最大值。但这不可避免会操作到DOM，难免对性能造成影响。</p>
-</blockquote>
+<h2 id="js-jq动态设置"><a href="#js-jq动态设置" class="headerlink" title="js / jq动态设置"></a>js / jq动态设置</h2><p>在 js 代码里去获取box里每一栏的高度并取它们的最大值，再将每一栏的高度设置为该最大值。但这不可避免会操作到DOM，难免对性能造成影响。</p>
 <h1 id="两栏布局"><a href="#两栏布局" class="headerlink" title="两栏布局"></a>两栏布局</h1><blockquote>
 <p>左栏固定宽度，右栏自适应。</p>
 </blockquote>
@@ -4286,68 +4600,68 @@ console<span class="token punctuation">.</span><span class="token function">log<
 <h3 id="利用负margin"><a href="#利用负margin" class="headerlink" title="利用负margin"></a>利用负margin</h3><blockquote>
 <p>实现逻辑请看<a href="http://blog.dangosky.com/2019/03/12/CSS%E8%B4%9F%E8%BE%B9%E8%B7%9D/#toc-heading-14">盒模型和负margin</a>这篇文章里的解释。</p>
 </blockquote>
-<pre class=" language-css"><code class="language-css"><span class="token selector">&lt;!-- content放在slider后面 -->
-&lt;div class="box">
-  &lt;div class="slider">
-    &lt;p>slider&lt;/p>
-  &lt;/div>
-  &lt;div class="content">
-    &lt;p>content&lt;/p>
-    &lt;p>content&lt;/p>
-    &lt;p>content&lt;/p>
-    &lt;p>content&lt;/p>
-  &lt;/div>
-&lt;/div>
+<pre class=" language-html"><code class="language-html"><span class="token comment" spellcheck="true">&lt;!-- content放在slider后面 --></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>box<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>slider<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>p</span><span class="token punctuation">></span></span>slider<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>p</span><span class="token punctuation">></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>content<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>p</span><span class="token punctuation">></span></span>content<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>p</span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>p</span><span class="token punctuation">></span></span>content<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>p</span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>p</span><span class="token punctuation">></span></span>content<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>p</span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>p</span><span class="token punctuation">></span></span>content<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>p</span><span class="token punctuation">></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
 
-<span class="token class">.box</span> </span><span class="token punctuation">{</span>
-  <span class="token property">overflow</span><span class="token punctuation">:</span> hidden
-<span class="token punctuation">}</span>
-<span class="token selector"><span class="token class">.slider</span> </span><span class="token punctuation">{</span>
-  <span class="token property">float</span><span class="token punctuation">:</span> left<span class="token punctuation">;</span>
-  <span class="token property">width</span><span class="token punctuation">:</span> <span class="token number">100</span>px<span class="token punctuation">;</span>
-  <span class="token property">height</span><span class="token punctuation">:</span> <span class="token number">200</span>px<span class="token punctuation">;</span>
-  <span class="token property">background-color</span><span class="token punctuation">:</span> blue<span class="token punctuation">;</span>
-<span class="token punctuation">}</span>
-<span class="token selector"><span class="token class">.content</span> </span><span class="token punctuation">{</span>
-  <span class="token property">float</span><span class="token punctuation">:</span> left<span class="token punctuation">;</span>
-  <span class="token property">width</span><span class="token punctuation">:</span> <span class="token number">100%</span><span class="token punctuation">;</span>
-  <span class="token property">height</span><span class="token punctuation">:</span> <span class="token number">200</span>px<span class="token punctuation">;</span>
-  <span class="token property">background-color</span><span class="token punctuation">:</span> yellow<span class="token punctuation">;</span>
-  <span class="token property">margin-right</span><span class="token punctuation">:</span> -<span class="token number">100</span>px<span class="token punctuation">;</span>
-<span class="token punctuation">}</span>
-<span class="token selector"><span class="token class">.content</span> p </span><span class="token punctuation">{</span>
-  <span class="token property">margin-right</span><span class="token punctuation">:</span> <span class="token number">100</span>px<span class="token punctuation">;</span>
-<span class="token punctuation">}</span>
+.box {
+  overflow: hidden
+}
+.slider {
+  float: left;
+  width: 100px;
+  height: 200px;
+  background-color: blue;
+}
+.content {
+  float: left;
+  width: 100%;
+  height: 200px;
+  background-color: yellow;
+  margin-right: -100px;
+}
+.content p {
+  margin-right: 100px;
+}
 </code></pre>
-<pre class=" language-css"><code class="language-css"><span class="token selector">&lt;!-- content放在slider前面 -->
-&lt;div class="box">
-  &lt;div class="content">
-    &lt;p>content&lt;/p>
-    &lt;p>content&lt;/p>
-    &lt;p>content&lt;/p>
-    &lt;p>content&lt;/p>
-  &lt;/div>
-  &lt;div class="slider">
-    &lt;p>slider&lt;/p>
-  &lt;/div>
-&lt;/div>
+<pre class=" language-html"><code class="language-html"><span class="token comment" spellcheck="true">&lt;!-- content放在slider前面 --></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>box<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>content<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>p</span><span class="token punctuation">></span></span>content<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>p</span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>p</span><span class="token punctuation">></span></span>content<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>p</span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>p</span><span class="token punctuation">></span></span>content<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>p</span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>p</span><span class="token punctuation">></span></span>content<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>p</span><span class="token punctuation">></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>slider<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>p</span><span class="token punctuation">></span></span>slider<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>p</span><span class="token punctuation">></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
 
-<span class="token class">.slider</span> </span><span class="token punctuation">{</span>
-  <span class="token property">float</span><span class="token punctuation">:</span> left<span class="token punctuation">;</span>
-  <span class="token property">width</span><span class="token punctuation">:</span> <span class="token number">100</span>px<span class="token punctuation">;</span>
-  <span class="token property">height</span><span class="token punctuation">:</span> <span class="token number">200</span>px<span class="token punctuation">;</span>
-  <span class="token property">background-color</span><span class="token punctuation">:</span> blue<span class="token punctuation">;</span>
-  <span class="token property">margin-left</span><span class="token punctuation">:</span> -<span class="token number">100%</span><span class="token punctuation">;</span>
-<span class="token punctuation">}</span>
-<span class="token selector"><span class="token class">.content</span> </span><span class="token punctuation">{</span>
-  <span class="token property">float</span><span class="token punctuation">:</span> left<span class="token punctuation">;</span>
-  <span class="token property">width</span><span class="token punctuation">:</span> <span class="token number">100%</span><span class="token punctuation">;</span>
-  <span class="token property">height</span><span class="token punctuation">:</span> <span class="token number">200</span>px<span class="token punctuation">;</span>
-  <span class="token property">background-color</span><span class="token punctuation">:</span> yellow<span class="token punctuation">;</span>
-<span class="token punctuation">}</span>
-<span class="token selector"><span class="token class">.content</span> p </span><span class="token punctuation">{</span>
-  <span class="token property">margin-left</span><span class="token punctuation">:</span> <span class="token number">100</span>px<span class="token punctuation">;</span>
-<span class="token punctuation">}</span>
+.slider {
+  float: left;
+  width: 100px;
+  height: 200px;
+  background-color: blue;
+  margin-left: -100%;
+}
+.content {
+  float: left;
+  width: 100%;
+  height: 200px;
+  background-color: yellow;
+}
+.content p {
+  margin-left: 100px;
+}
 </code></pre>
 <pre class=" language-css"><code class="language-css"><span class="token selector">// 或者更简单点，使用BFC 
 &lt;div class="box">
@@ -4733,9 +5047,7 @@ console<span class="token punctuation">.</span><span class="token function">log<
   <span class="token property">margin-right</span><span class="token punctuation">:</span> <span class="token number">100</span>px<span class="token punctuation">;</span>
 <span class="token punctuation">}</span>
 </code></pre>
-<blockquote>
 <p>同样是使用浮动，但双飞翼布局是对负margin的应用，实现详情请看<a href="http://blog.dangosky.com/2019/03/12/CSS%E8%B4%9F%E8%BE%B9%E8%B7%9D/#toc-heading-4">负margin实现两栏布局</a>。同样的是，在HTML代码部分也是把content放到left和right前面的优先渲染 ，否则left放前面的话会造成left被content覆盖或是内容超出视图，也存在前面的那两个问题。听说双飞翼布局是淘宝创造的？</p>
-</blockquote>
 <p><img src="https://upload-images.jianshu.io/upload_images/1747023-4b4ebc49181a2e4f.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1000/format/webp" alt></p>
 <h2 id="圣杯布局"><a href="#圣杯布局" class="headerlink" title="圣杯布局"></a>圣杯布局</h2><pre class=" language-css"><code class="language-css"><span class="token selector">&lt;div class="box">
   &lt;div class="content">
@@ -4785,9 +5097,7 @@ body </span><span class="token punctuation">{</span>
   <span class="token property">background-color</span><span class="token punctuation">:</span> blue<span class="token punctuation">;</span>
 <span class="token punctuation">}</span>
 </code></pre>
-<blockquote>
 <p>圣杯布局和双飞翼布局同样是对负margin的应用，区别在于解决中间栏内容不被左右侧边栏遮挡的方法不同。双飞翼布局是直接给content设置一个子div，利用margin-left和margin-right来间隔开彼此。而圣杯布局给父容器box设置padding来间隔开content主体内容和左右的距离，再给左右两栏分别相对定位设置left和right使其回到原先的位置。圣杯布局潜在的问题是，但浏览器缩小到一定程度后，左右两栏会被挤下来，不过可以给body设置<code>min-width</code>来解决这个问题。个人比较推荐双飞翼布局，两者实现的效果是一样的，而圣杯布局又要用到相对定位甚至min-width，为什么不简单点直接用margin解决同样的问题呢，不仅思路简单些代码也简洁。</p>
-</blockquote>
 <h1 id="三栏布局总结"><a href="#三栏布局总结" class="headerlink" title="三栏布局总结"></a>三栏布局总结</h1><ul>
 <li><p>普通的浮动布局和双飞翼布局圣杯布局：<br>在 HTML 代码上普通的浮动是把中间栏放到最后，左右两栏分别左右浮动后中间空出来的空间给中间栏。而双飞翼布局和圣杯布局是把中间栏放在最前面使其先渲染，让三栏都左浮动后再利用左栏<code>margin-left: -100%</code>，右栏<code>margin-left: -100px</code>使其都并排布局。因为普通浮动里是把中间栏放到最后才渲染的，所以当页面内容较多时可能会影响用户体验。</p>
 </li>

@@ -475,15 +475,15 @@
 <p><img src="https://raw.githubusercontent.com/DMQ/mvvm/master/img/2.png" alt="mvvm实现流程图"></p>
 <h2 id="存在的问题（toDo）"><a href="#存在的问题（toDo）" class="headerlink" title="存在的问题（toDo）"></a>存在的问题（toDo）</h2><ul>
 <li><p>{ {} } 当作数据绑定处理并有其他文本信息出现时，解析之后其他的文本信息会丢失。</p>
-<p>  例如： <code>&lt;p&gt;hello &lt;/p&gt;</code>。</p>
+<p>  例如： &lt;p>hello { {inputVal} }&lt;/p>。</p>
 <p>  解决方案：使用正则匹配大括号，只对 { {} } 之间的内容进行更新。但需要考虑到有多个大括号的情况。</p>
 </li>
 <li><p>在纯文本里面 { {} } 也会被解析成是数据绑定，从而丢失了原来的文本信息。</p>
-<p> 例如： <code>&lt;p&gt;这只是一个单纯的&lt;/p&gt;</code>。</p>
+<p> 例如： &lt;p>这只是一个单纯的文本{ {不是用解析双括号} }&lt;/p>。</p>
 <p>   解决方案：解析到 { {} } 时，判断 { {} } 里面的内容是否为 <code>data</code> 中的属性，是的话则处理为数据绑定；没有的话则不进行解析，当作纯文本内容处理。</p>
 </li>
 <li><p>在同一个标签里无法解析多个 { {} }。</p>
-<p> 例如：<code>&lt;p&gt; &lt;/p&gt;</code>。</p>
+<p> 例如：&lt;p>{ {a} } { {b} }&lt;/p>。</p>
 <p> 解决方案：使用正则匹配 { {} } 之间的内容，改用数组的形式传递给处理指令的函数，批量更新。</p>
 </li>
 </ul>
@@ -767,7 +767,7 @@
 
             
                 &nbsp;<i class="fa fa-area-chart"></i>&nbsp;站点总字数:&nbsp;
-                <span class="white-color">76.8k</span>
+                <span class="white-color">82.3k</span>
             
 
             <!-- <p id="timeDate">DangoSky的博客诞生已经</p><p id="times">载入时分秒...</p> -->

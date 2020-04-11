@@ -1,0 +1,942 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN">
+
+
+<head><meta name="generator" content="Hexo 3.9.0">
+    <meta charset="utf-8">
+    <meta name="keywords" content="颜色规范校验 Lint, DangoSky">
+    <meta name="description" content=" 背景最近有一个需求，要做的工作是编写一个校验脚本，在代码提 commit 的时候去校验提交的样式文件里有没有不符合规范的色值。项目里会有一个统一的 normal-colors.less 文件，样式文件里使用到的色值都必须使用这个 norm">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="renderer" content="webkit|ie-stand|ie-comp">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>颜色规范校验 Lint | DangoSky</title>
+    <link rel="icon" type="image/jpeg" href="/favicon.jpg">
+
+    <link rel="stylesheet" type="text/css" href="/libs/awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="/libs/materialize/materialize.min.css">
+    <link rel="stylesheet" type="text/css" href="/libs/aos/aos.css">
+    <link rel="stylesheet" type="text/css" href="/libs/animate/animate.min.css">
+    <link rel="stylesheet" type="text/css" href="/libs/lightGallery/css/lightgallery.min.css">
+    <link rel="stylesheet" type="text/css" href="/css/matery.css">
+    <link rel="stylesheet" type="text/css" href="/css/my.css">
+    <style type="text/css">
+        
+    </style>
+
+    <script src="/libs/jquery/jquery-2.2.0.min.js"></script>
+<link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css"></head>
+
+
+<body>
+
+<header class="navbar-fixed">
+    <nav id="headNav" class="bg-color nav-transparent">
+        <div id="navContainer" class="nav-wrapper container">
+            <div class="brand-logo">
+                <a href="/" class="waves-effect waves-light">
+                    
+                    <span class="logo-span">DangoSky</span>
+                </a>
+            </div>
+            
+
+<a href="#" data-target="mobile-nav" class="sidenav-trigger button-collapse"><i class="fa fa-navicon"></i></a>
+<ul class="right">
+    
+    <li class="hide-on-med-and-down">
+        <a href="/" class="waves-effect waves-light">
+            
+            <i class="fa fa-home"></i>
+            
+            <span>首页</span>
+        </a>
+    </li>
+    
+    <li class="hide-on-med-and-down">
+        <a href="/tags" class="waves-effect waves-light">
+            
+            <i class="fa fa-tags"></i>
+            
+            <span>标签</span>
+        </a>
+    </li>
+    
+    <li class="hide-on-med-and-down">
+        <a href="/categories" class="waves-effect waves-light">
+            
+            <i class="fa fa-bookmark"></i>
+            
+            <span>分类</span>
+        </a>
+    </li>
+    
+    <li class="hide-on-med-and-down">
+        <a href="/archives" class="waves-effect waves-light">
+            
+            <i class="fa fa-archive"></i>
+            
+            <span>归档</span>
+        </a>
+    </li>
+    
+    <li class="hide-on-med-and-down">
+        <a href="/about" class="waves-effect waves-light">
+            
+            <i class="fa fa-user-circle-o"></i>
+            
+            <span>关于</span>
+        </a>
+    </li>
+    
+    <li class="hide-on-med-and-down">
+        <a href="/friends" class="waves-effect waves-light">
+            
+            <i class="fa fa-address-book"></i>
+            
+            <span>友情链接</span>
+        </a>
+    </li>
+    
+    <li>
+        <a href="#searchModal" class="modal-trigger waves-effect waves-light">
+            <i id="searchIcon" class="fa fa-search" title="搜索"></i>
+        </a>
+    </li>
+</ul>
+
+<div id="mobile-nav" class="side-nav sidenav">
+
+    <div class="mobile-head bg-color">
+        
+        <div class="logo-name">DangoSky</div>
+        <div class="logo-desc">
+            
+            但愿日子清净，抬头遇见的都是柔情。
+            
+        </div>
+    </div>
+
+    
+
+    <ul class="menu-list mobile-menu-list">
+        
+        <li>
+            <a href="/" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-home"></i>
+                
+                首页
+            </a>
+        </li>
+        
+        <li>
+            <a href="/tags" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-tags"></i>
+                
+                标签
+            </a>
+        </li>
+        
+        <li>
+            <a href="/categories" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-bookmark"></i>
+                
+                分类
+            </a>
+        </li>
+        
+        <li>
+            <a href="/archives" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-archive"></i>
+                
+                归档
+            </a>
+        </li>
+        
+        <li>
+            <a href="/about" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-user-circle-o"></i>
+                
+                关于
+            </a>
+        </li>
+        
+        <li>
+            <a href="/friends" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-address-book"></i>
+                
+                友情链接
+            </a>
+        </li>
+        
+        
+    </ul>
+</div>
+
+        </div>
+
+        
+    </nav>
+
+</header>
+
+
+
+
+
+<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/3.jpg')">
+    <div class="container">
+        <div class="row">
+            <div class="col s12 m12 l12">
+                <div class="brand">
+                    <div class="description center-align post-title">
+                        颜色规范校验 Lint
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<main class="post-container content">
+
+    
+    <link rel="stylesheet" href="/libs/tocbot/tocbot.css">
+<style>
+    #articleContent h1::before,
+    #articleContent h2::before,
+    #articleContent h3::before,
+    #articleContent h4::before,
+    #articleContent h5::before,
+    #articleContent h6::before {
+        display: block;
+        content: " ";
+        height: 100px;
+        margin-top: -100px;
+        visibility: hidden;
+    }
+
+    #articleContent :focus {
+        outline: none;
+    }
+
+    .toc-fixed {
+        position: fixed;
+        top: 64px;
+    }
+
+    .toc-widget {
+        padding-left: 20px;
+    }
+
+    .toc-widget .toc-title {
+        margin: 35px 0 15px 0;
+        padding-left: 17px;
+        font-size: 1.5rem;
+        font-weight: bold;
+        line-height: 1.5rem;
+    }
+
+    .toc-widget ol {
+        padding: 0;
+        list-style: none;
+    }
+
+    #toc-content ol {
+        padding-left: 10px;
+    }
+
+    #toc-content ol li {
+        padding-left: 10px;
+    }
+
+    #toc-content .toc-link:hover {
+        color: #42b983;
+        font-weight: 700;
+        text-decoration: underline;
+    }
+
+    #toc-content .toc-link::before {
+        background-color: transparent;
+        max-height: 25px;
+    }
+
+    #toc-content .is-active-link {
+        color: #42b983;
+    }
+
+    #toc-content .is-active-link::before {
+        background-color: #42b983;
+    }
+
+    #floating-toc-btn {
+        position: fixed;
+        right: 20px;
+        bottom: 76px;
+        padding-top: 15px;
+        margin-bottom: 0;
+        z-index: 998;
+    }
+
+    #floating-toc-btn .btn-floating {
+        width: 48px;
+        height: 48px;
+    }
+
+    #floating-toc-btn .btn-floating i {
+        line-height: 48px;
+        font-size: 1.4rem;
+    }
+</style>
+<div class="row">
+    <div id="main-content" class="col s12 m12 l9">
+        <!-- 文章内容详情 -->
+<div id="artDetail">
+    <div class="card">
+        <div class="card-content article-info">
+            <div class="row tag-cate">
+                <div class="col s7">
+                    
+                    <div class="article-tag">
+                        
+                            <a href="/tags/Node/" target="_blank">
+                                <span class="chip bg-color">Node</span>
+                            </a>
+                        
+                            <a href="/tags/正则表达式/" target="_blank">
+                                <span class="chip bg-color">正则表达式</span>
+                            </a>
+                        
+                            <a href="/tags/AST/" target="_blank">
+                                <span class="chip bg-color">AST</span>
+                            </a>
+                        
+                    </div>
+                    
+                </div>
+                <div class="col s5 right-align">
+                    
+                    <div class="post-cate">
+                        <i class="fa fa-bookmark fa-fw icon-category"></i>
+                        
+                            <a href="/categories/JavaScript/" class="post-category" target="_blank">
+                                JavaScript
+                            </a>
+                        
+                    </div>
+                    
+                </div>
+            </div>
+
+            <div class="post-info">
+                <div class="post-date info-break-policy">
+                    <i class="fa fa-calendar-minus-o fa-fw"></i>发布日期:&nbsp;&nbsp;
+                    2020-04-11
+                </div>
+
+                
+                    
+                    <div class="info-break-policy">
+                        <i class="fa fa-file-word-o fa-fw"></i>文章字数:&nbsp;&nbsp;
+                        2.9k
+                    </div>
+                    
+
+                    
+                    <div class="info-break-policy">
+                        <i class="fa fa-clock-o fa-fw"></i>阅读时长:&nbsp;&nbsp;
+                        11 分
+                    </div>
+                    
+                
+				
+				
+            </div>
+        </div>
+        <hr class="clearfix">
+        <div class="card-content article-card-content">
+            <div id="articleContent">
+                <script src="/assets/js/APlayer.min.js"> </script><h2 id="背景"><a href="#背景" class="headerlink" title="背景"></a>背景</h2><p>最近有一个需求，要做的工作是编写一个校验脚本，在代码提 commit 的时候去校验提交的样式文件里有没有不符合规范的色值。项目里会有一个统一的 <code>normal-colors.less</code> 文件，样式文件里使用到的色值都必须使用这个 <code>normal-colors.less</code> 里的色值变量。对于不在规范里的色值，比如指定的十六进制、rgb、rgba、hsl、hsla 以及颜色名，都要检查出来并查找在 <code>normal-colors.less</code> 里有没有对应的色值变量，有的话则自动替换，没有则打印出所有不规范的色值。</p>
+<h2 id="技术实现"><a href="#技术实现" class="headerlink" title="技术实现"></a>技术实现</h2><h4 id="1-提取-commit-的样式文件"><a href="#1-提取-commit-的样式文件" class="headerlink" title="1. 提取 commit 的样式文件"></a>1. 提取 commit 的样式文件</h4><pre class=" language-js"><code class="language-js"><span class="token keyword">const</span> execSync <span class="token operator">=</span> <span class="token function">require</span><span class="token punctuation">(</span><span class="token string">'child_process'</span><span class="token punctuation">)</span><span class="token punctuation">.</span>execSync<span class="token punctuation">;</span>
+<span class="token keyword">const</span> files <span class="token operator">=</span> <span class="token function">execSync</span><span class="token punctuation">(</span><span class="token string">'git diff HEAD --name-only'</span><span class="token punctuation">,</span> <span class="token punctuation">{</span>
+  encoding<span class="token punctuation">:</span> <span class="token string">'utf8'</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">split</span><span class="token punctuation">(</span><span class="token string">'\n'</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">filter</span><span class="token punctuation">(</span>i <span class="token operator">=</span><span class="token operator">></span> i <span class="token operator">&amp;&amp;</span> <span class="token regex">/\.(c|le|sa|sc)ss$/</span><span class="token punctuation">.</span><span class="token function">test</span><span class="token punctuation">(</span>i<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+</code></pre>
+<h4 id="2-提取样式文件中使用到的色值"><a href="#2-提取样式文件中使用到的色值" class="headerlink" title="2. 提取样式文件中使用到的色值"></a>2. 提取样式文件中使用到的色值</h4><p>刚接到这个需求的时候，第一想法就是使用正则表达式去匹配。对颜色十六进制、常用的颜色名、rgb(a)、hsl(a) 这几种情况分别写正则表达式，再读取文件内容进行全局匹配。</p>
+<pre class=" language-js"><code class="language-js"><span class="token keyword">const</span> nameRegx <span class="token operator">=</span> <span class="token regex">/(black|silver|gray|white|maroon|red|purple|fuchsia|green|lime|olive|yellow|navy|blue|teal|aqua)/g</span><span class="token punctuation">;</span>
+
+<span class="token keyword">const</span> hexRegx <span class="token operator">=</span> <span class="token regex">/#([0-9a-fA-f]{6}|[0-9a-fA-f]{3})/g</span><span class="token punctuation">;</span>
+
+<span class="token keyword">const</span> rgbRegx <span class="token operator">=</span> <span class="token regex">/rgba?\((\d+)(\.\d+)?%?,\s*(\d+)(\.\d+)?%?,\s*(\d+)(\.\d+)?%?(,\s*((\d+)?)(\.\d+)?(%?))?\)/g</span><span class="token punctuation">;</span>
+
+<span class="token keyword">const</span> hslRegx <span class="token operator">=</span> <span class="token regex">/hsla?\((\d+)(\.\d+)?%?,\s*(\d+)(\.\d+)?%?,\s*(\d+)(\.\d+)?%?(,\s*((\d+)?)(\.\d+)?(%?))?\)/g</span><span class="token punctuation">;</span>
+</code></pre>
+<p>对于颜色名，只需要列举几个常用的颜色名就可以了。</p>
+<p>对于十六进制色值，可能是 6 位的字符串，也可能是缩写成 3 位而已，并且允许的字符只能是在 <code>0-9</code> 或 <code>a-f</code> 或 <code>A-F</code> 之间而已。</p>
+<p>对于 rgb(a) 和 hsl(a)，其实两者的格式是一样的，所以写出来的正则也就它们的前缀名不一样而已。但需要考虑到它里面使用的各个值可能是整数，也可能是小数、百分数，所以写出来的正则会复杂一些。为方便理解可将上面 rgb(a) 的正则拆分为以下几部分：</p>
+<ul>
+<li><code>rgba?\(</code></li>
+<li><code>(\d+)(\.\d+)?%?</code></li>
+<li><code>,\s*(\d+)(\.\d+)?%?</code></li>
+<li><code>,\s*(\d+)(\.\d+)?%?</code></li>
+<li><code>(,\s*((\d+)?)(\.\d+)?(%?))?</code></li>
+<li><code>\)</code></li>
+</ul>
+<h4 id="3-rgb-a-色值转换为十六进制"><a href="#3-rgb-a-色值转换为十六进制" class="headerlink" title="3. rgb(a) 色值转换为十六进制"></a>3. rgb(a) 色值转换为十六进制</h4><p>当检查到不规范的色值时，需要去 <code>normal-colors.less</code> 里查找有没有对应的色值变量。所以还要先读取 <code>normal-colors.less</code> 文件，将其中的色值变量和具体的色值号提取到一个对象里，并且是以色值为键名，色值变量为值。因为 <code>normal-colors.less</code> 里的色值都是使用的十六进制，所以对于检查出来的不规范色值，还需要再转换成十六进制才可以判断在 <code>normal-colors.less</code> 中是否有对应的色值变量（注意还需要对转换出来的十六进制再转换成小写形式），不过这里我只做了对 rgb(a) 的转换。rgb 转换为十六进制，其实只需要将其中的 r、g、b 值转换为十六进制，再加上前缀 <code>#</code> 就可以了，但要考虑到它们的值可能为小数和百分数的情况，以下是 rgb(a) 转换为十六进制的函数。</p>
+<pre class=" language-js"><code class="language-js"><span class="token comment" spellcheck="true">// rgb 和 rgba 转换为十六进制</span>
+<span class="token keyword">function</span> <span class="token function">rgbaToHex</span><span class="token punctuation">(</span>rgba<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">const</span> color <span class="token operator">=</span> rgba
+    <span class="token punctuation">.</span><span class="token function">replace</span><span class="token punctuation">(</span><span class="token regex">/rgba?\(/</span><span class="token punctuation">,</span> <span class="token string">''</span><span class="token punctuation">)</span>
+    <span class="token punctuation">.</span><span class="token function">replace</span><span class="token punctuation">(</span><span class="token regex">/\)/</span><span class="token punctuation">,</span> <span class="token string">''</span><span class="token punctuation">)</span>
+    <span class="token punctuation">.</span><span class="token function">replace</span><span class="token punctuation">(</span><span class="token regex">/[\s+]/g</span><span class="token punctuation">,</span> <span class="token string">''</span><span class="token punctuation">)</span>
+    <span class="token punctuation">.</span><span class="token function">split</span><span class="token punctuation">(</span><span class="token string">','</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token comment" spellcheck="true">// 如果是 rgb 的话，默认 alpha 透明度是 1</span>
+  <span class="token comment" spellcheck="true">// 考虑到值可能为百分数，所以还需要对百分数进行计算</span>
+  <span class="token keyword">const</span> alpha <span class="token operator">=</span> <span class="token function">formatPer</span><span class="token punctuation">(</span>color<span class="token punctuation">[</span><span class="token number">3</span><span class="token punctuation">]</span> <span class="token operator">||</span> <span class="token string">'1'</span><span class="token punctuation">,</span> <span class="token boolean">true</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token keyword">const</span> r <span class="token operator">=</span> <span class="token function">formatPer</span><span class="token punctuation">(</span>color<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span><span class="token punctuation">,</span> <span class="token boolean">false</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token keyword">const</span> g <span class="token operator">=</span> <span class="token function">formatPer</span><span class="token punctuation">(</span>color<span class="token punctuation">[</span><span class="token number">1</span><span class="token punctuation">]</span><span class="token punctuation">,</span> <span class="token boolean">false</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token keyword">const</span> b <span class="token operator">=</span> <span class="token function">formatPer</span><span class="token punctuation">(</span>color<span class="token punctuation">[</span><span class="token number">2</span><span class="token punctuation">]</span><span class="token punctuation">,</span> <span class="token boolean">false</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token keyword">const</span> hex <span class="token operator">=</span> <span class="token string">'#'</span> <span class="token operator">+</span>
+    <span class="token punctuation">(</span><span class="token string">'0'</span> <span class="token operator">+</span> r<span class="token punctuation">.</span><span class="token function">toString</span><span class="token punctuation">(</span><span class="token number">16</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">slice</span><span class="token punctuation">(</span><span class="token operator">-</span><span class="token number">2</span><span class="token punctuation">)</span> <span class="token operator">+</span>
+    <span class="token punctuation">(</span><span class="token string">'0'</span> <span class="token operator">+</span> g<span class="token punctuation">.</span><span class="token function">toString</span><span class="token punctuation">(</span><span class="token number">16</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">slice</span><span class="token punctuation">(</span><span class="token operator">-</span><span class="token number">2</span><span class="token punctuation">)</span> <span class="token operator">+</span>
+    <span class="token punctuation">(</span><span class="token string">'0'</span> <span class="token operator">+</span> b<span class="token punctuation">.</span><span class="token function">toString</span><span class="token punctuation">(</span><span class="token number">16</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">slice</span><span class="token punctuation">(</span><span class="token operator">-</span><span class="token number">2</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token keyword">return</span> <span class="token punctuation">{</span>
+    hex<span class="token punctuation">,</span>
+    alpha
+  <span class="token punctuation">}</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+
+<span class="token comment" spellcheck="true">// 转换百分数</span>
+<span class="token keyword">function</span> <span class="token function">formatPer</span><span class="token punctuation">(</span>num<span class="token punctuation">,</span> isAlpha<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">if</span> <span class="token punctuation">(</span>num<span class="token punctuation">.</span><span class="token function">includes</span><span class="token punctuation">(</span><span class="token string">'%'</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    num <span class="token operator">=</span> <span class="token function">parseFloat</span><span class="token punctuation">(</span>num<span class="token punctuation">.</span><span class="token function">replace</span><span class="token punctuation">(</span><span class="token string">'%'</span><span class="token punctuation">,</span> <span class="token string">''</span><span class="token punctuation">)</span> <span class="token operator">/</span> <span class="token number">100</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">return</span> isAlpha <span class="token operator">?</span> num <span class="token punctuation">:</span> <span class="token function">parseInt</span><span class="token punctuation">(</span>num <span class="token operator">*</span> <span class="token number">255</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token punctuation">}</span>
+  <span class="token keyword">return</span> isAlpha <span class="token operator">?</span> <span class="token function">parseFloat</span><span class="token punctuation">(</span>num<span class="token punctuation">)</span> <span class="token punctuation">:</span> <span class="token function">parseInt</span><span class="token punctuation">(</span>num<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<h4 id="4-设置白名单"><a href="#4-设置白名单" class="headerlink" title="4. 设置白名单"></a>4. 设置白名单</h4><p>有时候因为一些特殊原因，比如历史遗留了太多不规范的色值，并且当前的代码又急需要合进 master 准备上线，这时候就需要一个给业务方提供一个跳过校验的功能了。当然可以通过 <code>git commit --no-verify -m &quot;&lt;commit message&gt;&quot;</code> 来跳过所有 lint 检查，但这样对所有的文件都跳过了检查，并且其他的一些 lint 校验也都被忽略了。所以可以通过给某个文件加白名单的方式来跳过颜色校验脚本，比如说在文件中写个注释 <code>/* disable-color-check  */</code>，在读取样式文件时，如果全局匹配到了这条注释的话，就直接 return 出校验函数跳过检查。</p>
+<h4 id="5-打印出不同颜色"><a href="#5-打印出不同颜色" class="headerlink" title="5. 打印出不同颜色"></a>5. 打印出不同颜色</h4><p>为了打印出来的信息可以清晰点提高辨识度，还可以对不同的信息打印出不同的颜色，比如文件名输出为红色，提示信息输出为绿色。这里貌似有专门的第三方库来控制打印的文本样式，还可以打印出一些 Icon 等。不过也没必要为此再引入一个库，我是直接对 <code>console.log</code> 做文章。</p>
+<pre class=" language-js"><code class="language-js">console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token string">'\x1B[32m%s\x1B[0m'</span><span class="token punctuation">,</span> <span class="token string">'打印出来是绿色的'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token string">'\x1B[31m%s\x1B[0m'</span><span class="token punctuation">,</span> <span class="token string">'打印出来是红色的'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+</code></pre>
+<h2 id="遇到的问题"><a href="#遇到的问题" class="headerlink" title="遇到的问题"></a>遇到的问题</h2><p>上述讲的方案是通过正则表达式去匹配样式文件中的不规范色值，这使用在 rgb(a)、hsl(a) 和十六进制上没有问题，但用在颜色名上就有问题了。比如我有一个选择器是 <code>.m-red</code>，类名中如果出现了颜色名的话，它也会被正则匹配到，而这是不符合预期的。之后我就想到颜色名作为类名出现就这些情况，<code>.m-red</code>、 <code>.red-box</code>，颜色名左右会有 <code>.</code> 或者 <code>-</code>。所以如果颜色名左右有 <code>.</code> 或者 <code>-</code> 的话，就认为它是作为类名出现的，不进行匹配。改造后的正则为： <code>/(?&lt;!(\.|-))(()bglack|silver|gray|white|maroon|red|purple|fuchsia|green|lime|olive|yellow|navy|blue|teal|aqua)/g</code>，也就是加了 <code>(?&lt;!(\.|-))</code> 来判断颜色名，<code>?&lt;!</code> 系列的作用如下。</p>
+<ul>
+<li><p><code>exp1(?=exp2)</code>：查找 exp2 前面的 exp1。</p>
+</li>
+<li><p><code>(?&lt;=exp2)exp1</code>：查找 exp2 后面的 exp1。</p>
+</li>
+<li><p><code>exp1(?!exp2)</code>：查找后面不是 exp2 的 exp1。</p>
+</li>
+<li><p><code>(?&lt;!exp2)exp1</code>：查找前面不是 exp2 的 exp1。</p>
+</li>
+</ul>
+<p>但是事实上，我们并不能保证类名中的颜色名就只是以上面说的两种情况出现，可能也是 <code>.m-xxxredxxx</code>，如果用正则表达式的话实在难以囊括所有可能的情况，所以只能另想实现方案了。</p>
+<h2 id="最终方案"><a href="#最终方案" class="headerlink" title="最终方案"></a>最终方案</h2><p>接着使用的方案是通过将样式文件解析成抽象语法树，通过递归遍历 AST 来提取所有 CSS 属性键值对，再用上面的正则表达式去匹配它的值。不过这里其实不用将键值对提取出来的，直接在遍历到键值对时进行正则匹配就够了。如果要提取出来的话，因为很多 CSS 属性是重复出现的，要区分的话只能通过它们的类名去区分。而对于 Less 而言存在着类嵌套（比如说 <code>.box p</code> 和 <code>.container p</code> 这两个选择器），为了避免类名重复就得将它的父级类名一起拼起来形成一个独一无而的值。但这样处理起来会比较麻烦，所以就放弃了提取所有的键值对，而是在遍历时判断就可以了。</p>
+<h4 id="对于-CSS-文件"><a href="#对于-CSS-文件" class="headerlink" title="对于 CSS 文件"></a>对于 CSS 文件</h4><p>因为项目里使用的是 CSS 和 Less，所以需要使用不同的工具来解析两者。对于 CSS 文件使用的解析工具是 <a href="https://github.com/reworkcss/css" target="_blank" rel="noopener">css</a>，它提供了简单的 api 来解析 CSS 文件，并且解析出来的 AST 结构也很清晰提取挺方便的。</p>
+<pre class=" language-js"><code class="language-js"><span class="token keyword">const</span> css <span class="token operator">=</span> <span class="token function">require</span><span class="token punctuation">(</span><span class="token string">'css'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword">const</span> fileContent <span class="token operator">=</span> fs<span class="token punctuation">.</span><span class="token function">readFileSync</span><span class="token punctuation">(</span>file<span class="token punctuation">,</span> <span class="token punctuation">{</span>
+  encoding<span class="token punctuation">:</span> <span class="token string">'utf8'</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword">const</span> res <span class="token operator">=</span> css<span class="token punctuation">.</span><span class="token function">parse</span><span class="token punctuation">(</span>fileContent<span class="token punctuation">,</span> <span class="token punctuation">{</span>source<span class="token punctuation">:</span> file<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment" spellcheck="true">// -> AST</span>
+</code></pre>
+<p><img src="/2020/04/11/颜色规范校验-lint/./1.png" alt></p>
+<h4 id="对于-Less-文件"><a href="#对于-Less-文件" class="headerlink" title="对于 Less 文件"></a>对于 Less 文件</h4><p><strong>第一个方案</strong></p>
+<p>将 Less 解析成 AST 有多种方法，一开始的做法是将 Less 编译成 CSS，再使用上述的 <code>css.parse</code> 解析成 AST。将 Less 编译成 CSS，可以使用 Less 提供的 <a href="http://lesscss.cn/#using-less-command-line-usage" target="_blank" rel="noopener">lessc</a> 命令编译，但 lessc 执行有些问题，所以就没采用 lessc 了。使用的是 Less 自带的 <a href="http://lesscss.org/usage/#programmatic-usage" target="_blank" rel="noopener">less.render</a> 函数编译。</p>
+<pre class=" language-js"><code class="language-js"><span class="token keyword">const</span> less <span class="token operator">=</span> <span class="token function">require</span><span class="token punctuation">(</span><span class="token string">'less'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+less<span class="token punctuation">.</span><span class="token function">render</span><span class="token punctuation">(</span>fileContent<span class="token punctuation">)</span>
+  <span class="token punctuation">.</span><span class="token function">then</span><span class="token punctuation">(</span><span class="token keyword">function</span><span class="token punctuation">(</span>output<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>output<span class="token punctuation">.</span>css<span class="token punctuation">)</span>； <span class="token comment" spellcheck="true">// -> 编译后的 Css</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span> <span class="token keyword">function</span><span class="token punctuation">(</span>error<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>error）；
+  <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+</code></pre>
+<p>但使用 <code>less.render</code> 中途又遇到了几个坑：</p>
+<ol>
+<li>如果 Less 文件中引入了其他的样式文件，<code>less.render</code> 会找不到引入的文件而报错。</li>
+</ol>
+<p>解决方法：<code>less.render</code> 中使用参数 filename，指定如果解析过程中遇到了引入的其他样式文件，就以该文件为相对路径去查找引入的路径。（参考 <a href="https://stackoverflow.com/questions/27501958/less-render-is-not-working-in-nodejs-with-multiple-import-files-which-are-in-dif" target="_blank" rel="noopener">StackOverflow</a>）。</p>
+<pre class=" language-js"><code class="language-js"><span class="token keyword">const</span> less <span class="token operator">=</span> <span class="token function">require</span><span class="token punctuation">(</span><span class="token string">'less'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+less<span class="token punctuation">.</span><span class="token function">render</span><span class="token punctuation">(</span>fileContent<span class="token punctuation">,</span> <span class="token punctuation">{</span>filename<span class="token punctuation">:</span> path<span class="token punctuation">.</span><span class="token function">resolve</span><span class="token punctuation">(</span>file<span class="token punctuation">)</span><span class="token punctuation">}</span><span class="token punctuation">)</span>
+  <span class="token punctuation">.</span><span class="token function">then</span><span class="token punctuation">(</span><span class="token keyword">function</span><span class="token punctuation">(</span>output<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>output<span class="token punctuation">.</span>css<span class="token punctuation">)</span>； <span class="token comment" spellcheck="true">// -> 编译后的 Css</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span> <span class="token keyword">function</span><span class="token punctuation">(</span>error<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>error）；
+  <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+</code></pre>
+<ol start="2">
+<li>如果引入的样式路径使用到了路径别名比如 <code>@import &#39;~css/base/norm-colors.less&#39;</code>，则还是会解析失败，因为 <code>less.render</code> 无法识别 <code>~css</code>。</li>
+</ol>
+<p>对此想到的解决方法是：在脚本中导入 <code>webpack.common.config.js</code> 文件，获取到其中的路径别名值后再对引用路径进行替换，将路径别名替换成完整的路径。感觉思路没问题，可问题在于 <code>less.render</code> 解析过程遇到其他引入的文件时，它内部自己去查找引入的文件，这个过程对我们是透明的，没有开放其它空间让我们去将引用路径中的路径别名替换成完整的路径！至此，这个方案卒（泣不成声.jpg）。</p>
+<p><strong>第二个方案</strong></p>
+<p>既然使用 <code>less.render</code> 行不通了，就只能使用专门的 Less 解析器，直接将 Less 解析成 AST 了。我使用的是这个 <a href="https://github.com/shellscape/postcss-less" target="_blank" rel="noopener">postcss-less</a>。它可以将 Less 文件解析成 AST，并且不存在方法一中引用其他文件的路径问题（因为 postcss-less 没有解析引用的其他样式文件）。</p>
+<pre class=" language-js"><code class="language-js"><span class="token keyword">const</span> postcss <span class="token operator">=</span> <span class="token function">require</span><span class="token punctuation">(</span><span class="token string">'postcss'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword">const</span> syntax <span class="token operator">=</span> <span class="token function">require</span><span class="token punctuation">(</span><span class="token string">'postcss-less'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token function">postcss</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">process</span><span class="token punctuation">(</span>fileContent<span class="token punctuation">,</span> <span class="token punctuation">{</span> syntax<span class="token punctuation">:</span> syntax <span class="token punctuation">}</span><span class="token punctuation">)</span>
+  <span class="token punctuation">.</span><span class="token function">then</span><span class="token punctuation">(</span><span class="token keyword">function</span> <span class="token punctuation">(</span>result<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>result<span class="token punctuation">)</span><span class="token punctuation">;</span>   <span class="token comment" spellcheck="true">// -> AST 对象</span>
+  <span class="token punctuation">}</span><span class="token punctuation">)</span>
+</code></pre>
+<p><img src="/2020/04/11/颜色规范校验-lint/./2.png" alt></p>
+<p>到这里就可以将 Less 成功解析成 AST 了，接着就是遍历 CSS 和 Less 解析出来的 AST，用上面的正则表达式去判断使用到的键值对里有没有不规范的色值。下面就不展开了，贴一下遍历两个 AST 的代码，方便以后有需要使用的话可以直接复用。</p>
+<p><strong>解析 CSS 文件</strong></p>
+<pre class=" language-js"><code class="language-js"><span class="token comment" spellcheck="true">/* 
+  file 是要解析的 CSS 文件
+  fileContent 是该 CSS 文件的内容
+  regxArr 是要匹配的正则规则，是一个数组支持匹配多项规则
+  返回值是一个数组，包含了命中 regxArr 中任一规则的 CSS 属性值
+*/</span>
+<span class="token keyword">const</span> css <span class="token operator">=</span> <span class="token function">require</span><span class="token punctuation">(</span><span class="token string">'css'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token keyword">function</span> <span class="token function">getCssColorArr</span><span class="token punctuation">(</span>file<span class="token punctuation">,</span> fileContent<span class="token punctuation">,</span> regxArr<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">const</span> res <span class="token operator">=</span> <span class="token punctuation">{</span><span class="token punctuation">}</span><span class="token punctuation">;</span>
+  <span class="token keyword">const</span> obj <span class="token operator">=</span> css<span class="token punctuation">.</span><span class="token function">parse</span><span class="token punctuation">(</span>fileContent<span class="token punctuation">,</span> <span class="token punctuation">{</span>source<span class="token punctuation">:</span> file<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token punctuation">(</span>obj<span class="token punctuation">.</span>stylesheet<span class="token punctuation">.</span>rules<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">forEach</span><span class="token punctuation">(</span>item <span class="token operator">=</span><span class="token operator">></span> <span class="token punctuation">{</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>item<span class="token punctuation">.</span>type <span class="token operator">===</span> <span class="token string">'rule'</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      item<span class="token punctuation">.</span>declarations<span class="token punctuation">.</span><span class="token function">forEach</span><span class="token punctuation">(</span>kv <span class="token operator">=</span><span class="token operator">></span> <span class="token punctuation">{</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>kv<span class="token punctuation">.</span>type <span class="token operator">===</span> <span class="token string">'declaration'</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+          regxArr<span class="token punctuation">.</span><span class="token function">forEach</span><span class="token punctuation">(</span>regx <span class="token operator">=</span><span class="token operator">></span> <span class="token punctuation">{</span>
+            <span class="token keyword">const</span> target <span class="token operator">=</span> <span class="token punctuation">(</span>kv<span class="token punctuation">.</span>value<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">match</span><span class="token punctuation">(</span>regx<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token comment" spellcheck="true">// 去重</span>
+            <span class="token keyword">if</span> <span class="token punctuation">(</span>target <span class="token operator">&amp;&amp;</span> <span class="token operator">!</span>res<span class="token punctuation">[</span>target<span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+              res<span class="token punctuation">[</span>target<span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token boolean">true</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+          <span class="token punctuation">}</span><span class="token punctuation">)</span>
+        <span class="token punctuation">}</span>
+      <span class="token punctuation">}</span><span class="token punctuation">)</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">}</span><span class="token punctuation">)</span>
+  <span class="token keyword">return</span> Object<span class="token punctuation">.</span><span class="token function">keys</span><span class="token punctuation">(</span>res<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<p><strong>解析 Less 文件</strong></p>
+<pre class=" language-js"><code class="language-js"><span class="token keyword">const</span> postcss <span class="token operator">=</span> <span class="token function">require</span><span class="token punctuation">(</span><span class="token string">'postcss'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword">const</span> syntax <span class="token operator">=</span> <span class="token function">require</span><span class="token punctuation">(</span><span class="token string">'postcss-less'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token keyword">function</span> <span class="token function">getLessColorArr</span><span class="token punctuation">(</span>fileContent<span class="token punctuation">,</span> regxArr<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">let</span> res <span class="token operator">=</span> <span class="token punctuation">{</span><span class="token punctuation">}</span><span class="token punctuation">;</span>
+  <span class="token keyword">const</span> result <span class="token operator">=</span> <span class="token function">postcss</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">process</span><span class="token punctuation">(</span>fileContent<span class="token punctuation">,</span> <span class="token punctuation">{</span> syntax<span class="token punctuation">:</span> syntax <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token keyword">if</span> <span class="token punctuation">(</span>result<span class="token punctuation">.</span>root<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    res <span class="token operator">=</span> <span class="token function">formatLess</span><span class="token punctuation">(</span>result<span class="token punctuation">.</span>root<span class="token punctuation">,</span> regxArr<span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token punctuation">}</span>
+  <span class="token keyword">return</span> Object<span class="token punctuation">.</span><span class="token function">keys</span><span class="token punctuation">(</span>res<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+
+<span class="token keyword">function</span> <span class="token function">formatLess</span><span class="token punctuation">(</span>obj<span class="token punctuation">,</span> regxArr<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">let</span> res <span class="token operator">=</span> <span class="token punctuation">{</span><span class="token punctuation">}</span><span class="token punctuation">;</span>
+  obj<span class="token punctuation">.</span>nodes <span class="token operator">&amp;&amp;</span> obj<span class="token punctuation">.</span>nodes<span class="token punctuation">.</span><span class="token function">forEach</span><span class="token punctuation">(</span>item <span class="token operator">=</span><span class="token operator">></span> <span class="token punctuation">{</span>
+    <span class="token comment" spellcheck="true">// 嵌套的类则递归解析</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>item<span class="token punctuation">.</span>type <span class="token operator">===</span> <span class="token string">'rule'</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      res <span class="token operator">=</span> Object<span class="token punctuation">.</span><span class="token function">assign</span><span class="token punctuation">(</span>res<span class="token punctuation">,</span> <span class="token function">formatLess</span><span class="token punctuation">(</span>item<span class="token punctuation">,</span> regxArr<span class="token punctuation">)</span><span class="token punctuation">)</span>
+    <span class="token punctuation">}</span>
+    <span class="token comment" spellcheck="true">// 是 CSS 属性则进行正则匹配</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>item<span class="token punctuation">.</span>type <span class="token operator">===</span> <span class="token string">'decl'</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      regxArr<span class="token punctuation">.</span><span class="token function">forEach</span><span class="token punctuation">(</span>regx <span class="token operator">=</span><span class="token operator">></span> <span class="token punctuation">{</span>
+        <span class="token keyword">const</span> target <span class="token operator">=</span> <span class="token punctuation">(</span>item<span class="token punctuation">.</span>value<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">match</span><span class="token punctuation">(</span>regx<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>target <span class="token operator">&amp;&amp;</span> <span class="token operator">!</span>res<span class="token punctuation">[</span>target<span class="token punctuation">]</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+          res<span class="token punctuation">[</span>target<span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token boolean">true</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+      <span class="token punctuation">}</span><span class="token punctuation">)</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">}</span><span class="token punctuation">)</span>
+  <span class="token keyword">return</span> res<span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<h2 id="方案总结"><a href="#方案总结" class="headerlink" title="方案总结"></a>方案总结</h2><p>对于 CSS 文件，使用 <code>css.parse</code> 解析成 AST 再提取出所有的 CSS 属性键值对，再用正则匹配其中用到的颜色名。</p>
+<p>对于 Less 文件，使用 <code>postcss().process</code> 解析成 AST 再提取出所有的 CSS 属性键值对，再用正则匹配其中用到的颜色名。</p>
+
+            </div>
+            <hr/>
+
+            
+
+            <link rel="stylesheet" type="text/css" href="/libs/share/css/share.min.css">
+
+<div id="article-share">
+    
+    <div class="social-share" data-disabled="qzone" data-wechat-qrcode-helper="<p>微信里点“发现”->“扫一扫”二维码便可查看分享。</p>"></div>
+    
+</div>
+
+<script src="/libs/share/js/social-share.min.js"></script>
+
+            <div class="reprint">
+                <p>
+                    <span class="reprint-tip">
+                        <i class="fa fa-exclamation-circle"></i>&nbsp;&nbsp;转载请注明:
+                    </span>
+                    <a href="http://blog.dangosky.com" class="b-link-green">DangoSky</a>
+                    <i class="fa fa-angle-right fa-lg fa-fw text-color"></i>
+                    <a href="/2020/04/11/颜色规范校验-lint/" class="b-link-green">颜色规范校验 Lint</a>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    
+
+    
+
+    
+        <div class="disqus-card card" data-aos="fade-up">
+    <div id="disqus_thread" class="card-content">
+        <noscript>Please enable JavaScript to view the
+            <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+    </div>
+</div>
+
+<script type="text/javascript">
+    disqus_config = function () {
+        this.page.url = 'http://blog.dangosky.com/2020/04/11/颜色规范校验-lint/';
+        this.page.identifier = '/2020/04/11/颜色规范校验-lint/';
+        this.page.title = '颜色规范校验 Lint';
+    };
+    let disqus_shortname = 'dangosky';
+
+    (function () { // DON'T EDIT BELOW THIS LINE
+        let d = document, s = d.createElement('script');
+        // 如：s.src = 'https://blinkfox.disqus.com/embed.js';
+        s.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+    
+
+    
+
+    
+
+    
+
+<article id="prenext-posts" class="prev-next articles">
+    <div class="row article-row">
+        
+        <div class="article col s12 m6" data-aos="fade-up" data-aos="fade-up">
+            <div class="article-badge left-badge text-color">
+                <i class="fa fa-dot-circle-o"></i>&nbsp;本篇
+            </div>
+            <div class="card">
+                <a href="/2020/04/11/颜色规范校验-lint/">
+                    <div class="card-image">
+                        
+                        
+                        <img src="/medias/featureimages/3.jpg" class="responsive-img" alt="颜色规范校验 Lint">
+                        
+                        <span class="card-title">颜色规范校验 Lint</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary"> 背景最近有一个需求，要做的工作是编写一个校验脚本，在代码提 commit 的时候去校验提交的样式文件里有没有不符合规范的色值。项目里会有一个统一的 normal-colors.less 文件，样式文件里使用到的色值都必须使用这个 norm</div>
+                    <div class="publish-info">
+                            <span class="publish-date">
+                                <i class="fa fa-clock-o fa-fw icon-date"></i>2020-04-11
+                            </span>
+                        <span class="publish-author">
+                            
+                            <i class="fa fa-bookmark fa-fw icon-category"></i>
+                            
+                            <a href="/categories/JavaScript/" class="post-category" target="_blank">
+                                    JavaScript
+                                </a>
+                            
+                            
+                        </span>
+                    </div>
+                </div>
+
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/Node/" target="_blank">
+                        <span class="chip bg-color">Node</span>
+                    </a>
+                    
+                    <a href="/tags/正则表达式/" target="_blank">
+                        <span class="chip bg-color">正则表达式</span>
+                    </a>
+                    
+                    <a href="/tags/AST/" target="_blank">
+                        <span class="chip bg-color">AST</span>
+                    </a>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge right-badge text-color">
+                下一篇&nbsp;<i class="fa fa-chevron-right"></i>
+            </div>
+            <div class="card">
+                <a href="/2020/03/11/上拉刷新下拉加载更多的实现原理/">
+                    <div class="card-image">
+                        
+                        
+                        <img src="/medias/featureimages/12.jpg" class="responsive-img" alt="下拉刷新上拉加载更多的实现原理">
+                        
+                        <span class="card-title">下拉刷新上拉加载更多的实现原理</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary"> 背景最近有一个需求：大致是要展示一个列表信息，但每次接口只返回 20 条数据，当用户滑动到到页面底部并继续上拉页面时再继续调接口获取更多的数据（相当于分页）。这里就需要使用到一个上拉加载更多的功能，实现的效果可以看这里。考虑到项目时间比较</div>
+                    <div class="publish-info">
+                            <span class="publish-date">
+                                <i class="fa fa-clock-o fa-fw icon-date"></i>2020-03-11
+                            </span>
+                        <span class="publish-author">
+                            
+                            <i class="fa fa-bookmark fa-fw icon-category"></i>
+                            
+                            <a href="/categories/组件实现/" class="post-category" target="_blank">
+                                    组件实现
+                                </a>
+                            
+                            
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/JavaScript/" target="_blank">
+                        <span class="chip bg-color">JavaScript</span>
+                    </a>
+                    
+                    <a href="/tags/组件实现/" target="_blank">
+                        <span class="chip bg-color">组件实现</span>
+                    </a>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+    </div>
+</article>
+</div>
+
+
+    </div>
+    <div id="toc-aside" class="expanded col l3 hide-on-med-and-down">
+        <div class="toc-widget">
+            <div class="toc-title"><i class="fa fa-list-alt"></i>&nbsp;&nbsp;目录</div>
+            <div id="toc-content"></div>
+        </div>
+    </div>
+</div>
+
+<!-- TOC 悬浮按钮. -->
+
+<div id="floating-toc-btn" class="hide-on-med-and-down">
+    <a class="btn-floating btn-large bg-color">
+        <i class="fa fa-list"></i>
+    </a>
+</div>
+
+
+<script src="/libs/tocbot/tocbot.min.js"></script>
+<script>
+    $(function () {
+        tocbot.init({
+            tocSelector: '#toc-content',
+            contentSelector: '#articleContent',
+            headingsOffset: -($(window).height() * 0.4 - 45),
+            // headingsOffset: -205,
+            headingSelector: 'h1, h2, h3'
+        });
+
+        // modify the toc link href to support Chinese.
+        let i = 0;
+        let tocHeading = 'toc-heading-';
+        $('#toc-content a').each(function () {
+            $(this).attr('href', '#' + tocHeading + (++i));
+        });
+
+        // modify the heading title id to support Chinese.
+        i = 0;
+        $('#articleContent').children('h1, h2, h3').each(function () {
+            $(this).attr('id', tocHeading + (++i));
+        });
+
+        // Set scroll toc fixed.
+        let tocHeight = parseInt($(window).height() * 0.4 - 64);
+        let $tocWidget = $('.toc-widget');
+        $(window).scroll(function () {
+            let scroll = $(window).scrollTop();
+            /* add post toc fixed. */
+            if (scroll > tocHeight) {
+                $tocWidget.addClass('toc-fixed');
+            } else {
+                $tocWidget.removeClass('toc-fixed');
+            }
+        });
+
+        
+        /* 修复文章卡片 div 的宽度. */
+        let fixPostCardWidth = function (srcId, targetId) {
+            let srcDiv = $('#' + srcId);
+            if (srcDiv.length === 0) {
+                return;
+            }
+
+            let w = srcDiv.width();
+            if (w >= 450) {
+                w = w + 21;
+            } else if (w >= 350 && w < 450) {
+                w = w + 18;
+            } else if (w >= 300 && w < 350) {
+                w = w + 16;
+            } else {
+                w = w + 14;
+            }
+            $('#' + targetId).width(w);
+        };
+
+        // 切换TOC目录展开收缩的相关操作.
+        const expandedClass = 'expanded';
+        let $tocAside = $('#toc-aside');
+        let $mainContent = $('#main-content');
+        $('#floating-toc-btn .btn-floating').click(function () {
+            if ($tocAside.hasClass(expandedClass)) {
+                $tocAside.removeClass(expandedClass).slideUp(500);
+                $mainContent.removeClass('l9');
+            } else {
+                $tocAside.addClass(expandedClass).slideDown(500);
+                $mainContent.addClass('l9');
+            }
+            fixPostCardWidth('artDetail', 'prenext-posts');
+        });
+        
+    });
+</script>
+    
+
+</main>
+
+
+<footer class="page-footer bg-color">
+    <div class="container row center-align">
+        <div class="col s12 m8 l8 copy-right">
+            本站由&copy;<a href="https://blinkfox.github.io/" target="_blank">Blinkfox</a>基于
+            <a href="https://hexo.io/" target="_blank">Hexo</a> 的
+            <a href="https://github.com/blinkfox/hexo-theme-matery" target="_blank">hexo-theme-matery</a>主题搭建.
+
+            
+                &nbsp;<i class="fa fa-area-chart"></i>&nbsp;站点总字数:&nbsp;
+                <span class="white-color">82.3k</span>
+            
+
+            <!-- <p id="timeDate">DangoSky的博客诞生已经</p><p id="times">载入时分秒...</p> -->
+            <!-- <p>DangoSky的博客已经诞生<strong><i><span id="day"></span><span id="hour"></span></span><span id="minutes"></span><span id="seconds"></span> </strong><i></p> -->
+                <p id="timeDate"></p>
+
+            <!-- 
+			 -->
+        </div>
+        <div class="col s12 m4 l4 social-link ">
+
+    <a href="mailto:1341514988@qq.com" class="tooltipped" target="_blank" data-tooltip="邮件联系我" data-position="top" data-delay="50">
+        <i class="fa fa-envelope-open"></i>
+    </a>
+
+
+
+    <a href="/atom.xml" class="tooltipped" target="_blank" data-tooltip="RSS 订阅" data-position="top" data-delay="50">
+        <i class="fa fa-rss"></i>
+    </a>
+
+
+
+   <a href="https://github.com/DangoSky" class="tooltipped" target="_blank" data-tooltip="访问我的GitHub" data-position="top" data-delay="50">
+    <i class="fa fa-github"></i>
+</a>
+
+
+
+    <a href="http://notes.dangosky.com/" class="tooltipped" target="_blank" data-tooltip="浏览我的笔记" data-position="top" data-delay="50">
+     <i class="fa fa-book"></i>
+ </a>
+ 
+</div>
+    </div>
+</footer>
+
+<div class="progress-bar"></div>
+
+<script type="text/javascript">
+    function computed(){
+        let sum = new Date()-new Date(2018,9,3,23,3,38)
+        sum = parseInt(sum / 1000);
+        let d = zero(parseInt(sum / 3600 / 24));
+        let h = zero(parseInt(sum / 3600 % 24));
+        let m = zero(parseInt(sum / 60 % 60));
+        let s = zero(parseInt(sum % 60));
+        document.getElementById("timeDate").innerHTML = "DangoSky的博客已经诞生<strong>" + d + "</strong>天<strong>" + h + "</strong>小时<strong>" + m + "</strong>分钟<strong>" + s + "</strong>秒了。"; 
+    }
+    function zero(i){
+        if(i < 10)  {
+            i = "0" + i;
+        }
+        return i;
+    }
+    setInterval("computed();",1000);
+</script>
+
+<!-- 搜索遮罩框 -->
+<div id="searchModal" class="modal">
+    <div class="modal-content">
+        <div class="search-header">
+            <span class="title"><i class="fa fa-search"></i>&nbsp;&nbsp;搜索</span>
+            <input type="search" id="searchInput" name="s" placeholder="请输入搜索的关键字"
+                   class="search-input">
+        </div>
+        <div id="searchResult"></div>
+    </div>
+</div>
+
+<script src="/js/search.js"></script>
+<script type="text/javascript">
+$(function () {
+    searchFunc("/" + "search.xml", 'searchInput', 'searchResult');
+});
+</script>
+<!-- 回到顶部按钮 -->
+<div id="backTop" class="top-scroll">
+    <a class="btn-floating btn-large waves-effect waves-light" href="#!">
+        <i class="fa fa-angle-up"></i>
+    </a>
+</div>
+
+
+<script src="/libs/materialize/materialize.min.js"></script>
+<script src="/libs/masonry/masonry.pkgd.min.js"></script>
+<script src="/libs/aos/aos.js"></script>
+<script src="/libs/scrollprogress/scrollProgress.min.js"></script>
+<script src="/libs/lightGallery/js/lightgallery-all.min.js"></script>
+<script src="/js/matery.js"></script>
+
+<!-- Global site tag (gtag.js) - Google Analytics -->
+
+
+
+    <script src="/libs/others/clicklove.js"></script>
+
+
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"debug":false,"model":{"jsonPath":"live2d-widget-model-shizuku"},"display":{"position":"right","width":200,"height":400},"mobile":{"show":false},"log":false});</script></body>
+</html>

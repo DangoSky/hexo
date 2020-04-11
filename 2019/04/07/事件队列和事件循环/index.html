@@ -341,7 +341,7 @@
                     
                     <div class="info-break-policy">
                         <i class="fa fa-file-word-o fa-fw"></i>文章字数:&nbsp;&nbsp;
-                        5.2k
+                        5.3k
                     </div>
                     
 
@@ -394,6 +394,7 @@ console<span class="token punctuation">.</span><span class="token function">log<
 </code></pre>
 <p>&emsp;&emsp;我们可以分析一下上面代码的执行过程，JavaScript引擎开始解析代码，先生成全局执行上下文并把它压入到执行栈中（当然其中还有生成 VO、确定 this 指向和建立作用域链的环节，这不是本文重点就略过不提了。遇到<code>console.log(&quot;start&quot;, new Date())</code>发现这是一个同步事件后马上执行并输出 start 和当前的时间点。接着给 time 变量赋值后（注意是赋值，而不是声明，因为在创建全局执行上下文的时候就已经变量提前声明了）遇到了<code>setTimeout</code>事件，因为这是一个异步事件所以 JavaScript 引擎会把它挂起交由定时触发器线程进行计时操作。接着进入到 while 循环，我们手动地给 while 循环的持续时间设定为 2000ms，而在这 2000ms 内定时触发器线程已经完成了对<code>setTimeout</code>事件的计时并把它的回调函数放入到事件队列中了。但这时候因为执行栈中还有 while 循环在执行，所以<code>setTimeout</code>的回调函数还是留在事件队列中没能进入执行栈。2000ms 过后 JavaScript引擎继续向下解析，输出 end 和当前的时间点，之后执行栈中所有的同步事件便都执行完毕了，开始读取事件队列发现有<code>setTimeout</code>便把它取出放到执行栈中执行，所以最后输出“执行定时器的事件”和当前的时间点。</p>
 <p>&emsp;&emsp;通过上面的分析以及输出的三个时间点，我们可以发现<code>setTimeout</code>指定的执行延迟时间确实是不确切的，这依赖于执行栈中所有同步事件执行完毕所需的时间，执行<code>setTimeout</code>回调函数的延迟时间只会大于指定的延迟时间而不会小于延迟时间。</p>
+<p>&emsp;&emsp;<code>setTimeout</code> 设置的等待时间还有一个最大值限制，浏览器包括 IE、Chrome、Safari、Firefox 以 32 个字节来存储等待时间。这就会导致如果设置的等待时间大于 2^31 - 1 (大约 24.8 天)时就会溢出，导致定时器将会被立即执行。（参考 <a href="https://developer.mozilla.org/zh-CN/docs/Web/API/Window/setTimeout" target="_blank" rel="noopener">MDN</a>）</p>
 <p>&emsp;&emsp;在我写这篇博客的时候，我还有一个疑惑。我看到许多的博客说的都是异步事件的回调函数进入事件队列后，是等执行栈为空的时候才会取出事件队列中的事件放入到执行栈中去执行，不知到各位看客对此有没有什么疑问。<strong>如果事件队列中的事件是否进入执行栈的判断标准是执行栈是否为空的话，那就涉及到执行栈是否会为空了？</strong>想必大家都知道执行上下文吧，其中全局执行上下文在程序一开始执行就被创建，并且会被压入到执行栈中并一直存在执行栈底直到页面被关闭。是的，全局执行上下文一直存在执行栈底，这点应该没有什么争议。既然如此，是否意味着执行栈一直非空呢？这样的话事件队列中的事件还怎么通过判断执行栈是否为空来进入执行栈，不就一直进入不了执行栈了吗，这两者就冲突了啊！如果按执行栈是否为空为标准来判断事件队列中的事件是否进入执行栈，则势必要理清执行栈到底会不会为空的问题，如果不会为空的话怎么解释事件队列中的事件只有等到执行栈为空时才会进入执行栈中，如果会为空的话怎么解释全局执行上下文会一直存在执行栈栈底？所以我觉得以执行栈是否为空为标准来判断事件队列中的事件是否进入执行栈并不恰当，而是<strong>以执行栈中的同步事件是否都执行完毕为标准来判断</strong>（只剩下全局执行上下文）会更容易理解，这样就没有上面说的和全局执行上下文一直存在执行栈底的冲突了。</p>
 <h1 id="事件循环"><a href="#事件循环" class="headerlink" title="事件循环"></a>事件循环</h1><p>&emsp;&emsp;事件循环是建立在事件队列的基础上的，当执行栈中所有的同步事件都执行完毕后就会去读取事件队列中的事件，如果事件队列中有事件存在则取出放到执行栈中执行，否则的话就继续读取事件队列，这样不断地读取、执行、读取、执行的周而复始就成了事件循环。</p>
 <p>&emsp;&emsp;引用一张经典的图辅助吧：<br><img src="http://www.ruanyifeng.com/blogimg/asset/2014/bg2014100802.png" alt></p>
@@ -760,7 +761,7 @@ process<span class="token punctuation">.</span><span class="token function">next
 
             
                 &nbsp;<i class="fa fa-area-chart"></i>&nbsp;站点总字数:&nbsp;
-                <span class="white-color">76.8k</span>
+                <span class="white-color">82.3k</span>
             
 
             <!-- <p id="timeDate">DangoSky的博客诞生已经</p><p id="times">载入时分秒...</p> -->
