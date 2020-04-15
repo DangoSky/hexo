@@ -193,12 +193,13 @@ less<span class="token punctuation">.</span><span class="token function">render<
 <p>对于 Less 文件，使用 <code>postcss().process</code> 解析成 AST 再提取出所有的 CSS 属性键值对，再用正则匹配其中用到的颜色名。</p>
 ]]></content>
       <categories>
-        <category>JavaScript</category>
+        <category>实习记录</category>
       </categories>
       <tags>
         <tag>Node</tag>
         <tag>正则表达式</tag>
         <tag>AST</tag>
+        <tag>实习记录</tag>
       </tags>
   </entry>
   <entry>
@@ -270,6 +271,7 @@ less<span class="token punctuation">.</span><span class="token function">render<
       <tags>
         <tag>JavaScript</tag>
         <tag>组件实现</tag>
+        <tag>实习记录</tag>
       </tags>
   </entry>
   <entry>
@@ -828,6 +830,7 @@ window<span class="token punctuation">.</span>onresize <span class="token operat
       </categories>
       <tags>
         <tag>Git</tag>
+        <tag>实习记录</tag>
       </tags>
   </entry>
   <entry>
@@ -971,6 +974,7 @@ window<span class="token punctuation">.</span>onresize <span class="token operat
         <category>Vue</category>
       </categories>
       <tags>
+        <tag>JavaScript</tag>
         <tag>Vue</tag>
       </tags>
   </entry>
