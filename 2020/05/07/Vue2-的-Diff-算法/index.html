@@ -1,0 +1,1125 @@
+<!DOCTYPE HTML>
+<html lang="zh-CN">
+
+
+<head><meta name="generator" content="Hexo 3.9.0">
+    <meta charset="utf-8">
+    <meta name="keywords" content="Vue2 的 Diff 算法, DangoSky">
+    <meta name="description" content=" 
+文章中涉及到的 Vue 代码特指版本 2.6.11。
+
+虚拟 DOM什么是虚拟 DOM要理解 Diff 算法，就得先理解好虚拟 DOM。虚拟 DOM 说白了其实就只是一个 JavaScript 对象，它抽象地描述了一个真实的 DOM 结">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="renderer" content="webkit|ie-stand|ie-comp">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="format-detection" content="telephone=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>Vue2 的 Diff 算法 | DangoSky</title>
+    <link rel="icon" type="image/jpeg" href="/favicon.jpg">
+
+    <link rel="stylesheet" type="text/css" href="/libs/awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="/libs/materialize/materialize.min.css">
+    <link rel="stylesheet" type="text/css" href="/libs/aos/aos.css">
+    <link rel="stylesheet" type="text/css" href="/libs/animate/animate.min.css">
+    <link rel="stylesheet" type="text/css" href="/libs/lightGallery/css/lightgallery.min.css">
+    <link rel="stylesheet" type="text/css" href="/css/matery.css">
+    <link rel="stylesheet" type="text/css" href="/css/my.css">
+    <style type="text/css">
+        
+    </style>
+
+    <script src="/libs/jquery/jquery-2.2.0.min.js"></script>
+<link rel="stylesheet" href="/css/prism-tomorrow.css" type="text/css"></head>
+
+
+<body>
+
+<header class="navbar-fixed">
+    <nav id="headNav" class="bg-color nav-transparent">
+        <div id="navContainer" class="nav-wrapper container">
+            <div class="brand-logo">
+                <a href="/" class="waves-effect waves-light">
+                    
+                    <span class="logo-span">DangoSky</span>
+                </a>
+            </div>
+            
+
+<a href="#" data-target="mobile-nav" class="sidenav-trigger button-collapse"><i class="fa fa-navicon"></i></a>
+<ul class="right">
+    
+    <li class="hide-on-med-and-down">
+        <a href="/" class="waves-effect waves-light">
+            
+            <i class="fa fa-home"></i>
+            
+            <span>首页</span>
+        </a>
+    </li>
+    
+    <li class="hide-on-med-and-down">
+        <a href="/tags" class="waves-effect waves-light">
+            
+            <i class="fa fa-tags"></i>
+            
+            <span>标签</span>
+        </a>
+    </li>
+    
+    <li class="hide-on-med-and-down">
+        <a href="/categories" class="waves-effect waves-light">
+            
+            <i class="fa fa-bookmark"></i>
+            
+            <span>分类</span>
+        </a>
+    </li>
+    
+    <li class="hide-on-med-and-down">
+        <a href="/archives" class="waves-effect waves-light">
+            
+            <i class="fa fa-archive"></i>
+            
+            <span>归档</span>
+        </a>
+    </li>
+    
+    <li class="hide-on-med-and-down">
+        <a href="/about" class="waves-effect waves-light">
+            
+            <i class="fa fa-user-circle-o"></i>
+            
+            <span>关于</span>
+        </a>
+    </li>
+    
+    <li class="hide-on-med-and-down">
+        <a href="/friends" class="waves-effect waves-light">
+            
+            <i class="fa fa-address-book"></i>
+            
+            <span>友情链接</span>
+        </a>
+    </li>
+    
+    <li>
+        <a href="#searchModal" class="modal-trigger waves-effect waves-light">
+            <i id="searchIcon" class="fa fa-search" title="搜索"></i>
+        </a>
+    </li>
+</ul>
+
+<div id="mobile-nav" class="side-nav sidenav">
+
+    <div class="mobile-head bg-color">
+        
+        <div class="logo-name">DangoSky</div>
+        <div class="logo-desc">
+            
+            但愿日子清净，抬头遇见的都是柔情。
+            
+        </div>
+    </div>
+
+    
+
+    <ul class="menu-list mobile-menu-list">
+        
+        <li>
+            <a href="/" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-home"></i>
+                
+                首页
+            </a>
+        </li>
+        
+        <li>
+            <a href="/tags" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-tags"></i>
+                
+                标签
+            </a>
+        </li>
+        
+        <li>
+            <a href="/categories" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-bookmark"></i>
+                
+                分类
+            </a>
+        </li>
+        
+        <li>
+            <a href="/archives" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-archive"></i>
+                
+                归档
+            </a>
+        </li>
+        
+        <li>
+            <a href="/about" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-user-circle-o"></i>
+                
+                关于
+            </a>
+        </li>
+        
+        <li>
+            <a href="/friends" class="waves-effect waves-light">
+                
+                <i class="fa fa-fw fa-address-book"></i>
+                
+                友情链接
+            </a>
+        </li>
+        
+        
+    </ul>
+</div>
+
+        </div>
+
+        
+    </nav>
+
+</header>
+
+
+
+
+
+<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/17.jpg')">
+    <div class="container">
+        <div class="row">
+            <div class="col s12 m12 l12">
+                <div class="brand">
+                    <div class="description center-align post-title">
+                        Vue2 的 Diff 算法
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<main class="post-container content">
+
+    
+    <link rel="stylesheet" href="/libs/tocbot/tocbot.css">
+<style>
+    #articleContent h1::before,
+    #articleContent h2::before,
+    #articleContent h3::before,
+    #articleContent h4::before,
+    #articleContent h5::before,
+    #articleContent h6::before {
+        display: block;
+        content: " ";
+        height: 100px;
+        margin-top: -100px;
+        visibility: hidden;
+    }
+
+    #articleContent :focus {
+        outline: none;
+    }
+
+    .toc-fixed {
+        position: fixed;
+        top: 64px;
+    }
+
+    .toc-widget {
+        padding-left: 20px;
+    }
+
+    .toc-widget .toc-title {
+        margin: 35px 0 15px 0;
+        padding-left: 17px;
+        font-size: 1.5rem;
+        font-weight: bold;
+        line-height: 1.5rem;
+    }
+
+    .toc-widget ol {
+        padding: 0;
+        list-style: none;
+    }
+
+    #toc-content ol {
+        padding-left: 10px;
+    }
+
+    #toc-content ol li {
+        padding-left: 10px;
+    }
+
+    #toc-content .toc-link:hover {
+        color: #42b983;
+        font-weight: 700;
+        text-decoration: underline;
+    }
+
+    #toc-content .toc-link::before {
+        background-color: transparent;
+        max-height: 25px;
+    }
+
+    #toc-content .is-active-link {
+        color: #42b983;
+    }
+
+    #toc-content .is-active-link::before {
+        background-color: #42b983;
+    }
+
+    #floating-toc-btn {
+        position: fixed;
+        right: 20px;
+        bottom: 76px;
+        padding-top: 15px;
+        margin-bottom: 0;
+        z-index: 998;
+    }
+
+    #floating-toc-btn .btn-floating {
+        width: 48px;
+        height: 48px;
+    }
+
+    #floating-toc-btn .btn-floating i {
+        line-height: 48px;
+        font-size: 1.4rem;
+    }
+</style>
+<div class="row">
+    <div id="main-content" class="col s12 m12 l9">
+        <!-- 文章内容详情 -->
+<div id="artDetail">
+    <div class="card">
+        <div class="card-content article-info">
+            <div class="row tag-cate">
+                <div class="col s7">
+                    
+                    <div class="article-tag">
+                        
+                            <a href="/tags/Vue/" target="_blank">
+                                <span class="chip bg-color">Vue</span>
+                            </a>
+                        
+                            <a href="/tags/源码解析/" target="_blank">
+                                <span class="chip bg-color">源码解析</span>
+                            </a>
+                        
+                    </div>
+                    
+                </div>
+                <div class="col s5 right-align">
+                    
+                    <div class="post-cate">
+                        <i class="fa fa-bookmark fa-fw icon-category"></i>
+                        
+                            <a href="/categories/源码解析/" class="post-category" target="_blank">
+                                源码解析
+                            </a>
+                        
+                    </div>
+                    
+                </div>
+            </div>
+
+            <div class="post-info">
+                <div class="post-date info-break-policy">
+                    <i class="fa fa-calendar-minus-o fa-fw"></i>发布日期:&nbsp;&nbsp;
+                    2020-05-07
+                </div>
+
+                
+                    
+                    <div class="info-break-policy">
+                        <i class="fa fa-file-word-o fa-fw"></i>文章字数:&nbsp;&nbsp;
+                        7.1k
+                    </div>
+                    
+
+                    
+                    <div class="info-break-policy">
+                        <i class="fa fa-clock-o fa-fw"></i>阅读时长:&nbsp;&nbsp;
+                        27 分
+                    </div>
+                    
+                
+				
+				
+            </div>
+        </div>
+        <hr class="clearfix">
+        <div class="card-content article-card-content">
+            <div id="articleContent">
+                <script src="/assets/js/APlayer.min.js"> </script><blockquote>
+<p>文章中涉及到的 Vue 代码特指版本 2.6.11。</p>
+</blockquote>
+<h1 id="虚拟-DOM"><a href="#虚拟-DOM" class="headerlink" title="虚拟 DOM"></a>虚拟 DOM</h1><h2 id="什么是虚拟-DOM"><a href="#什么是虚拟-DOM" class="headerlink" title="什么是虚拟 DOM"></a>什么是虚拟 DOM</h2><p>要理解 Diff 算法，就得先理解好虚拟 DOM。虚拟 DOM 说白了其实就只是一个 JavaScript 对象，它抽象地描述了一个真实的 DOM 结构。我们可以从 Chrome 的 DevTools 中看到，一个 DOM 结构无非是由很多个 HTML 标签根据父子、兄弟等关系组织起来的，而每个 HTML 标签又包含了各种属性，比如 <code>style</code>、<code>class</code>、<code>src</code> 等。所以只要知道了真实 DOM 的结构，我们就可以把它抽象成一个对象的形式来描述，这个对象就是虚拟 DOM。我们可以通过递归的方式将一个 DOM 结构解析成一个虚拟 DOM，也可以通过 <code>document.createElement</code> 把一个虚拟 DOM 还原成一个真实 DOM。</p>
+<p>Vue 中一个虚拟 DOM 节点（VNode） 包含了很多项数据，具体可以看源码 <a href="https://github.com/vuejs/vue/blob/dev/src/core/vdom/vnode.js" target="_blank" rel="noopener">vue/src/core/vdom/vnode.js</a>。但为了方便，在这里一个 VNode 包含最基本的三个属性就可以了，分别是节点类型 tag、属性 data、子元素 children。</p>
+<pre class=" language-html"><code class="language-html"><span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>div</span> <span class="token attr-name">id</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>container<span class="token punctuation">"</span></span> <span class="token attr-name">class</span><span class="token attr-value"><span class="token punctuation">=</span><span class="token punctuation">"</span>p-container<span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>h1</span><span class="token punctuation">></span></span>Real DOM<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>h1</span><span class="token punctuation">></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>ul</span><span class="token style-attr language-css"><span class="token attr-name"> <span class="token attr-name">style</span></span><span class="token punctuation">="</span><span class="token attr-value"><span class="token property">color</span><span class="token punctuation">:</span> red</span><span class="token punctuation">"</span></span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>li</span><span class="token punctuation">></span></span>Item 1<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>li</span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>li</span><span class="token punctuation">></span></span>Item 2<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>li</span><span class="token punctuation">></span></span>
+    <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;</span>li</span><span class="token punctuation">></span></span>Item 3<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>li</span><span class="token punctuation">></span></span>
+  <span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>ul</span><span class="token punctuation">></span></span>
+<span class="token tag"><span class="token tag"><span class="token punctuation">&lt;/</span>div</span><span class="token punctuation">></span></span>
+</code></pre>
+<p>举个栗子，上面这个 DOM 结构，我们可以把它抽象成如下的一个虚拟 DOM 结构。不难发现，真实 DOM 和 虚拟 DOM 是可以相互转化的。</p>
+<pre class=" language-js"><code class="language-js"><span class="token keyword">const</span> VirtualDOM <span class="token operator">=</span> <span class="token punctuation">{</span>
+  tag<span class="token punctuation">:</span> <span class="token string">'div'</span><span class="token punctuation">,</span>
+  data<span class="token punctuation">:</span> <span class="token punctuation">{</span>
+    id<span class="token punctuation">:</span> <span class="token string">'container'</span><span class="token punctuation">,</span>
+    <span class="token keyword">class</span><span class="token punctuation">:</span> <span class="token string">'p-container'</span>
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  children<span class="token punctuation">:</span> <span class="token punctuation">[</span>
+    <span class="token punctuation">{</span>
+      tag<span class="token punctuation">:</span> <span class="token string">'h1'</span><span class="token punctuation">,</span>
+      data<span class="token punctuation">:</span> <span class="token punctuation">{</span><span class="token punctuation">}</span><span class="token punctuation">,</span>
+      children<span class="token punctuation">:</span> <span class="token punctuation">[</span><span class="token string">'Real DOM'</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token punctuation">{</span>
+      tag<span class="token punctuation">:</span> <span class="token string">'ul'</span><span class="token punctuation">,</span>
+      data<span class="token punctuation">:</span> <span class="token punctuation">{</span>
+        style<span class="token punctuation">:</span> <span class="token string">"color: red"</span>
+      <span class="token punctuation">}</span><span class="token punctuation">,</span>
+      children<span class="token punctuation">:</span> <span class="token punctuation">[</span>
+        <span class="token punctuation">{</span>
+          tag<span class="token punctuation">:</span> <span class="token string">'li'</span><span class="token punctuation">,</span>
+          data<span class="token punctuation">:</span> <span class="token punctuation">{</span><span class="token punctuation">}</span><span class="token punctuation">,</span>
+          children<span class="token punctuation">:</span> <span class="token punctuation">[</span><span class="token string">'Item1'</span><span class="token punctuation">]</span>
+        <span class="token punctuation">}</span><span class="token punctuation">,</span>
+        <span class="token punctuation">{</span>
+          tag<span class="token punctuation">:</span> <span class="token string">'li'</span><span class="token punctuation">,</span>
+          data<span class="token punctuation">:</span> <span class="token punctuation">{</span><span class="token punctuation">}</span><span class="token punctuation">,</span>
+          children<span class="token punctuation">:</span> <span class="token punctuation">[</span><span class="token string">'Item2'</span><span class="token punctuation">]</span>
+        <span class="token punctuation">}</span><span class="token punctuation">,</span>
+        <span class="token punctuation">{</span>
+          tag<span class="token punctuation">:</span> <span class="token string">'li'</span><span class="token punctuation">,</span>
+          data<span class="token punctuation">:</span> <span class="token punctuation">{</span><span class="token punctuation">}</span><span class="token punctuation">,</span>
+          children<span class="token punctuation">:</span> <span class="token punctuation">[</span><span class="token string">'Item3'</span><span class="token punctuation">]</span>
+        <span class="token punctuation">}</span>
+      <span class="token punctuation">]</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">]</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<h2 id="为什么要有虚拟-DOM"><a href="#为什么要有虚拟-DOM" class="headerlink" title="为什么要有虚拟 DOM"></a>为什么要有虚拟 DOM</h2><p>在以前还没有框架的时候，前端开发几乎都是靠原生 JavaScript 或者是 JQuery 一把梭进行 DOM 操作的。那么为什么 React 和 Vue 都采用了虚拟 DOM 呢？我理解的虚拟 DOM 的优势是：</p>
+<ol>
+<li><p>跨平台渲染。借助虚拟 DOM 后 FrontEnd 可以进行移动端、小程序等开发。因为虚拟 DOM 本身只是一个 JavaScript 对象，所以可以先由 FE 们写 UI 并抽象成一个虚拟 DOM，再由安卓、IOS、小程序等原生实现根据虚拟 DOM 去渲染页面（React Native、Weex）。</p>
+</li>
+<li><p>函数式的 UI 编程。将 UI 抽象成对象的形式，相当于可以以编写 JavaScript 的形式来写 UI。</p>
+</li>
+<li><p>网上 Blog 常常会说到虚拟 DOM 会有更好的性能，因为虚拟 DOM 只会在 Diff 后修改一次真实 DOM，所以不会有大量的重排重绘消耗。并且只更新有变动的部分节点，而非更新整个视图。但我对这句话是存疑的，通过下文的 Diff 算法源码可以发现，Vue2 它的 Diff 是每次比对到匹配到的节点后就去修改真实 DOM 的，并不是等所有 Diff 完后再修改一次真实 DOM 而已。</p>
+</li>
+</ol>
+<h2 id="虚拟-DOM-一定会更快吗"><a href="#虚拟-DOM-一定会更快吗" class="headerlink" title="虚拟 DOM 一定会更快吗"></a>虚拟 DOM 一定会更快吗</h2><p>我的理解是不一定。如果一个页面的整个 DOM 结构都改变了的话，使用虚拟 DOM 不仅一样要绘制渲染整个视图，而且还要进行 Diff 算法，会比直接操作真实 DOM 更慢，所以虚拟 DOM 带来的性能优势并不是绝对的。</p>
+<p>而且不管框架如何封装、掩盖底层操作，终究是需要去调用到 DOM 相关的 api 更新页面的。并且它可能还包含了其他一些 Diff、polyfill、封装逻辑等，这样是不会比我们直接进行 DOM 操作更新 UI 快的。只是，难道我们每修改数据，就要手动操作 DOM 吗？虽然这样会更快，但带来的是很差的代码可读性和可维护性，这样得不偿失。所以正如尤雨溪说的，这是一个性能 VS 可维护性的取舍问题。</p>
+<p>推荐阅读：</p>
+<p><a href="https://www.zhihu.com/question/31809713" target="_blank" rel="noopener">网上都说操作真实 DOM 慢，但测试结果却比 React 更快，为什么？</a></p>
+<p><a href="https://segmentfault.com/q/1010000010520929" target="_blank" rel="noopener">Vue为什么要用VDOM？</a></p>
+<h1 id="Diff-算法"><a href="#Diff-算法" class="headerlink" title="Diff 算法"></a>Diff 算法</h1><h2 id="什么是-Diff-算法"><a href="#什么是-Diff-算法" class="headerlink" title="什么是 Diff 算法"></a>什么是 Diff 算法</h2><p>首先我们先了解一下使用了虚拟 DOM 后的渲染流程：</p>
+<ol>
+<li><p>将真实 DOM 抽象成虚拟 DOM。</p>
+</li>
+<li><p>数据改变时，将新的真实 DOM 再抽象成另一个新的虚拟 DOM。</p>
+</li>
+<li><p>采用深度优先遍历新旧两个虚拟 DOM，如果两个虚拟 DOM 节点值得比较，就递归比较它们的子节点，否则直接创建新的 DOM 节点。</p>
+</li>
+</ol>
+<blockquote>
+<p>template/JSX -&gt; Render Function -&gt; Vnode（做 Diff）-&gt; DOM</p>
+</blockquote>
+<p>可以看到，所谓的 Diff 算法，其实就是上述第三个步骤中比对两个虚拟 DOM 所使用的算法。Diff 算法的优劣直接决定了页面性能的好坏，有的 Diff 算法时间复杂度是 <code>O(n^3)</code>，有的 Diff 算法时间复杂度是 <code>O(n)</code>。关于时间复杂度的问题，下文再分析。</p>
+<h2 id="Vue2-中-Diff-原理"><a href="#Vue2-中-Diff-原理" class="headerlink" title="Vue2 中 Diff 原理"></a>Vue2 中 Diff 原理</h2><blockquote>
+<p>相关源码参考 <a href="https://github.com/vuejs/vue/blob/dev/src/core/vdom/patch.js" target="_blank" rel="noopener">vue/src/core/vdom/patch.js</a></p>
+</blockquote>
+<p>我们先通过图文来看 Vue 中的 Diff 流程，等理解了之后再来看源码，不然直接看源码的话容易懵 Orz。</p>
+<p>当对新旧两个虚拟 DOM 做 Diff 时，Vue 采用的思想是<strong>同级比较</strong>、<strong>深度递归</strong>、<strong>双端遍历</strong>。</p>
+<h3 id="同级比较"><a href="#同级比较" class="headerlink" title="同级比较"></a>同级比较</h3><p>同级比较指的是只比对两个相同层级的 VNode，如果两者不一样了，就不再去 Diff 它们的子节点，更不会去跨层级比较，而是直接更新它。这是因为在我们平时的操作，很少出现将一个 DOM 节点进行跨层级移动，比如将原来的父节点移动到它子节点的位置上。所以 Diff 算法就没有为这个极少数的情况专门去跨层级 Diff，毕竟为此得不偿失，这也是 Diff 算法时间复杂度能从 <code>O(n^3)</code> 优化到 <code>O(n)</code> 的原因之一。</p>
+<p><img src="/2020/05/07/Vue2-的-Diff-算法/1.png" alt></p>
+<h3 id="深度递归"><a href="#深度递归" class="headerlink" title="深度递归"></a>深度递归</h3><p>深度递归指的是比较两个虚拟 DOM 时采用深度优先的先序遍历策略，先比较完一个子节点后，就去比较这个子节点的子孙节点，都递归完后再来遍历它的兄弟节点。如下图的一个 DOM 结构，节点的编号就是它们的遍历顺序。</p>
+<p><img src="/2020/05/07/Vue2-的-Diff-算法/2.png" alt></p>
+<p>那么为什么要使用深度优先遍历，广度优先遍历不行么？我的理解是，深度优先遍历使用到的是栈结构，进行深度递归的时候，栈中保存的是当前节点的父元素和祖先元素，栈中存储的最大节点个数就是 DOM 树最大的层级数。而广度优先遍历使用的是队列结构，进行广度递归的时候，队列中保存的是下一层的节点，队列中存储的最大节点个数就是 DOM 树最大的层级节点数。而在通常情况下，一个 DOM 树的层级数是会少于它的层级节点数的（比如一个列表信息组件），所以使用深度优先遍历占用的空间和消耗会更小些。</p>
+<h3 id="双端比较"><a href="#双端比较" class="headerlink" title="双端比较"></a>双端比较</h3><p>双端比较指的是在 Diff 新旧子节点时，使用了四个指针分为四种比较方法（当然还有最后一种通过 key 比较的，这个待会再说）。这四个指针分别是：</p>
+<ul>
+<li><code>oldStartIdx</code> 表示旧 VNode 从左边开始 Diff 的节点，初始值为第一个子节点</li>
+<li><code>oldEndIdx</code> 表示旧 VNode 从右边开始 Diff 的节点，初始值为最后一个子节点</li>
+<li><code>newStartIdx</code> 表示新 VNode 从左边开始 Diff 的节点，初始值为第一个子节点</li>
+<li><code>newEndIdx</code> 表示新 VNode 从右边开始 Diff 的节点，初始值为最后一个子节点</li>
+</ul>
+<p>对应的五种比较方法是：</p>
+<ol>
+<li><p><code>oldStartIdx</code> 和 <code>newStartIdx</code> 首首比较。如果两者值得比较的话（值得比较的定义见下文源码解释部分，这里先理清 Diff 的比较过程），就递归比较它们的子节点，然后将两个指针右移。</p>
+</li>
+<li><p><code>oldEndIdx</code> 和 <code>newEndIdx</code> 尾尾比较。如果两者值得比较的话，就递归比较它们的子节点，然后将两个指针左移。</p>
+</li>
+<li><p><code>oldStartIdx</code> 和 <code>newEndIdx</code> 首尾比较。如果两者值得比较的话，就递归比较它们的子节点，然后 <code>oldStartIdx</code> 指针右移，<code>newEndIdx</code> 指针左移。</p>
+</li>
+<li><p><code>oldEndIdx</code> 和 <code>newStartIdx</code> 尾首比较。如果两者值得比较的话，就递归比较它们的子节点，然后 <code>oldEndIdx</code> 指针左移，<code>newStartIdx</code> 指针右移。</p>
+</li>
+<li><p>如果这四种方法都没能匹配到对应的 VNode，就会通过 key 来比较。先找到 <code>newStartIdx</code> 的 key 在旧虚拟 DOM 里对应的位置，找得到的话则判断两者是否值得比较，值得则递归比较它们的子节点，不值得或是找不到的话就直接创建新节点，并将 <code>newStartIdx</code> 右移。</p>
+</li>
+</ol>
+<p>对于新旧子节点，只要旧子节点或是新子节点遍历完了，就会退出上述的比较过程。而剩下的子节点，已经没有能和它们比对的 VNode 了，要么是新增要么是删除。</p>
+<h2 id="图文模拟-Diff-流程"><a href="#图文模拟-Diff-流程" class="headerlink" title="图文模拟 Diff 流程"></a>图文模拟 Diff 流程</h2><p>现在我们用个栗子来模拟下这个过程 。如下图所示的新旧虚拟 DOM，假设旧 VNode 有 a、b、d、e 四个子节点，页面经过某次更新后，新 VNode 的子节点是 a、c、d、b。要说明的是，图中的节点编号为它们各自的 key，并且排列的顺序是按照它们在真实 DOM 中的顺序来的。</p>
+<p><img src="/2020/05/07/Vue2-的-Diff-算法/3.png" alt></p>
+<p>DOM 节点的变化无外乎是改变文本、改变节点属性、节点增删移动这几种情况。我们可以先通过上图来推测这次页面更新对该节点的操作：对 a 和 d 节点不做任何改动或是修改了文本或属性，移动了 b、删除了 e、新增了 c。详细比较过程如下：</p>
+<ol>
+<li>首首比较 a 和 a，发现两者值得比较后递归比较子节点，并移动两个指针后状态如下。</li>
+</ol>
+<p><img src="/2020/05/07/Vue2-的-Diff-算法/4.png" alt></p>
+<ol start="2">
+<li>首首比较 b 和 c 两者不匹配，接着尾尾比较 e 和 b 还是不匹配，再首尾比较 b 和 b 匹配上了，于是递归它们的子节点并移动两个指针后。由于新旧 VNode 上节点的位置发生了变化，所以需要在真实 DOM 上移动节点 b，即把它插入到 <code>oldEndIdx</code> 的位置上。现在的状态图如下（因为是移动真实 DOM 节点，所以虚拟 DOM 上节点的顺序还是不会改变）。</li>
+</ol>
+<p><img src="/2020/05/07/Vue2-的-Diff-算法/5.png" alt></p>
+<ol start="3">
+<li>首首比较 d 和 c 两者不匹配，再尾尾比较 e 和 d 还是不匹配，再首尾比较 d 和 d 匹配上了，还是照常递归子节点并移动指针位置。现在的状态图如下。</li>
+</ol>
+<p><img src="/2020/05/07/Vue2-的-Diff-算法/6.png" alt></p>
+<ol start="4">
+<li>首首比较 e 和 c、尾尾比较 e 和 c、首尾比较 e 和 c、尾首比较 e 和 c，两者都不匹配，于是进入到查找 key 的环节。这里查找 key 有两种方法，一是以旧子节点的 key 为键，它的索引下标为值建立一个映射对象，在该映射对象里直接查找是否存在 <code>newStartIdx</code> 也就是 c 节点的 key。找不到的话就再用第二种方法，即遍历旧子节点列表，去一个个判断 key 是和 c 节点的 key 相等。如果通过这两种方法能找到相等的 key 节点的话，则判断两者是否值得比较，是的话就递归比较两者的子节点并在真实 DOM 中移动节点。而在这个栗子中上述两种方法都没能在旧子节点列表里找到 key 为 c 的节点，于是创建节点 c 并插入到 <code>newStartIdx</code> 的位置上。因为在旧 VNode 中没有找到匹配的节点，所以旧 VNode 的指针不需要移动，只需要右移新 VNode 的指针。指针移动后现在的状态图如下。</li>
+</ol>
+<p><img src="/2020/05/07/Vue2-的-Diff-算法/7.png" alt></p>
+<ol start="5">
+<li>可以看到，在新 VNode 中 <code>newStartIdx</code> 已经大于 <code>newEndIdx</code>，也就是已经遍历完新 VNode 了。只要新 VNode 或是旧 VNode 遍历完了，就不能再比对新旧 VNode 了，而是要进行删除或增加操作。<ul>
+<li>如果是旧 VNode 先遍历完，也就意味着新 VNode 中还有几个节点没有在旧 VNode 中匹配到，说明这几个节点是新增加的。这时候需要将 <code>newStartIdx</code> 至 <code>newEndIdx</code> 之间的节点都创建出新节点，并插入到相应的位置上。</li>
+<li>如果是新 VNode 先遍历完，也就意味着旧 VNode 中还有几个节点没有在新 VNode 中匹配到，说明这几个节点是被删除了的，这时候需要在真实 DOM 中移除掉 <code>oldStartIdx</code> 至 <code>oldEndIdx</code> 之间的节点。比如本栗子，就需要移除掉节点 e。</li>
+</ul>
+</li>
+</ol>
+<p>OK，Diff 的流程到这里就结束了。读者可以再理一遍这个双端比较的过程，看完之后看看能不能发现什么疑惑点。我看的时候有以下几个疑惑点：</p>
+<h5 id="疑惑一：双端比较中为什么要尾尾比较？"><a href="#疑惑一：双端比较中为什么要尾尾比较？" class="headerlink" title="疑惑一：双端比较中为什么要尾尾比较？"></a>疑惑一：双端比较中为什么要尾尾比较？</h5><p>我的理解是，<strong>尾尾比较是为了加速比对时的命中率，提高 Diff 效率</strong>。比如现在有旧子节点列表 a b c，新子节点列表 b a c（偷个懒，这里就不画图啦）。如果没有尾尾比较的话，那它的第一次 Diff 比较顺序是：a 和 b、a 和 c、c 和 b、通过 key 比较。可以看到，这第一次 Diff 得通过 key 才能找到两个匹配的 VNode。而有尾尾比较的话，第一次 Diff 的比较顺序就变成了：a 和 b、c 和 c，至此就可以找到匹配的节点了，包括之后的两次 Diff 都不需要通过 key 比较。所以通过尾尾比较是可以提高 Diff 命中率的。</p>
+<h5 id="疑惑二：双端比较中为什么要首尾比较和尾首比较？"><a href="#疑惑二：双端比较中为什么要首尾比较和尾首比较？" class="headerlink" title="疑惑二：双端比较中为什么要首尾比较和尾首比较？"></a>疑惑二：双端比较中为什么要首尾比较和尾首比较？</h5><p>我的理解是，<strong>首尾比较和尾首比较同样是为了提高 Diff 效率</strong>。比如现在有旧子节点列表 a b c，新子节点列表 b c a，在这里的更新操作只是把 a 节点移动到了尾部，其他的 b 和 c 节点都没有变动。如果没有首尾比较的话，它的 Diff 比较顺序是：a 和 b、c 和 a、c 和 b、通过 key 比较。还是一样得通过 key 比较才能匹配到，而且之后还需要两次 Diff 并且依旧是通过 key 才能完成本次更新的 Diff 过程。如果有首尾比较的话，它的比较顺序就成了 a 和 b、c 和 a、a 和 a，匹配上后移动指针，发现剩下的 b c 节点都是相同的，都不需要再有多余的比对操作了。这样是不是大大提高了 Diff 的效率？尾首比较也是同理。</p>
+<h5 id="疑惑三：使用-Vue-时我们常常会给节点赋予一个独一无二的-key，通过双端比较的过程能不能明白这是为什么？"><a href="#疑惑三：使用-Vue-时我们常常会给节点赋予一个独一无二的-key，通过双端比较的过程能不能明白这是为什么？" class="headerlink" title="疑惑三：使用 Vue 时我们常常会给节点赋予一个独一无二的 key，通过双端比较的过程能不能明白这是为什么？"></a>疑惑三：使用 Vue 时我们常常会给节点赋予一个独一无二的 key，通过双端比较的过程能不能明白这是为什么？</h5><p>我的理解是，如果我们编码时没有给节点一个 key 的话，它在上述五种比较方法都匹配不到后就会直接创建新的真实 DOM 节点并插入到相应位置。而创建一个真实 DOM 节点其实消耗是挺大的，看下图可以发现，我们创建一个 <code>div</code> 节点，它的初始属性都有 293 个。所以在能复用原 DOM 节点的时候就应该尽量复用，而不是重新创建。</p>
+<p><img src="/2020/05/07/Vue2-的-Diff-算法/8.png" alt></p>
+<p>Diff 过程的几种比较方法中，最好的是首首/尾尾/首尾/尾首比较，其次是通过 key 比较。那么为啥说首首比较这四种方法要优于通过 key 比较呢？不要忘了，通过 key 比较，不管是通过对象直接找到对应的 key，还是通过遍历一个个去找，它们都得先遍历一边旧子节点列表（第二种方法可能还不止遍历一次），而且通过对象直接找还得花费 <code>O(n)</code> 的空间复杂度。所以综合起来通过首首比较这四种方法进行比对，还是要优于通过 key 比对的。</p>
+<p>我们先通过上述图文的形式理解 Diff 流程（也就是那十二个字，<strong>同级比较</strong>、<strong>深度递归</strong>、<strong>双端比较</strong>），并且也明白其中的几个疑惑点后，下面再来看具体源码就很容易理解了~</p>
+<h2 id="如何调试-Vue-源码"><a href="#如何调试-Vue-源码" class="headerlink" title="如何调试 Vue 源码"></a>如何调试 Vue 源码</h2><p>看源码的时候，我们最好能够边看源码理清它的逻辑，边 debugger 源码验证我们的理解是否正确，所以这里先介绍下如何在 VScode 中调试 Vue 源码。</p>
+<p>clone 好 Vue 源码后，先 <code>npm install</code> 安装各项依赖，再 <code>npm run dev</code> 使用 <code>rollup.js</code> 对整个源码进行打包，在 <code>package.json</code> 中对应的命令行是：</p>
+<p><code>&quot;dev&quot;: &quot;rollup -w -c scripts/config.js --environment TARGET:web-full-dev&quot;</code></p>
+<p>这里将环境变量设置为 <code>web-full-dev</code>，对应到 <code>vue/scripts/config.js</code> 中的配置是：</p>
+<pre class=" language-js"><code class="language-js"><span class="token keyword">const</span> builds <span class="token operator">=</span> <span class="token punctuation">{</span>
+  <span class="token operator">...</span><span class="token punctuation">,</span>
+  <span class="token string">'web-full-dev'</span><span class="token punctuation">:</span> <span class="token punctuation">{</span>
+    entry<span class="token punctuation">:</span> <span class="token function">resolve</span><span class="token punctuation">(</span><span class="token string">'web/entry-runtime-with-compiler.js'</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+    dest<span class="token punctuation">:</span> <span class="token function">resolve</span><span class="token punctuation">(</span><span class="token string">'dist/vue.js'</span><span class="token punctuation">)</span><span class="token punctuation">,</span>
+    format<span class="token punctuation">:</span> <span class="token string">'umd'</span><span class="token punctuation">,</span>
+    env<span class="token punctuation">:</span> <span class="token string">'development'</span><span class="token punctuation">,</span>
+    alias<span class="token punctuation">:</span> <span class="token punctuation">{</span> he<span class="token punctuation">:</span> <span class="token string">'./entity-decoder'</span> <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    banner
+  <span class="token punctuation">}</span><span class="token punctuation">,</span>
+  <span class="token operator">...</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<p>可以看到，它打包后的输出路径是 <code>vue/dist/vue.js</code>，并且通过终端提示可以知道，每当我们修改源码时它都会实时地重新打包并更新 <code>dist/vue.js</code>。所以我们可以在一个 HTML 文件中引入 <code>dist/vue.js</code>，接着在源码中打 <code>debugger</code> 和 <code>console.log</code>，通过浏览器访问该 HTML 页面就可以看到相应的断点和日志信息，以此我们就能知道 Vue 整个的执行流程啦~。</p>
+<p>在调试源码的时候还可以开启 <code>sourcemap</code>，具体方法可以参考<a href="https://blog.csdn.net/a419419/article/details/91493026" target="_blank" rel="noopener">vue源码分析系列:用sourcemap调试源码</a>。</p>
+<h2 id="Vue2-Diff-源码分析"><a href="#Vue2-Diff-源码分析" class="headerlink" title="Vue2 Diff 源码分析"></a>Vue2 Diff 源码分析</h2><p>现在我们来看 Vue 中和 Diff 相关的源码。<strong>为了方便阅读，以下摘抄的源码只截取其中重点的部分，只截取其中重点的部分，只截取其中重点的部分</strong>。</p>
+<p>当初始化渲染、组件更新的时候，Vue 会调用原型上的 <code>_update</code> 函数进行 Diff。可以看到，其中主要是通过 <code>vm.__patch__</code> 函数进行 Diff、获取修改补丁、更新 DOM 并返回新的真实 DOM 等操作。当页面初始化渲染时，此时 <code>vm._vnode</code> 为初始值 <a href="https://github.com/vuejs/vue/blob/dev/src/core/instance/render.js#L20" target="_blank" rel="noopener">null</a>，所以此时的更新操作走 <code>vm.__patch__(vm.$el, vnode, hydrating, false)</code>。</p>
+<p>可以看到，两者的差别主要在于传递给 <code>vm.__patch__</code> 函数的第一个参数不同。初始渲染时由于还没有保留虚拟 DOM，所以第一个参数是 <a href="https://cn.vuejs.org/v2/api/#vm-el" target="_blank" rel="noopener">vm.$el</a>，即 Vue 实例使用的根 DOM 元素比如我们常用的 <code>#app</code>，它是一个真实的 DOM 节点。而之后更新页面时 <code>prevVnode</code> 都指向了上次更新后的虚拟 DOM，它是一个虚拟 DOM。在 <code>vm.__patch__</code> 函数中它会判断第一个参数是真实的 DOM 节点还是虚拟 DOM，如果是真实的 DOM 节点的话就不进行 Diff，直接创建 DOM（相关代码下文会指出）。</p>
+<p>至于传递的其他两个参数，<code>hydrating</code> 是用于服务端渲染时判断的，<code>false</code> 是一个特殊的标记只用于 <code>&lt;transition-group&gt;</code>，这两者和 Diff 没关系，暂时就不讨论了。</p>
+<pre class=" language-js"><code class="language-js"><span class="token comment" spellcheck="true">// vue/src/core/instance/lifecycle.js</span>
+Vue<span class="token punctuation">.</span>prototype<span class="token punctuation">.</span>_update <span class="token operator">=</span> <span class="token keyword">function</span> <span class="token punctuation">(</span>vnode<span class="token punctuation">:</span> VNode<span class="token punctuation">,</span> hydrating<span class="token operator">?</span><span class="token punctuation">:</span> boolean<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">const</span> vm<span class="token punctuation">:</span> Component <span class="token operator">=</span> <span class="token keyword">this</span>
+  <span class="token keyword">const</span> prevVnode <span class="token operator">=</span> vm<span class="token punctuation">.</span>_vnode
+  vm<span class="token punctuation">.</span>_vnode <span class="token operator">=</span> vnode
+  <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>prevVnode<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    vm<span class="token punctuation">.</span>$el <span class="token operator">=</span> vm<span class="token punctuation">.</span><span class="token function">__patch__</span><span class="token punctuation">(</span>vm<span class="token punctuation">.</span>$el<span class="token punctuation">,</span> vnode<span class="token punctuation">,</span> hydrating<span class="token punctuation">,</span> <span class="token boolean">false</span> <span class="token comment" spellcheck="true">/* removeOnly */</span><span class="token punctuation">)</span>
+  <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+    vm<span class="token punctuation">.</span>$el <span class="token operator">=</span> vm<span class="token punctuation">.</span><span class="token function">__patch__</span><span class="token punctuation">(</span>prevVnode<span class="token punctuation">,</span> vnode<span class="token punctuation">)</span>
+  <span class="token punctuation">}</span>
+</code></pre>
+<p>接着我们继续看 <code>vm.__patch__</code> 这个函数的定义。在 Web 和在 Weex 上 <code>vm.__patch__</code> 的定义是不一样的，这里我们只看在 Web 上的。</p>
+<pre class=" language-js"><code class="language-js"><span class="token comment" spellcheck="true">// vue/src/platforms/web/runtime/index.js</span>
+<span class="token keyword">import</span> <span class="token punctuation">{</span> patch <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'./patch'</span>
+Vue<span class="token punctuation">.</span>prototype<span class="token punctuation">.</span>__patch__ <span class="token operator">=</span> inBrowser <span class="token operator">?</span> patch <span class="token punctuation">:</span> noop  <span class="token comment" spellcheck="true">// noop 是一个空函数</span>
+
+<span class="token comment" spellcheck="true">// vue/src/platforms/web/runtime/patch.js</span>
+<span class="token keyword">import</span> <span class="token punctuation">{</span> createPatchFunction <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'core/vdom/patch'</span>
+<span class="token keyword">export</span> <span class="token keyword">const</span> patch<span class="token punctuation">:</span> Function <span class="token operator">=</span> <span class="token function">createPatchFunction</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
+
+<span class="token comment" spellcheck="true">// vue/src/core/vdom/patch.js</span>
+<span class="token keyword">export</span> <span class="token keyword">function</span> <span class="token function">createPatchFunction</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">return</span> <span class="token keyword">function</span> patch <span class="token punctuation">(</span>oldVnode<span class="token punctuation">,</span> vnode<span class="token punctuation">,</span> hydrating<span class="token punctuation">,</span> removeOnly<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token operator">...</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<p>oldVnode 表示旧的虚拟 DOM，vnode 表示新的虚拟 DOM。</p>
+<p>可以发现，经过一层层调用，最后 Diff 和页面更新的操作是在这个 <code>patch</code> 函数里完成的。现在我们重点来看 <code>patch</code> 的源码。</p>
+<pre class=" language-js"><code class="language-js"><span class="token keyword">function</span> patch <span class="token punctuation">(</span>oldVnode<span class="token punctuation">,</span> vnode<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">const</span> isRealElement <span class="token operator">=</span> <span class="token function">isDef</span><span class="token punctuation">(</span>oldVnode<span class="token punctuation">.</span>nodeType<span class="token punctuation">)</span>
+  <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>isRealElement <span class="token operator">&amp;&amp;</span> <span class="token function">sameVnode</span><span class="token punctuation">(</span>oldVnode<span class="token punctuation">,</span> vnode<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token function">patchVnode</span><span class="token punctuation">(</span>oldVnode<span class="token punctuation">,</span> vnode<span class="token punctuation">)</span>
+  <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>isRealElement<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      oldVnode <span class="token operator">=</span> <span class="token function">emptyNodeAt</span><span class="token punctuation">(</span>oldVnode<span class="token punctuation">)</span>
+    <span class="token punctuation">}</span>
+    <span class="token function">createElm</span><span class="token punctuation">(</span>vnode<span class="token punctuation">)</span>
+    <span class="token function">removeVnodes</span><span class="token punctuation">(</span>oldVnode<span class="token punctuation">)</span>
+  <span class="token punctuation">}</span>
+  <span class="token keyword">return</span> vnode<span class="token punctuation">.</span>elm
+<span class="token punctuation">}</span>
+</code></pre>
+<p>其中，<code>isDef</code> 函数用于判断当前参数是否等于 <code>undefined</code> 或者 <code>null</code>，都不等于时 <code>isDef</code> 才返回 <code>true</code>。</p>
+<p>首先它会通过 <code>isRealElement</code> 判断旧的虚拟 DOM 即 <code>oldVnode</code> 是不是一个真实的 DOM 节点（页面第一次渲染时 <code>oldVnode</code> 为真实 DOM 节点，之后更新页面时 <code>oldVnode</code> 才为虚拟 DOM），只有 <code>oldVnode</code> 为虚拟 DOM 并且新旧两个虚拟 DOM 值得比较时，才会调用 <code>patchVnode</code> 函数进行 Diff 和更新。否则就直接根据新的虚拟 DOM 创建真实 DOM 并插入到页面，并移除掉旧的虚拟 DOM（如果 <code>oldVnode</code> 为真实 DOM 的话，还需要先调用 <code>emptyNodeAt</code> 创建虚拟 DOM）。</p>
+<p>理清了页面第一次渲染和页面更新的不同操作后，现在来看看上文的一个疑惑点，什么叫做只有新旧两个虚拟 DOM 值得比较时才会进行 Diff？如何判断两个 VNode 是否值得比较呢？判断的依据主要是三点：key、tag 和 data。key 和 tag 比较容易理解，如果节点的 key 和标签类型都变了，那自然就不用去 Diff 比较子节点变化，需要直接重新创建节点了。至于节点属性 data，我的理解是，比如一个 <code>Button</code> 按钮，它的 <code>disabled</code> 值改变了的话，这个节点实质上还是同一个，可以复用。而如果两个 VNode 一个有 data 一个没有的话，说明它们不是同一个节点，就需要重新创建了。</p>
+<p>除此之外，如果节点是 <code>input</code> 输入框的话，还需要它的 <code>type</code> 相同才行，这是为了修复 <a href="https://github.com/vuejs/vue/issues/5266" target="_blank" rel="noopener">5266</a> 这个 bug，详情可以看 Github 原贴。</p>
+<pre class=" language-js"><code class="language-js"><span class="token keyword">function</span> sameVnode <span class="token punctuation">(</span>a<span class="token punctuation">,</span> b<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">return</span> <span class="token punctuation">(</span>
+    a<span class="token punctuation">.</span>key <span class="token operator">===</span> b<span class="token punctuation">.</span>key <span class="token operator">&amp;&amp;</span>
+    a<span class="token punctuation">.</span>tag <span class="token operator">===</span> b<span class="token punctuation">.</span>tag <span class="token operator">&amp;&amp;</span>
+    a<span class="token punctuation">.</span>isComment <span class="token operator">===</span> b<span class="token punctuation">.</span>isComment <span class="token operator">&amp;&amp;</span>
+    <span class="token function">isDef</span><span class="token punctuation">(</span>a<span class="token punctuation">.</span>data<span class="token punctuation">)</span> <span class="token operator">===</span> <span class="token function">isDef</span><span class="token punctuation">(</span>b<span class="token punctuation">.</span>data<span class="token punctuation">)</span> <span class="token operator">&amp;&amp;</span>
+    <span class="token function">sameInputType</span><span class="token punctuation">(</span>a<span class="token punctuation">,</span> b<span class="token punctuation">)</span>
+  <span class="token punctuation">)</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<p>如果新旧两个 VNode 值得比较的话，就会执行 <code>patchVnode</code> 开始比较两个 VNode。</p>
+<pre class=" language-js"><code class="language-js"><span class="token keyword">function</span> <span class="token function">patchVnode</span><span class="token punctuation">(</span>oldVnode<span class="token punctuation">,</span> vnode<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">if</span> <span class="token punctuation">(</span>oldVnode <span class="token operator">===</span> vnode<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">return</span>
+  <span class="token punctuation">}</span>
+  <span class="token keyword">const</span> elm <span class="token operator">=</span> vnode<span class="token punctuation">.</span>elm <span class="token operator">=</span> oldVnode<span class="token punctuation">.</span>elm
+  <span class="token keyword">const</span> oldCh <span class="token operator">=</span> oldVnode<span class="token punctuation">.</span>children
+  <span class="token keyword">const</span> ch <span class="token operator">=</span> vnode<span class="token punctuation">.</span>children
+
+  <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token function">isUndef</span><span class="token punctuation">(</span>vnode<span class="token punctuation">.</span>text<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token function">isDef</span><span class="token punctuation">(</span>oldCh<span class="token punctuation">)</span> <span class="token operator">&amp;&amp;</span> <span class="token function">isDef</span><span class="token punctuation">(</span>ch<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      <span class="token keyword">if</span> <span class="token punctuation">(</span>oldCh <span class="token operator">!==</span> ch<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token function">updateChildren</span><span class="token punctuation">(</span>elm<span class="token punctuation">,</span> oldCh<span class="token punctuation">,</span> ch<span class="token punctuation">)</span>
+      <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token function">isDef</span><span class="token punctuation">(</span>ch<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token function">isDef</span><span class="token punctuation">(</span>oldVnode<span class="token punctuation">.</span>text<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token function">setTextContent</span><span class="token punctuation">(</span>elm<span class="token punctuation">,</span> <span class="token string">''</span><span class="token punctuation">)</span>
+      <span class="token punctuation">}</span>
+      <span class="token function">addVnodes</span><span class="token punctuation">(</span>elm<span class="token punctuation">)</span>
+    <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token function">isDef</span><span class="token punctuation">(</span>oldCh<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      <span class="token function">removeVnodes</span><span class="token punctuation">(</span>oldCh<span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">,</span> oldCh<span class="token punctuation">.</span>length <span class="token operator">-</span> <span class="token number">1</span><span class="token punctuation">)</span>
+    <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token function">isDef</span><span class="token punctuation">(</span>oldVnode<span class="token punctuation">.</span>text<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      <span class="token function">setTextContent</span><span class="token punctuation">(</span>elm<span class="token punctuation">,</span> <span class="token string">''</span><span class="token punctuation">)</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token keyword">if</span> <span class="token punctuation">(</span>oldVnode<span class="token punctuation">.</span>text <span class="token operator">!==</span> vnode<span class="token punctuation">.</span>text<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token function">setTextContent</span><span class="token punctuation">(</span>elm<span class="token punctuation">,</span> vnode<span class="token punctuation">.</span>text<span class="token punctuation">)</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<p>vnode 表示新的虚拟 DOM 节点。</p>
+<p>oldVnode 表示旧的虚拟 DOM 节点。</p>
+<p>ch 表示 vnode 的子节点。</p>
+<p>oldCh 表示 oldVnode 的子节点。</p>
+<p><code>isUndef</code> 函数判断参数是否为 <code>undefined</code> 或 <code>null</code>，是的话则返回 true。</p>
+<p><code>patchVnode</code> 进行的操作是，先判断新旧两个 VNode 是否一样，如果是同一个的话，则说明它没有变化可以直接结束比较了。如果两者不相等的话，则分为以下几种情况讨论：</p>
+<ol>
+<li><p>vnode 和 oldVnode 相等，说明两者没有变化不用 Diff，可以直接退出 Diff 流程了。</p>
+</li>
+<li><p>vnode 是文本节点时，那么 oldVnode 也是文本节点，若两者的文本内容不相等，则修改节点的文本（如果一个 VNode 的 <code>text</code> 属性不为 <code>undefined</code> 的话，就说明它是文本节点）。</p>
+</li>
+<li><p>vnode 不是文本节点时，进一步判断 vnode 和 oldVnode 的子节点情况：</p>
+<ol>
+<li><p>vnode 和 oldVnode 的子节点都存在且不相等，调用 <code>updateChildren</code> 开始 Diff 算法比较子节点的差异。</p>
+</li>
+<li><p>vnode 的子节点存在而 oldVnode 的不存在，说明此时的节点操作是新增，直接创建 vnode 的子节点并插入页面。</p>
+</li>
+<li><p>oldVnode 的子节点存在而 vnode 的不存在，说明此时的节点操作是删除，直接删除 vnode 的子节点。</p>
+</li>
+<li><p>如果 vnode 和 oldVnode 都没有子节点，并且 oldVnode 是文本节点的话，则将 oldVnode 的文本内容置为空。</p>
+</li>
+</ol>
+</li>
+</ol>
+<p>这几个都比较容易理解，现在我们正式进入 Diff 的环节，也就是 <code>updateChildren</code> 函数。</p>
+<pre class=" language-js"><code class="language-js"><span class="token keyword">function</span> updateChildren <span class="token punctuation">(</span>parentElm<span class="token punctuation">,</span> oldCh<span class="token punctuation">,</span> newCh<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">let</span> oldStartIdx <span class="token operator">=</span> <span class="token number">0</span>
+  <span class="token keyword">let</span> newStartIdx <span class="token operator">=</span> <span class="token number">0</span>
+  <span class="token keyword">let</span> oldEndIdx <span class="token operator">=</span> oldCh<span class="token punctuation">.</span>length <span class="token operator">-</span> <span class="token number">1</span>
+  <span class="token keyword">let</span> oldStartVnode <span class="token operator">=</span> oldCh<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span>
+  <span class="token keyword">let</span> oldEndVnode <span class="token operator">=</span> oldCh<span class="token punctuation">[</span>oldEndIdx<span class="token punctuation">]</span>
+  <span class="token keyword">let</span> newEndIdx <span class="token operator">=</span> newCh<span class="token punctuation">.</span>length <span class="token operator">-</span> <span class="token number">1</span>
+  <span class="token keyword">let</span> newStartVnode <span class="token operator">=</span> newCh<span class="token punctuation">[</span><span class="token number">0</span><span class="token punctuation">]</span>
+  <span class="token keyword">let</span> newEndVnode <span class="token operator">=</span> newCh<span class="token punctuation">[</span>newEndIdx<span class="token punctuation">]</span>
+  <span class="token keyword">let</span> oldKeyToIdx<span class="token punctuation">,</span> idxInOld<span class="token punctuation">,</span> vnodeToMove
+
+  <span class="token keyword">while</span> <span class="token punctuation">(</span>oldStartIdx <span class="token operator">&lt;=</span> oldEndIdx <span class="token operator">&amp;&amp;</span> newStartIdx <span class="token operator">&lt;=</span> newEndIdx<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token function">isUndef</span><span class="token punctuation">(</span>oldStartVnode<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      oldStartVnode <span class="token operator">=</span> oldCh<span class="token punctuation">[</span><span class="token operator">++</span>oldStartIdx<span class="token punctuation">]</span>
+    <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token function">isUndef</span><span class="token punctuation">(</span>oldEndVnode<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      oldEndVnode <span class="token operator">=</span> oldCh<span class="token punctuation">[</span><span class="token operator">--</span>oldEndIdx<span class="token punctuation">]</span>
+    <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token function">sameVnode</span><span class="token punctuation">(</span>oldStartVnode<span class="token punctuation">,</span> newStartVnode<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      <span class="token function">patchVnode</span><span class="token punctuation">(</span>oldStartVnode<span class="token punctuation">,</span> newStartVnode<span class="token punctuation">)</span>
+      oldStartVnode <span class="token operator">=</span> oldCh<span class="token punctuation">[</span><span class="token operator">++</span>oldStartIdx<span class="token punctuation">]</span>
+      newStartVnode <span class="token operator">=</span> newCh<span class="token punctuation">[</span><span class="token operator">++</span>newStartIdx<span class="token punctuation">]</span>
+    <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token function">sameVnode</span><span class="token punctuation">(</span>oldEndVnode<span class="token punctuation">,</span> newEndVnode<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      <span class="token function">patchVnode</span><span class="token punctuation">(</span>oldEndVnode<span class="token punctuation">,</span> newEndVnode<span class="token punctuation">)</span>
+      oldEndVnode <span class="token operator">=</span> oldCh<span class="token punctuation">[</span><span class="token operator">--</span>oldEndIdx<span class="token punctuation">]</span>
+      newEndVnode <span class="token operator">=</span> newCh<span class="token punctuation">[</span><span class="token operator">--</span>newEndIdx<span class="token punctuation">]</span>
+    <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token function">sameVnode</span><span class="token punctuation">(</span>oldStartVnode<span class="token punctuation">,</span> newEndVnode<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      <span class="token function">patchVnode</span><span class="token punctuation">(</span>oldStartVnode<span class="token punctuation">,</span> newEndVnode<span class="token punctuation">)</span>
+      <span class="token function">insertBefore</span><span class="token punctuation">(</span>parentElm<span class="token punctuation">,</span> oldStartVnode<span class="token punctuation">.</span>elm<span class="token punctuation">,</span> <span class="token function">nextSibling</span><span class="token punctuation">(</span>oldEndVnode<span class="token punctuation">.</span>elm<span class="token punctuation">)</span><span class="token punctuation">)</span>
+      oldStartVnode <span class="token operator">=</span> oldCh<span class="token punctuation">[</span><span class="token operator">++</span>oldStartIdx<span class="token punctuation">]</span>
+      newEndVnode <span class="token operator">=</span> newCh<span class="token punctuation">[</span><span class="token operator">--</span>newEndIdx<span class="token punctuation">]</span>
+    <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token function">sameVnode</span><span class="token punctuation">(</span>oldEndVnode<span class="token punctuation">,</span> newStartVnode<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      <span class="token function">patchVnode</span><span class="token punctuation">(</span>oldEndVnode<span class="token punctuation">,</span> newStartVnode<span class="token punctuation">)</span>
+      <span class="token function">insertBefore</span><span class="token punctuation">(</span>parentElm<span class="token punctuation">,</span> oldEndVnode<span class="token punctuation">.</span>elm<span class="token punctuation">,</span> oldStartVnode<span class="token punctuation">.</span>elm<span class="token punctuation">)</span>
+      oldEndVnode <span class="token operator">=</span> oldCh<span class="token punctuation">[</span><span class="token operator">--</span>oldEndIdx<span class="token punctuation">]</span>
+      newStartVnode <span class="token operator">=</span> newCh<span class="token punctuation">[</span><span class="token operator">++</span>newStartIdx<span class="token punctuation">]</span>
+    <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+      <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token function">isUndef</span><span class="token punctuation">(</span>oldKeyToIdx<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        oldKeyToIdx <span class="token operator">=</span> <span class="token function">createKeyToOldIdx</span><span class="token punctuation">(</span>oldCh<span class="token punctuation">,</span> oldStartIdx<span class="token punctuation">,</span> oldEndIdx<span class="token punctuation">)</span>
+      <span class="token punctuation">}</span>
+      idxInOld <span class="token operator">=</span> <span class="token function">isDef</span><span class="token punctuation">(</span>newStartVnode<span class="token punctuation">.</span>key<span class="token punctuation">)</span>
+        <span class="token operator">?</span> oldKeyToIdx<span class="token punctuation">[</span>newStartVnode<span class="token punctuation">.</span>key<span class="token punctuation">]</span>
+        <span class="token punctuation">:</span> <span class="token function">findIdxInOld</span><span class="token punctuation">(</span>newStartVnode<span class="token punctuation">,</span> oldCh<span class="token punctuation">,</span> oldStartIdx<span class="token punctuation">,</span> oldEndIdx<span class="token punctuation">)</span>
+      <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token function">isUndef</span><span class="token punctuation">(</span>idxInOld<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token function">createElm</span><span class="token punctuation">(</span>newStartVnode<span class="token punctuation">)</span>
+      <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+        vnodeToMove <span class="token operator">=</span> oldCh<span class="token punctuation">[</span>idxInOld<span class="token punctuation">]</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token function">sameVnode</span><span class="token punctuation">(</span>vnodeToMove<span class="token punctuation">,</span> newStartVnode<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+          <span class="token function">patchVnode</span><span class="token punctuation">(</span>vnodeToMove<span class="token punctuation">,</span> newStartVnode<span class="token punctuation">)</span>
+          oldCh<span class="token punctuation">[</span>idxInOld<span class="token punctuation">]</span> <span class="token operator">=</span> undefined
+          <span class="token function">insertBefore</span><span class="token punctuation">(</span>parentElm<span class="token punctuation">,</span> vnodeToMove<span class="token punctuation">.</span>elm<span class="token punctuation">,</span> oldStartVnode<span class="token punctuation">.</span>elm<span class="token punctuation">)</span>
+        <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
+          <span class="token function">createElm</span><span class="token punctuation">(</span>newStartVnode<span class="token punctuation">)</span>
+        <span class="token punctuation">}</span>
+      <span class="token punctuation">}</span>
+      newStartVnode <span class="token operator">=</span> newCh<span class="token punctuation">[</span><span class="token operator">++</span>newStartIdx<span class="token punctuation">]</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">}</span>
+  <span class="token keyword">if</span> <span class="token punctuation">(</span>oldStartIdx <span class="token operator">></span> oldEndIdx<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token function">addVnodes</span><span class="token punctuation">(</span>parentElm<span class="token punctuation">,</span> newStartIdx<span class="token punctuation">,</span> newEndIdx<span class="token punctuation">)</span>
+  <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token keyword">if</span> <span class="token punctuation">(</span>newStartIdx <span class="token operator">></span> newEndIdx<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token function">removeVnodes</span><span class="token punctuation">(</span>oldCh<span class="token punctuation">,</span> oldStartIdx<span class="token punctuation">,</span> oldEndIdx<span class="token punctuation">)</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<p>如上文图文解说双端比较的流程部分，只要理解了过程再看 <code>updateChildren</code> 函数就没什么难度了。这里也不再多解释这段源码，就只说说通过 key 比较的部分，里面涉及到了几个新函数。如上文说通过 key 比较有两种方法，一是建立 key 和索引下标的映射对象，二是遍历旧子节点一个个比较 key 是否相等。第一方法对应的是 <code>createKeyToOldIdx</code> 函数，如果在映射对象里找不到的话再去遍历，也就是 <code>findIdxInOld</code> 函数。</p>
+<pre class=" language-js"><code class="language-js"><span class="token keyword">function</span> createKeyToOldIdx <span class="token punctuation">(</span>children<span class="token punctuation">,</span> beginIdx<span class="token punctuation">,</span> endIdx<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">let</span> i<span class="token punctuation">,</span> key
+  <span class="token keyword">const</span> map <span class="token operator">=</span> <span class="token punctuation">{</span><span class="token punctuation">}</span>
+  <span class="token keyword">for</span> <span class="token punctuation">(</span>i <span class="token operator">=</span> beginIdx<span class="token punctuation">;</span> i <span class="token operator">&lt;=</span> endIdx<span class="token punctuation">;</span> <span class="token operator">++</span>i<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    key <span class="token operator">=</span> children<span class="token punctuation">[</span>i<span class="token punctuation">]</span><span class="token punctuation">.</span>key
+    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token function">isDef</span><span class="token punctuation">(</span>key<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      map<span class="token punctuation">[</span>key<span class="token punctuation">]</span> <span class="token operator">=</span> i
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">}</span>
+  <span class="token keyword">return</span> map
+<span class="token punctuation">}</span>
+
+<span class="token keyword">function</span> findIdxInOld <span class="token punctuation">(</span>node<span class="token punctuation">,</span> oldCh<span class="token punctuation">,</span> start<span class="token punctuation">,</span> end<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">let</span> i <span class="token operator">=</span> start<span class="token punctuation">;</span> i <span class="token operator">&lt;</span> end<span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">const</span> c <span class="token operator">=</span> oldCh<span class="token punctuation">[</span>i<span class="token punctuation">]</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token function">isDef</span><span class="token punctuation">(</span>c<span class="token punctuation">)</span> <span class="token operator">&amp;&amp;</span> <span class="token function">sameVnode</span><span class="token punctuation">(</span>node<span class="token punctuation">,</span> c<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      <span class="token keyword">return</span> i
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<p>需要注意的是 <code>oldCh[idxInOld] = undefined</code> 这个操作，如果在旧子节点中找到有和 <code>newStartVnode</code> 的 key 相等的旧子节点，还需要把这个 VNode 置为 <code>undefined</code>。这是因为通过 key 比较后旧 VNode 的指针并没有移动，这个旧 VNode 如果和 <code>newStartVnode</code> 匹配后没有置为 <code>undefined</code>，那么在后续的比对过程中可能和其他的新 VNode 匹配上。所以为了避免影响到后续的 Diff 操作，需要将它赋值为 <code>undefined</code> 表示这个节点已经匹配过了。</p>
+<h2 id="时间复杂度分析"><a href="#时间复杂度分析" class="headerlink" title="时间复杂度分析"></a>时间复杂度分析</h2><p>我们常听到 React 和 Vue 的 Diff 算法时间复杂度从 <code>O(n^3)</code> 优化到了 <code>O(n)</code>，n 是 DOM 中节点的个数。那么这个 <code>O(n^3)</code> 和 <code>O(n)</code> 是怎么来的呢？</p>
+<p>我的理解是，在原来的 Diff 算法中，它并没有使用同层比较这个策略，而是将旧虚拟 DOM 的每个节点和新虚拟 DOM 的每个节点进行两两比较，这就已经有 <code>O(n^2)</code> 了。而找到匹配的两个节点后，又要通过移动等操作去改变真实 DOM，所以又有 <code>O(n)</code> 的消耗，所以总共就是 <code>O(n^3)</code>。</p>
+<p>而优化后的 Diff 算法，因为使用了同层比较和双端比较，所以只需要比较同层级的节点就行，并且借助首尾四个指针可以直接将节点移动、删除到指定位置上，所以就只要 <code>O(n)</code> 的时间复杂度了。</p>
+<h1 id="结语"><a href="#结语" class="headerlink" title="结语"></a>结语</h1><p>至此，Vue Diff 算法的流程和相关源码都解释完了。通过把自己的理解整理并输出为一篇 Blog，也算是加深了自己的理解吧~ BTW，面试真的很喜欢问 Diff 算法啊，这几天腾讯面试，一面二面都问到了 Diff 算法。哈哈，刚好这几天都在看 Diff 算法并边整理成了 Blog，面试的时候就将这篇 Blog 写到的几个主要点说了下。理解和写 Blog 花了好几天的时间，面试问答到 Diff 算法也就那么五分钟，这可以算是养兵千日，用兵一时么？</p>
+
+            </div>
+            <hr/>
+
+            
+
+            <link rel="stylesheet" type="text/css" href="/libs/share/css/share.min.css">
+
+<div id="article-share">
+    
+    <div class="social-share" data-disabled="qzone" data-wechat-qrcode-helper="<p>微信里点“发现”->“扫一扫”二维码便可查看分享。</p>"></div>
+    
+</div>
+
+<script src="/libs/share/js/social-share.min.js"></script>
+
+            <div class="reprint">
+                <p>
+                    <span class="reprint-tip">
+                        <i class="fa fa-exclamation-circle"></i>&nbsp;&nbsp;转载请注明:
+                    </span>
+                    <a href="http://blog.dangosky.com" class="b-link-green">DangoSky</a>
+                    <i class="fa fa-angle-right fa-lg fa-fw text-color"></i>
+                    <a href="/2020/05/07/Vue2-的-Diff-算法/" class="b-link-green">Vue2 的 Diff 算法</a>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    
+
+    
+
+    
+        <div class="disqus-card card" data-aos="fade-up">
+    <div id="disqus_thread" class="card-content">
+        <noscript>Please enable JavaScript to view the
+            <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a>
+        </noscript>
+    </div>
+</div>
+
+<script type="text/javascript">
+    disqus_config = function () {
+        this.page.url = 'http://blog.dangosky.com/2020/05/07/Vue2-的-Diff-算法/';
+        this.page.identifier = '/2020/05/07/Vue2-的-Diff-算法/';
+        this.page.title = 'Vue2 的 Diff 算法';
+    };
+    let disqus_shortname = 'dangosky';
+
+    (function () { // DON'T EDIT BELOW THIS LINE
+        let d = document, s = d.createElement('script');
+        // 如：s.src = 'https://blinkfox.disqus.com/embed.js';
+        s.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+    
+
+    
+
+    
+
+    
+
+<article id="prenext-posts" class="prev-next articles">
+    <div class="row article-row">
+        
+        <div class="article col s12 m6" data-aos="fade-up" data-aos="fade-up">
+            <div class="article-badge left-badge text-color">
+                <i class="fa fa-dot-circle-o"></i>&nbsp;本篇
+            </div>
+            <div class="card">
+                <a href="/2020/05/07/Vue2-的-Diff-算法/">
+                    <div class="card-image">
+                        
+                        
+                        <img src="/medias/featureimages/17.jpg" class="responsive-img" alt="Vue2 的 Diff 算法">
+                        
+                        <span class="card-title">Vue2 的 Diff 算法</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary"> 
+文章中涉及到的 Vue 代码特指版本 2.6.11。
+
+虚拟 DOM什么是虚拟 DOM要理解 Diff 算法，就得先理解好虚拟 DOM。虚拟 DOM 说白了其实就只是一个 JavaScript 对象，它抽象地描述了一个真实的 DOM 结</div>
+                    <div class="publish-info">
+                            <span class="publish-date">
+                                <i class="fa fa-clock-o fa-fw icon-date"></i>2020-05-07
+                            </span>
+                        <span class="publish-author">
+                            
+                            <i class="fa fa-bookmark fa-fw icon-category"></i>
+                            
+                            <a href="/categories/源码解析/" class="post-category" target="_blank">
+                                    源码解析
+                                </a>
+                            
+                            
+                        </span>
+                    </div>
+                </div>
+
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/Vue/" target="_blank">
+                        <span class="chip bg-color">Vue</span>
+                    </a>
+                    
+                    <a href="/tags/源码解析/" target="_blank">
+                        <span class="chip bg-color">源码解析</span>
+                    </a>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+        
+        <div class="article col s12 m6" data-aos="fade-up">
+            <div class="article-badge right-badge text-color">
+                下一篇&nbsp;<i class="fa fa-chevron-right"></i>
+            </div>
+            <div class="card">
+                <a href="/2020/04/30/组件库开发小结/">
+                    <div class="card-image">
+                        
+                        
+                        <img src="/medias/featureimages/18.jpg" class="responsive-img" alt="组件库开发小结">
+                        
+                        <span class="card-title">组件库开发小结</span>
+                    </div>
+                </a>
+                <div class="card-content article-content">
+                    <div class="summary"> 背景从一月初回公司到五一又开始请长假这四个月实习时间以来，我估计得有三分之一的时间是在写组件库的，所以写一篇 Blog 简要谈谈我对组件库的认识，和在这方面的实践。
+我对组件库的认识三大框架有一个共同点，就是组件化思想，把一个页面划分为多</div>
+                    <div class="publish-info">
+                            <span class="publish-date">
+                                <i class="fa fa-clock-o fa-fw icon-date"></i>2020-04-30
+                            </span>
+                        <span class="publish-author">
+                            
+                            <i class="fa fa-bookmark fa-fw icon-category"></i>
+                            
+                            <a href="/categories/实习记录/" class="post-category" target="_blank">
+                                    实习记录
+                                </a>
+                            
+                            
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="card-action article-tags">
+                    
+                    <a href="/tags/实习记录/" target="_blank">
+                        <span class="chip bg-color">实习记录</span>
+                    </a>
+                    
+                    <a href="/tags/组件库/" target="_blank">
+                        <span class="chip bg-color">组件库</span>
+                    </a>
+                    
+                    <a href="/tags/Antd/" target="_blank">
+                        <span class="chip bg-color">Antd</span>
+                    </a>
+                    
+                </div>
+                
+            </div>
+        </div>
+        
+    </div>
+</article>
+</div>
+
+
+    </div>
+    <div id="toc-aside" class="expanded col l3 hide-on-med-and-down">
+        <div class="toc-widget">
+            <div class="toc-title"><i class="fa fa-list-alt"></i>&nbsp;&nbsp;目录</div>
+            <div id="toc-content"></div>
+        </div>
+    </div>
+</div>
+
+<!-- TOC 悬浮按钮. -->
+
+<div id="floating-toc-btn" class="hide-on-med-and-down">
+    <a class="btn-floating btn-large bg-color">
+        <i class="fa fa-list"></i>
+    </a>
+</div>
+
+
+<script src="/libs/tocbot/tocbot.min.js"></script>
+<script>
+    $(function () {
+        tocbot.init({
+            tocSelector: '#toc-content',
+            contentSelector: '#articleContent',
+            headingsOffset: -($(window).height() * 0.4 - 45),
+            // headingsOffset: -205,
+            headingSelector: 'h1, h2, h3'
+        });
+
+        // modify the toc link href to support Chinese.
+        let i = 0;
+        let tocHeading = 'toc-heading-';
+        $('#toc-content a').each(function () {
+            $(this).attr('href', '#' + tocHeading + (++i));
+        });
+
+        // modify the heading title id to support Chinese.
+        i = 0;
+        $('#articleContent').children('h1, h2, h3').each(function () {
+            $(this).attr('id', tocHeading + (++i));
+        });
+
+        // Set scroll toc fixed.
+        let tocHeight = parseInt($(window).height() * 0.4 - 64);
+        let $tocWidget = $('.toc-widget');
+        $(window).scroll(function () {
+            let scroll = $(window).scrollTop();
+            /* add post toc fixed. */
+            if (scroll > tocHeight) {
+                $tocWidget.addClass('toc-fixed');
+            } else {
+                $tocWidget.removeClass('toc-fixed');
+            }
+        });
+
+        
+        /* 修复文章卡片 div 的宽度. */
+        let fixPostCardWidth = function (srcId, targetId) {
+            let srcDiv = $('#' + srcId);
+            if (srcDiv.length === 0) {
+                return;
+            }
+
+            let w = srcDiv.width();
+            if (w >= 450) {
+                w = w + 21;
+            } else if (w >= 350 && w < 450) {
+                w = w + 18;
+            } else if (w >= 300 && w < 350) {
+                w = w + 16;
+            } else {
+                w = w + 14;
+            }
+            $('#' + targetId).width(w);
+        };
+
+        // 切换TOC目录展开收缩的相关操作.
+        const expandedClass = 'expanded';
+        let $tocAside = $('#toc-aside');
+        let $mainContent = $('#main-content');
+        $('#floating-toc-btn .btn-floating').click(function () {
+            if ($tocAside.hasClass(expandedClass)) {
+                $tocAside.removeClass(expandedClass).slideUp(500);
+                $mainContent.removeClass('l9');
+            } else {
+                $tocAside.addClass(expandedClass).slideDown(500);
+                $mainContent.addClass('l9');
+            }
+            fixPostCardWidth('artDetail', 'prenext-posts');
+        });
+        
+    });
+</script>
+    
+
+</main>
+
+
+<footer class="page-footer bg-color">
+    <div class="container row center-align">
+        <div class="col s12 m8 l8 copy-right">
+            本站由&copy;<a href="https://blinkfox.github.io/" target="_blank">Blinkfox</a>基于
+            <a href="https://hexo.io/" target="_blank">Hexo</a> 的
+            <a href="https://github.com/blinkfox/hexo-theme-matery" target="_blank">hexo-theme-matery</a>主题搭建.
+
+            
+                &nbsp;<i class="fa fa-area-chart"></i>&nbsp;站点总字数:&nbsp;
+                <span class="white-color">91.3k</span>
+            
+
+            <!-- <p id="timeDate">DangoSky的博客诞生已经</p><p id="times">载入时分秒...</p> -->
+            <!-- <p>DangoSky的博客已经诞生<strong><i><span id="day"></span><span id="hour"></span></span><span id="minutes"></span><span id="seconds"></span> </strong><i></p> -->
+                <p id="timeDate"></p>
+
+            <!-- 
+			 -->
+        </div>
+        <div class="col s12 m4 l4 social-link ">
+
+    <a href="mailto:1341514988@qq.com" class="tooltipped" target="_blank" data-tooltip="邮件联系我" data-position="top" data-delay="50">
+        <i class="fa fa-envelope-open"></i>
+    </a>
+
+
+
+    <a href="/atom.xml" class="tooltipped" target="_blank" data-tooltip="RSS 订阅" data-position="top" data-delay="50">
+        <i class="fa fa-rss"></i>
+    </a>
+
+
+
+   <a href="https://github.com/DangoSky" class="tooltipped" target="_blank" data-tooltip="访问我的GitHub" data-position="top" data-delay="50">
+    <i class="fa fa-github"></i>
+</a>
+
+
+
+    <a href="http://notes.dangosky.com/" class="tooltipped" target="_blank" data-tooltip="浏览我的笔记" data-position="top" data-delay="50">
+     <i class="fa fa-book"></i>
+ </a>
+ 
+</div>
+    </div>
+</footer>
+
+<div class="progress-bar"></div>
+
+<script type="text/javascript">
+    function computed(){
+        let sum = new Date()-new Date(2018,9,3,23,3,38)
+        sum = parseInt(sum / 1000);
+        let d = zero(parseInt(sum / 3600 / 24));
+        let h = zero(parseInt(sum / 3600 % 24));
+        let m = zero(parseInt(sum / 60 % 60));
+        let s = zero(parseInt(sum % 60));
+        document.getElementById("timeDate").innerHTML = "DangoSky的博客已经诞生<strong>" + d + "</strong>天<strong>" + h + "</strong>小时<strong>" + m + "</strong>分钟<strong>" + s + "</strong>秒了。"; 
+    }
+    function zero(i){
+        if(i < 10)  {
+            i = "0" + i;
+        }
+        return i;
+    }
+    setInterval("computed();",1000);
+</script>
+
+<!-- 搜索遮罩框 -->
+<div id="searchModal" class="modal">
+    <div class="modal-content">
+        <div class="search-header">
+            <span class="title"><i class="fa fa-search"></i>&nbsp;&nbsp;搜索</span>
+            <input type="search" id="searchInput" name="s" placeholder="请输入搜索的关键字"
+                   class="search-input">
+        </div>
+        <div id="searchResult"></div>
+    </div>
+</div>
+
+<script src="/js/search.js"></script>
+<script type="text/javascript">
+$(function () {
+    searchFunc("/" + "search.xml", 'searchInput', 'searchResult');
+});
+</script>
+<!-- 回到顶部按钮 -->
+<div id="backTop" class="top-scroll">
+    <a class="btn-floating btn-large waves-effect waves-light" href="#!">
+        <i class="fa fa-angle-up"></i>
+    </a>
+</div>
+
+
+<script src="/libs/materialize/materialize.min.js"></script>
+<script src="/libs/masonry/masonry.pkgd.min.js"></script>
+<script src="/libs/aos/aos.js"></script>
+<script src="/libs/scrollprogress/scrollProgress.min.js"></script>
+<script src="/libs/lightGallery/js/lightgallery-all.min.js"></script>
+<script src="/js/matery.js"></script>
+
+<!-- Global site tag (gtag.js) - Google Analytics -->
+
+
+
+    <script src="/libs/others/clicklove.js"></script>
+
+
+
+<script src="/live2dw/lib/L2Dwidget.min.js?094cbace49a39548bed64abff5988b05"></script><script>L2Dwidget.init({"pluginRootPath":"live2dw/","pluginJsPath":"lib/","pluginModelPath":"assets/","tagMode":false,"debug":false,"model":{"jsonPath":"live2d-widget-model-shizuku"},"display":{"position":"right","width":200,"height":400},"mobile":{"show":false},"log":false});</script></body>
+</html>

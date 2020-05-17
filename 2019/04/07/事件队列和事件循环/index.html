@@ -341,14 +341,14 @@
                     
                     <div class="info-break-policy">
                         <i class="fa fa-file-word-o fa-fw"></i>文章字数:&nbsp;&nbsp;
-                        5.3k
+                        5.4k
                     </div>
                     
 
                     
                     <div class="info-break-policy">
                         <i class="fa fa-clock-o fa-fw"></i>阅读时长:&nbsp;&nbsp;
-                        18 分
+                        19 分
                     </div>
                     
                 
@@ -425,6 +425,10 @@ console<span class="token punctuation">.</span><span class="token function">log<
 </code></pre>
 <p>&emsp;&emsp;我们分别在浏览器环境和 node 环境去运行上面的代码，可以看到在浏览器环境下无论你运行多少次，结果输出的顺序都只会是 timer1 promise1 timer2 promise2 。而在 node10.x 环境下，输出的结果往往会是 timer1 timer2 promise1 promise2，但如果你多运行几次的话就会发现结果有时候跟在浏览器环境下是一样的，这也证明了 node10.x 环境下对宏任务和微任务采取的运行机制后者比前者要大得多（发现这点的时候我其实是 Orz 的，一个程序的结果还能有不确定性的，真的是 too young to simple）。</p>
 <p>&emsp;&emsp;简要解释一下node 环境下为什么会输出 timer1 timer2 promise1 promise2 吧，浏览器环境下的结果应该没什么好解释的了，前面应该说的够清楚了吧。node10.x 环境下在清空执行栈中所有的同步任务并清空所有的微任务后，有时候只是从宏任务队列中取出一个事件放到执行栈中执行而已（这也是浏览器下的运行机制，node11.x 也是如此），但更多时候并不只是取出一个事件，而是会执行完宏任务事件队列中的所有事件。也就是说取出第一个<code>setTimeout</code>定时器执行完，并不会马上执行 Promise 的回调函数，而是会继续执行<strong>同轮循环</strong>下其他的宏任务，所有在输出 timer1 后就跟着输出了 timer2，最后才去清空微任务事件队列。</p>
+<blockquote>
+<p>2020.4.25 补充：</p>
+<p>这里具体使用哪个方案，得看第一个定时器执行完后，第二个定时器是否在完成队列中（也就是是否已经到了指定时间）。是的话则会直接执行该宏任务，否则就还是先执行微任务。</p>
+</blockquote>
 <h2 id="process-nextTick具有优先权"><a href="#process-nextTick具有优先权" class="headerlink" title="process.nextTick具有优先权"></a>process.nextTick具有优先权</h2><p>&emsp;&emsp;process是 node 环境下的全局变量，浏览器环境下是不具有的，因此<code>process.nextTick</code>自然也只能在 node 环境下使用了。上文有说到，<code>process.nextTick</code>是属于微任务事件队列的，但需要注意的是，在 node 环境下<strong>process.nextTick 在微任务事件队列中的优先级会大于其他的微任务</strong>，即清空微任务事件队列时会先执行所有的<code>process.nextTick</code>事件。我们实践一下：</p>
 <pre class=" language-js"><code class="language-js">Promise<span class="token punctuation">.</span><span class="token function">resolve</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">then</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=</span><span class="token operator">></span> console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token string">"2"</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 process<span class="token punctuation">.</span><span class="token function">nextTick</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=</span><span class="token operator">></span> console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token string">"1"</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
@@ -487,6 +491,7 @@ process<span class="token punctuation">.</span><span class="token function">next
   <span class="token punctuation">}</span><span class="token punctuation">)</span>
 <span class="token punctuation">}</span><span class="token punctuation">)</span>
 </code></pre>
+<h1 id="更多资料"><a href="#更多资料" class="headerlink" title="更多资料"></a>更多资料</h1><p><a href="https://juejin.im/post/5e5c7f6c518825491b11ce93#heading-14" target="_blank" rel="noopener">面试题：说说事件循环机制(满分答案来了)</a></p>
 
             </div>
             <hr/>
@@ -761,7 +766,7 @@ process<span class="token punctuation">.</span><span class="token function">next
 
             
                 &nbsp;<i class="fa fa-area-chart"></i>&nbsp;站点总字数:&nbsp;
-                <span class="white-color">82.3k</span>
+                <span class="white-color">91.3k</span>
             
 
             <!-- <p id="timeDate">DangoSky的博客诞生已经</p><p id="times">载入时分秒...</p> -->

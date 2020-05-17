@@ -351,7 +351,7 @@
                     
                     <div class="info-break-policy">
                         <i class="fa fa-file-word-o fa-fw"></i>文章字数:&nbsp;&nbsp;
-                        2.3k
+                        2.4k
                     </div>
                     
 
@@ -385,7 +385,10 @@
 </code></pre>
 <p>意料之中的是，控制台会报 CORS 跨域的错误。</p>
 <p><img src="/2020/01/10/跨域解决方案实践/1.png" alt></p>
-<h1 id="跨域解决方案"><a href="#跨域解决方案" class="headerlink" title="跨域解决方案"></a>跨域解决方案</h1><h2 id="JSONP"><a href="#JSONP" class="headerlink" title="JSONP"></a>JSONP</h2><ul>
+<h1 id="跨域解决方案"><a href="#跨域解决方案" class="headerlink" title="跨域解决方案"></a>跨域解决方案</h1><blockquote>
+<p>其他跨域方案可参考 <a href="https://mp.weixin.qq.com/s/OC9yEU6JasHxXH_M2b6bHA" target="_blank" rel="noopener">10 种跨域解决方案（附终极方案）</a></p>
+</blockquote>
+<h2 id="JSONP"><a href="#JSONP" class="headerlink" title="JSONP"></a>JSONP</h2><ul>
 <li><p>原理：<code>&lt;script&gt;</code>、<code>&lt;link&gt;</code>、<code>&lt;img&gt;</code> 引入的资源不受同源策略限制，并且动态载入的 script 脚本会自动执行。所以以请求 script 脚本的方式来调用 api 即可（但需要后端配合格式化返回的数据）。</p>
 </li>
 <li><p>优点：兼容性很好。</p>
@@ -401,12 +404,24 @@
 </ul>
 <pre class=" language-js"><code class="language-js"><span class="token comment" spellcheck="true">// 前端代码</span>
 <span class="token keyword">function</span> <span class="token function">jsonp</span><span class="token punctuation">(</span>url<span class="token punctuation">,</span> callback<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token comment" spellcheck="true">// 创建一个唯一的回调函数名称</span>
+  <span class="token keyword">let</span> fn <span class="token operator">=</span> <span class="token function">Symbol</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  <span class="token comment" spellcheck="true">// 先在 window 上定义这个回调函数，后端返回数据后会立即执行这个回调函数</span>
+  window<span class="token punctuation">[</span>fn<span class="token punctuation">]</span> <span class="token operator">=</span> <span class="token keyword">function</span><span class="token punctuation">(</span>response<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">try</span> <span class="token punctuation">{</span>
+      <span class="token function">callback</span><span class="token punctuation">(</span>response<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span> <span class="token keyword">finally</span> <span class="token punctuation">{</span>
+      <span class="token keyword">delete</span> window<span class="token punctuation">[</span>fn<span class="token punctuation">]</span><span class="token punctuation">;</span>
+      document<span class="token punctuation">.</span>body<span class="token punctuation">.</span><span class="token function">removeChild</span><span class="token punctuation">(</span>script<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+  <span class="token punctuation">}</span><span class="token punctuation">;</span>
   <span class="token keyword">let</span> script <span class="token operator">=</span> document<span class="token punctuation">.</span><span class="token function">createElement</span><span class="token punctuation">(</span><span class="token string">"script"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
   script<span class="token punctuation">.</span>type <span class="token operator">=</span> <span class="token string">'text/javascript'</span><span class="token punctuation">;</span>
+  <span class="token comment" spellcheck="true">// 判断 url 是否已经有其他的查询参数</span>
   <span class="token keyword">if</span><span class="token punctuation">(</span>url<span class="token punctuation">.</span><span class="token function">indexOf</span><span class="token punctuation">(</span><span class="token string">"?"</span><span class="token punctuation">)</span> <span class="token operator">===</span> <span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-    url <span class="token operator">+</span><span class="token operator">=</span> <span class="token template-string"><span class="token string">`?callback=</span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span>callback<span class="token interpolation-punctuation punctuation">}</span></span><span class="token string">`</span></span><span class="token punctuation">;</span>
+    url <span class="token operator">+</span><span class="token operator">=</span> <span class="token template-string"><span class="token string">`?callback=</span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span>fn<span class="token interpolation-punctuation punctuation">}</span></span><span class="token string">`</span></span><span class="token punctuation">;</span>
   <span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token punctuation">{</span>
-    url <span class="token operator">+</span><span class="token operator">=</span> <span class="token template-string"><span class="token string">`&amp;callback=</span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span>callback<span class="token interpolation-punctuation punctuation">}</span></span><span class="token string">`</span></span><span class="token punctuation">;</span>
+    url <span class="token operator">+</span><span class="token operator">=</span> <span class="token template-string"><span class="token string">`&amp;callback=</span><span class="token interpolation"><span class="token interpolation-punctuation punctuation">${</span>fn<span class="token interpolation-punctuation punctuation">}</span></span><span class="token string">`</span></span><span class="token punctuation">;</span>
   <span class="token punctuation">}</span>
   script<span class="token punctuation">.</span>src <span class="token operator">=</span> url<span class="token punctuation">;</span>
   document<span class="token punctuation">.</span>body<span class="token punctuation">.</span><span class="token function">appendChild</span><span class="token punctuation">(</span>script<span class="token punctuation">)</span><span class="token punctuation">;</span>
@@ -688,12 +703,12 @@ app<span class="token punctuation">.</span><span class="token function">listen</
                         <span class="chip bg-color">JavaScript</span>
                     </a>
                     
-                    <a href="/tags/组件实现/" target="_blank">
-                        <span class="chip bg-color">组件实现</span>
-                    </a>
-                    
                     <a href="/tags/实习记录/" target="_blank">
                         <span class="chip bg-color">实习记录</span>
+                    </a>
+                    
+                    <a href="/tags/组件实现/" target="_blank">
+                        <span class="chip bg-color">组件实现</span>
                     </a>
                     
                 </div>
@@ -864,7 +879,7 @@ fun</div>
 
             
                 &nbsp;<i class="fa fa-area-chart"></i>&nbsp;站点总字数:&nbsp;
-                <span class="white-color">82.3k</span>
+                <span class="white-color">91.3k</span>
             
 
             <!-- <p id="timeDate">DangoSky的博客诞生已经</p><p id="times">载入时分秒...</p> -->
