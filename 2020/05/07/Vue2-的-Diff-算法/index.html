@@ -348,7 +348,7 @@
                     
                     <div class="info-break-policy">
                         <i class="fa fa-file-word-o fa-fw"></i>文章字数:&nbsp;&nbsp;
-                        7.1k
+                        7.3k
                     </div>
                     
 
@@ -734,6 +734,9 @@ Vue<span class="token punctuation">.</span>prototype<span class="token punctuati
 <p>我的理解是，在原来的 Diff 算法中，它并没有使用同层比较这个策略，而是将旧虚拟 DOM 的每个节点和新虚拟 DOM 的每个节点进行两两比较，这就已经有 <code>O(n^2)</code> 了。而找到匹配的两个节点后，又要通过移动等操作去改变真实 DOM，所以又有 <code>O(n)</code> 的消耗，所以总共就是 <code>O(n^3)</code>。</p>
 <p>而优化后的 Diff 算法，因为使用了同层比较和双端比较，所以只需要比较同层级的节点就行，并且借助首尾四个指针可以直接将节点移动、删除到指定位置上，所以就只要 <code>O(n)</code> 的时间复杂度了。</p>
 <h1 id="结语"><a href="#结语" class="headerlink" title="结语"></a>结语</h1><p>至此，Vue Diff 算法的流程和相关源码都解释完了。通过把自己的理解整理并输出为一篇 Blog，也算是加深了自己的理解吧~ BTW，面试真的很喜欢问 Diff 算法啊，这几天腾讯面试，一面二面都问到了 Diff 算法。哈哈，刚好这几天都在看 Diff 算法并边整理成了 Blog，面试的时候就将这篇 Blog 写到的几个主要点说了下。理解和写 Blog 花了好几天的时间，面试问答到 Diff 算法也就那么五分钟，这可以算是养兵千日，用兵一时么？</p>
+<hr>
+<p>2020.5.18 补充，忽然想到一个问题。Vue 双向数据绑定通过数据劫持的方式，已经可以精确知道是哪个数据发生变化，发生了什么变化，那么为什么还要对虚拟 DOM 进行 Diff 差异呢？我自己没想到答案，网上一些 Blog 给出的解释是：</p>
+<p>双向数据绑定绑定一个数据就需要一个 Watcher，一但我们的绑定细粒度过高就会产生大量的 Watcher，这会带来内存以及依赖追踪的开销，而细粒度过低会无法精准侦测变化。因此 Vue 的设计是选择中等细粒度的方案，在组件级别进行数据劫持侦测立即获取到变化的组件，而在组件内部进行虚拟 Dom Diff 比对差异。</p>
 
             </div>
             <hr/>
@@ -1021,7 +1024,7 @@ Vue<span class="token punctuation">.</span>prototype<span class="token punctuati
 
             
                 &nbsp;<i class="fa fa-area-chart"></i>&nbsp;站点总字数:&nbsp;
-                <span class="white-color">91.3k</span>
+                <span class="white-color">91.5k</span>
             
 
             <!-- <p id="timeDate">DangoSky的博客诞生已经</p><p id="times">载入时分秒...</p> -->
