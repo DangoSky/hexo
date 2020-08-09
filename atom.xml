@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://blog.dangosky.com/"/>
-  <updated>2020-08-09T12:35:18.880Z</updated>
+  <updated>2020-08-09T12:43:44.753Z</updated>
   <id>http://blog.dangosky.com/</id>
   
   <author>
@@ -21,7 +21,7 @@
     <link href="http://blog.dangosky.com/2020/07/30/%E9%87%87%E5%9D%91%E8%AE%B0%E5%BD%95-%E6%8E%A5%E5%8F%A3%E8%81%94%E8%B0%83%E4%B8%AD%E7%9A%84%E7%B2%BE%E7%A1%AE%E5%BA%A6%E4%B8%A2%E5%A4%B1/"/>
     <id>http://blog.dangosky.com/2020/07/30/采坑记录-接口联调中的精确度丢失/</id>
     <published>2020-07-30T10:12:13.000Z</published>
-    <updated>2020-08-09T12:35:18.880Z</updated>
+    <updated>2020-08-09T12:43:44.753Z</updated>
     
     <summary type="html">
     
@@ -39,6 +39,8 @@
     
     
       <category term="JavaScript" scheme="http://blog.dangosky.com/tags/JavaScript/"/>
+    
+      <category term="实习记录" scheme="http://blog.dangosky.com/tags/%E5%AE%9E%E4%B9%A0%E8%AE%B0%E5%BD%95/"/>
     
       <category term="踩坑指南" scheme="http://blog.dangosky.com/tags/%E8%B8%A9%E5%9D%91%E6%8C%87%E5%8D%97/"/>
     
