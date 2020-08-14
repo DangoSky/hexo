@@ -4,8 +4,8 @@
 
 <head><meta name="generator" content="Hexo 3.9.0">
     <meta charset="utf-8">
-    <meta name="keywords" content="采坑记录-接口联调中的精确度丢失, DangoSky">
-    <meta name="description" content=" 上下文先简单描述一下业务场景吧：在页面 A 里调用接口 1 新建工单，首先接口 1 是走我们前端自己的 Node 后台进行一层处理后，再调后台同学的接口。之后后台同学会返回这个新工单的 ID，再由 Node 后台把这个 ID 照样返回给浏">
+    <meta name="keywords" content="腾讯实习小结, DangoSky">
+    <meta name="description" content=" 又到了一段实习经历暂告结束的时候啦~ 时间说快吧，这两个多月的时间里也遇到了几多困难和挑战，在其中也挣扎许久。时间说慢吧，现在也已经快要离职并开始秋招这个最后的难关了。姑且就以此篇 Blog 作为我在腾讯从 2020.06.10 实习以来">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
     <meta name="renderer" content="webkit|ie-stand|ie-comp">
@@ -13,7 +13,7 @@
     <meta name="format-detection" content="telephone=no">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <title>采坑记录-接口联调中的精确度丢失 | DangoSky</title>
+    <title>腾讯实习小结 | DangoSky</title>
     <link rel="icon" type="image/jpeg" href="/favicon.jpg">
 
     <link rel="stylesheet" type="text/css" href="/libs/awesome/css/font-awesome.min.css">
@@ -193,13 +193,13 @@
 
 
 
-<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/5.jpg')">
+<div class="bg-cover pd-header post-cover" style="background-image: url('/medias/featureimages/13.jpg')">
     <div class="container">
         <div class="row">
             <div class="col s12 m12 l12">
                 <div class="brand">
                     <div class="description center-align post-title">
-                        采坑记录-接口联调中的精确度丢失
+                        腾讯实习小结
                     </div>
                 </div>
             </div>
@@ -310,16 +310,8 @@
                     
                     <div class="article-tag">
                         
-                            <a href="/tags/JavaScript/" target="_blank">
-                                <span class="chip bg-color">JavaScript</span>
-                            </a>
-                        
                             <a href="/tags/实习记录/" target="_blank">
                                 <span class="chip bg-color">实习记录</span>
-                            </a>
-                        
-                            <a href="/tags/踩坑指南/" target="_blank">
-                                <span class="chip bg-color">踩坑指南</span>
                             </a>
                         
                     </div>
@@ -330,8 +322,8 @@
                     <div class="post-cate">
                         <i class="fa fa-bookmark fa-fw icon-category"></i>
                         
-                            <a href="/categories/踩坑指南/" class="post-category" target="_blank">
-                                踩坑指南
+                            <a href="/categories/实习记录/" class="post-category" target="_blank">
+                                实习记录
                             </a>
                         
                     </div>
@@ -342,21 +334,21 @@
             <div class="post-info">
                 <div class="post-date info-break-policy">
                     <i class="fa fa-calendar-minus-o fa-fw"></i>发布日期:&nbsp;&nbsp;
-                    2020-07-30
+                    2020-08-14
                 </div>
 
                 
                     
                     <div class="info-break-policy">
                         <i class="fa fa-file-word-o fa-fw"></i>文章字数:&nbsp;&nbsp;
-                        1k
+                        2.8k
                     </div>
                     
 
                     
                     <div class="info-break-policy">
                         <i class="fa fa-clock-o fa-fw"></i>阅读时长:&nbsp;&nbsp;
-                        3 分
+                        9 分
                     </div>
                     
                 
@@ -367,24 +359,16 @@
         <hr class="clearfix">
         <div class="card-content article-card-content">
             <div id="articleContent">
-                <script src="/assets/js/APlayer.min.js"> </script><h2 id="上下文"><a href="#上下文" class="headerlink" title="上下文"></a>上下文</h2><p>先简单描述一下业务场景吧：在页面 A 里调用接口 1 新建工单，首先接口 1 是走我们前端自己的 Node 后台进行一层处理后，再调后台同学的接口。之后后台同学会返回这个新工单的 ID，再由 Node 后台把这个 ID 照样返回给浏览器。页面 B 是一个工单列表，调用的是后台同学的接口 2 拉取所有的工单信息。在本次迭代的需求中新增了一些 feature 后，我和后台同学联调这里的业务逻辑是否符合预期时，结果发现我在页面 A 新建工单后得到的工单 ID，和在页面 B 的工单列表里看到的工单 ID 是不一样的。这里的工单 ID 是指类似于 <code>1288407554284482560</code> 这样的一串数字。</p>
-<h2 id="排查问题"><a href="#排查问题" class="headerlink" title="排查问题"></a>排查问题</h2><p>在清楚问题是什么后，我首先确认下前端代码，看看是不是在拿到后台接口数据后对数据有进行修改等操作，结果很遗憾并没有这么轻松地定位到问题。接着我就去找对接的后台同学一起排查问题，首先确认接口是否的确走的是测试环境的数据，以及后台代码是否有对返回的数据进行额外的处理等。</p>
-<p>都没发现问题后，使用 curl 直接调后台同学创建工单的接口，得到的工单 ID 和先走 Node 再走后台同学接口拿到的工单 ID 的确不一致。于是大致可以确定问题是出在了我们这边的 Node 后台代码上。之后我自己再验证了下，上机器看 Node 后台的日志，发现 Node 最初拿到后台接口的数据和最后返回给浏览器的数据确实是不一样的。</p>
-<p>于是我一行行去看 Node 的代码，试图寻找是在哪个地方改变了数据。几轮看下来后，我还是没有找到修改数据的地方所在，只能挨块打印出当前的数据，然后上机器看日志。最后发现是在 <code>JSON.parse(data)</code> 这句代码执行完后，工单 ID 就发生了改变的（这里的 <code>data</code> 是指后台同学接口返回的数据）。这里使用 <code>JSON.parse</code> 是因为后台接口返回的 <code>data</code> 是字符串形式的，所以先使用 <code>JOSN.parse</code> 解析一下。那我就纳闷了，<code>JOSN.parse</code> 不就是把字符串解析成对象而已吗，怎么前后的数据还会改变的？</p>
-<h2 id="问题原因"><a href="#问题原因" class="headerlink" title="问题原因"></a>问题原因</h2><p>通过仔细研究 <code>data</code> 里的数据后（比如 <code>data = &quot;{\&quot;work_id\&quot;:1288407554284482560}&quot;</code>），我发现 <code>data</code> 里的 <code>work_id</code> 是 Number 类型的！这里暂且不讨论前后端接口传输的 ID 为啥是 Number 类型而不是 String 类型，其实我也不知道当初定这接口的人是怎么想的。又联想到前后 <code>work_id</code> 的值其实相差很小，而且这个 <code>work_id</code> 高达 19 位数，所以就怀疑会不会是发生了精确度丢失？</p>
-<pre class=" language-js"><code class="language-js"><span class="token keyword">const</span> data <span class="token operator">=</span> <span class="token string">"{\"work_id\":1288407554284482560}"</span>
-<span class="token keyword">const</span> res <span class="token operator">=</span> JSON<span class="token punctuation">.</span><span class="token function">parse</span><span class="token punctuation">(</span>data<span class="token punctuation">)</span><span class="token punctuation">;</span>
-console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token keyword">typeof</span> res<span class="token punctuation">.</span>work_id<span class="token punctuation">)</span><span class="token punctuation">;</span>  <span class="token comment" spellcheck="true">// number</span>
-console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>res<span class="token punctuation">)</span><span class="token punctuation">;</span>  <span class="token comment" spellcheck="true">// {work_id: 1288407554284482600}</span>
-</code></pre>
-<p>以前也有了解过遵循 IEEE 754 规范的计算机语言，由于十进制小数转化为二进制时成了一个无限循环小数，导致进行四则运算后的结果并不准确，最被人知晓的就是 <code>0.1 + 0.2 !== 0.3</code> 了，很久之前我还为此写了<a href="http://blog.dangosky.com/2019/03/02/0-1-0-2-0-3/">一篇 Blog</a> 记录呢。</p>
-<p>猜到可能的原因后，我就尝试着把原先 <code>data</code> 里的 <code>work_id</code> 转换成字符串类型再 <code>JOSN.parse</code> 试试看，结果发现这样得到的 <code>work_id</code> 就准确了！所以这次 bug 就确认了是 <code>JOSN.parse</code> 时，由于 <code>work_id</code> 的值超出了 JS 能表示的最大整数值即 <code>Number.MAX_SAFE_INTEGER = 9007199254740991</code>，所以发生了精确度溢出，最后解析得到的 <code>work_id</code> 也就不准确了。</p>
-<pre class=" language-js"><code class="language-js"><span class="token keyword">const</span> data <span class="token operator">=</span> <span class="token string">"{\"work_id\":1288407554284482560}"</span>
-<span class="token keyword">const</span> formatdata <span class="token operator">=</span> data<span class="token punctuation">.</span><span class="token function">replace</span><span class="token punctuation">(</span><span class="token regex">/(\d+)/g</span><span class="token punctuation">,</span> <span class="token string">"\"$1\""</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-<span class="token keyword">const</span> res <span class="token operator">=</span> JSON<span class="token punctuation">.</span><span class="token function">parse</span><span class="token punctuation">(</span>formatdata<span class="token punctuation">)</span><span class="token punctuation">;</span>
-console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span>res<span class="token punctuation">)</span><span class="token punctuation">;</span>  <span class="token comment" spellcheck="true">// {work_id: "1288407554284482560"}</span>
-</code></pre>
-<h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><p><a href="https://imweb.io/topic/581a8eb02373d1aa606c8be7" target="_blank" rel="noopener">当JavaScript遇上UINT64</a></p>
+                <script src="/assets/js/APlayer.min.js"> </script><p>又到了一段实习经历暂告结束的时候啦~ 时间说快吧，这两个多月的时间里也遇到了几多困难和挑战，在其中也挣扎许久。时间说慢吧，现在也已经快要离职并开始秋招这个最后的难关了。姑且就以此篇 Blog 作为我在腾讯从 2020.06.10 实习以来的一个小结吧。</p>
+<p>腾讯的这段实习和我之前在字节的实习大不一样。因为在字节我所处的飞书商业化团队里，前端和后端界限分得很清楚，前端几乎只做纯前端的工作，服务器数据库等都是由部门里对应的后台同学负责的。而我在腾讯的这个部门（PCG/腾讯看点/内容平台中心/综合开发组）由于做的是中台，所以前端也要负责相当一部分的服务器和数据库等东西，平时接的每个业务需求，也基本都是前后端都得自己写。名副其实，真就是综合开发组了。</p>
+<p>由于业务的关系，我也接触并实践到了许多后台的知识点，比如 Node、MySQL、Hbase、ES、Ckv、服务器等等。然而我觉得有一个很大的痛点就是，我对这些技术的掌握也就只是到达基本满足平时业务开发的程度，仅此而已。更何况项目代码里面还基本都封装好了对应的操作方法，开箱即用，也不用我怎么额外操作。所以我都不好意思在实习经历中写上在腾讯参与过的项目开发了，这实在是太容易给自己挖坑了呀。连我都可以随便想到几个问题就把自己给问到了，比如详细说一下 Hbase 和 ES？怎么缩短数据库访问耗时？一被问就是不会了 Orz。好吧，之后还是需要抽时间出来专门学一下后台这些知识点，这个软肋可太硬核了。</p>
+<p>除了接触到许多后台的知识点外，也还了解了一些前端的技术方案，比如手绘图生成页面代码、自动化测试等。这两个其实是我 leader 为了让我在转正答辩上有拿得出手的产出可以讲而让我调研相关的技术方案后自己“搞”一个出来，只是可惜我后续一直忙于写业务需求，没能抽出足够的时间投入，而且后面决定不参加答辩直接离职参加秋招就更没有去看了。</p>
+<p>所谓的手绘图生成页面代码（即 Design To Code，以下就简称为 D2C），指的是通过上传设计稿，就可以自动识别并生成对应的页面代码，从而一步完成页面开发。类似于业界内的前端页面可视化搭建平台，不过 D2C 直接就省去了人工拖拽和配置组件的步骤，极大程度上解放了生产力。对于 D2C，业界内其实还没有像可视化搭建平台那样有许多已经可以用于生产的成品了，也还只是出于探索阶段。其中应该属阿里的 <a href="https://www.imgcook.com/" target="_blank" rel="noopener">imgcook</a> 较为成熟了，不过很可惜 imgcook 没有开源。此外还有 <a href="https://github.com/ccywch/UI2code" target="_blank" rel="noopener">UI2code</a>、<a href="https://github.com/tonybeltramelli/pix2code" target="_blank" rel="noopener">pix2code</a> 等技术方案，不过这两个就各不如人意了。我觉得 D2C 最大的难点还是在于机器学习，如何识别出一张设计稿的内容，只要识别出来后将其表示成类似虚拟 DOM 的数据结构，后续的事就应该问题不大了。</p>
+<p>而自动化测试方案，我原本的想法是遵循传统的方案，通过断言库（<a href="https://www.chaijs.com/" target="_blank" rel="noopener">chai</a>）和单元测试库（<a href="https://jestjs.io/zh-Hans/" target="_blank" rel="noopener">Jest</a>）来写测试脚本，此外再借助其他的一些库如 UI 测试 <a href="https://zhaoqize.github.io/puppeteer-api-zh_CN/" target="_blank" rel="noopener">puppeteer</a>、组件测试 <a href="https://github.com/enzymejs/enzyme" target="_blank" rel="noopener">enzyme</a> 等实现自动化测试的。但是由于部门里现在页面开发已经转向了由自研的 Dvl 可视化页面搭建平台配置生成页面，所以传统的前端自动化测试方案不适用于我们部门。之后调研方向转向了通过录制页面操作，生成脚本文件以供后续的自动化测试。这一方面主要看了阿里开源的 <a href="https://github.com/alibaba/uirecorder" target="_blank" rel="noopener">UI Recorder</a>，不过后续时间紧张就没有再深入研究了。对于前者传统的自动化测试方案，主要参考了：<a href="https://aotu.io/notes/2020/05/06/jingxi-automated-testing/index.html" target="_blank" rel="noopener">京喜前端自动化测试之路</a>、<a href="https://tech.youzan.com/you-zan-qian-duan-zhi-liang-bao-zheng-ti-xi/" target="_blank" rel="noopener">有赞前端质量保障体系</a>等等。</p>
+<p>emmm，这么说起来好像我在腾讯实习的这段时间里，除了写需求外就一事无成了 Orz？成长还是有一点的呐，比如使用 whistle 代理工具代理页面和接口，与此相关的还有 Host 等配置；出问题或 Bug 时能够比较熟练地到服务对应的机器上查日志，以此独立排查和解决问题；对于一些告警，可以根据告警 ID 或接口路径到相应的监控平台去查看日志排查问题；此外还有一些编码意识的提高，比如说写代码时要再多想想可扩展性、可复用性、健壮性。1. 可扩展性。我理解的是在针对一些 feature 进行编码开发时，需要考虑到后期该 feature 可能存在的迭代改进，以便提前在代码里做好兼容，避免后续 feature 迭代时又要大改特改代码。比如我做过的一个需求，要在原来单个单子审核的基础上支持批量审核，如果早期的编码考虑到扩展性的话，审核调用的函数入参时使用数组列表而非单条数据（单个单子审核时传一个长度为 1 的数组即可），这样后续支持批量审核时是不是只需要改一下入参就可以了？否则还得去批量调用原来单个审核的函数，甚至是修改原来的审核函数。2. 可复用性。我理解的是一些大众普用的函数或组件应该抽出来放到特定的代码目录里，以便在其他页面可以很方便地使用到。你能想象一些公用的函数也都被挤在一个组件里，既导致单个文件代码行数过千行，又使得其他组件想复用时只能望而却步只好再 copy 一份一模一样的代码出来的心情吗？当然对于拆分的粒度也不好把握，粒度过大则可复用性不佳，粒度过下则导致过于散乱。还得考虑到的另一个问题是在组件复用时，如何避免各自的影响。比如一个 Table 组件，很多个页面都复用到了它，但是后续需求在做迭代时往往都是只针对特定几个页面的，此时不得不得通过 props 来界定不同的页面，然而时间一长特别还是团队多人合作开发，代码就会愈来愈臃肿且难以理解。这些问题都是需要在编码时先想好的，不然不加以思索就直接编码，很可能写到一半才发现这样写不对得那样才行，于是推到重来。3. 健壮性。我的理解是编码时需要充分考虑到特殊情况，避免因出现语法错误而直接导致页面白屏。我最常遇到的主要还是对于接口返回的数据，实在是不能相信接口返回的数据，可能某个字段没有值时它会返回空也可能直接就不返回该字段了，可能同一个接口它返回的字段名是不一样的需要再获取响应数据时再额外判断…总之，对于接口返回的数据，先去判断一下某个值是否存在再去取它的属性比较保险。</p>
+<p>其间也踩过一些坑，比如使用 <code>source</code> 命令往数据库里导入 SQL 文件时，需要在登录数据库时就指定 <code>utf-8</code> 编码（<code>mysql -u localuser -p --default-character-set=utf8</code>）才行，不然导入数据可能会失败，或者导入的数据不全；比如前后台接口联调时可能因为精确度溢出而导致数据不一致，具体参考我的另一篇 Blog <a href="http://blog.dangosky.com/2020/07/30/%E9%87%87%E5%9D%91%E8%AE%B0%E5%BD%95-%E6%8E%A5%E5%8F%A3%E8%81%94%E8%B0%83%E4%B8%AD%E7%9A%84%E7%B2%BE%E7%A1%AE%E5%BA%A6%E4%B8%A2%E5%A4%B1/">采坑记录-接口联调中的精确度丢失</a>。</p>
+<p>此外受我 leader 的教导，也明白了一个工程师应该具有的素养。我理解的是，身为一个工程师，职责说白了就是保证高效高质量的需求交付。而要追求高效高质量，就得打造一些智能平台来逐步代替人工劳动。对于高效，需要思考的是能否通过工具来避免重复的人工开发，不管是前端页面，还是后端接口。我们是不是可以直接通过页面可视化拖拽平台来代理常规的 React + Antd 开发页面，甚至是借助上文提到的 D2C？是不是可以指定数据库信息和需要的字段数据，就能自动实现 CURD 而不用人工每次都去专门写接口？是不是可以通过一些发布构建平台来快速实现 CICD，提高发布的便捷性和可靠性？对于高质量，是不是可以通过自动化测试对页面对接口对数据进行智能测试，提前发现潜在的问题将其扼杀在开发阶段？是不是可以通过监控告警平台来及时发现用户操作时遇到的问题比如页面白屏接口失败等等？是不是可以通过完善监控告警平台使得告警时能自动识别到问题并定位到对应的代码位置？此外还要考虑怎么把这些平台都打通，新项目怎么快速接入实现可插拔等等问题。当然，真实的业务场景可能很复杂，无法做到完全借助平台去完成，但是不是可以想方设法去提高平台的覆盖率，尽可能地实现工程化呢？这些问题，都是我平时没有去思考的，通过这次实习，也渐渐学会去思考怎么避免低效、保证质量，也算做是一个提高吧~</p>
+<p>大概就总结这几个点啦，大后天就要离职了，只能说接下来的秋招加油了~ 早日上岸然后就可以开始做我喜欢的事啦，比如开始我 Web 仙剑奇侠传四的开发之旅 hhh~~</p>
 
             </div>
             <hr/>
@@ -408,7 +392,7 @@ console<span class="token punctuation">.</span><span class="token function">log<
                     </span>
                     <a href="http://blog.dangosky.com" class="b-link-green">DangoSky</a>
                     <i class="fa fa-angle-right fa-lg fa-fw text-color"></i>
-                    <a href="/2020/07/30/采坑记录-接口联调中的精确度丢失/" class="b-link-green">采坑记录-接口联调中的精确度丢失</a>
+                    <a href="/2020/08/14/腾讯实习小结/" class="b-link-green">腾讯实习小结</a>
                 </p>
             </div>
         </div>
@@ -429,9 +413,9 @@ console<span class="token punctuation">.</span><span class="token function">log<
 
 <script type="text/javascript">
     disqus_config = function () {
-        this.page.url = 'http://blog.dangosky.com/2020/07/30/采坑记录-接口联调中的精确度丢失/';
-        this.page.identifier = '/2020/07/30/采坑记录-接口联调中的精确度丢失/';
-        this.page.title = '采坑记录-接口联调中的精确度丢失';
+        this.page.url = 'http://blog.dangosky.com/2020/08/14/腾讯实习小结/';
+        this.page.identifier = '/2020/08/14/腾讯实习小结/';
+        this.page.title = '腾讯实习小结';
     };
     let disqus_shortname = 'dangosky';
 
@@ -454,9 +438,10 @@ console<span class="token punctuation">.</span><span class="token function">log<
 <article id="prenext-posts" class="prev-next articles">
     <div class="row article-row">
         
-        <div class="article col s12 m6" data-aos="fade-up">
+        <div class="article col s12 m6" data-aos="fade-up" data-aos="fade-up">
             <div class="article-badge left-badge text-color">
-                <i class="fa fa-chevron-left"></i>&nbsp;上一篇</div>
+                <i class="fa fa-dot-circle-o"></i>&nbsp;本篇
+            </div>
             <div class="card">
                 <a href="/2020/08/14/腾讯实习小结/">
                     <div class="card-image">
@@ -470,9 +455,9 @@ console<span class="token punctuation">.</span><span class="token function">log<
                 <div class="card-content article-content">
                     <div class="summary"> 又到了一段实习经历暂告结束的时候啦~ 时间说快吧，这两个多月的时间里也遇到了几多困难和挑战，在其中也挣扎许久。时间说慢吧，现在也已经快要离职并开始秋招这个最后的难关了。姑且就以此篇 Blog 作为我在腾讯从 2020.06.10 实习以来</div>
                     <div class="publish-info">
-                        <span class="publish-date">
-                            <i class="fa fa-clock-o fa-fw icon-date"></i>2020-08-14
-                        </span>
+                            <span class="publish-date">
+                                <i class="fa fa-clock-o fa-fw icon-date"></i>2020-08-14
+                            </span>
                         <span class="publish-author">
                             
                             <i class="fa fa-bookmark fa-fw icon-category"></i>
@@ -485,6 +470,7 @@ console<span class="token punctuation">.</span><span class="token function">log<
                         </span>
                     </div>
                 </div>
+
                 
                 <div class="card-action article-tags">
                     
@@ -503,32 +489,27 @@ console<span class="token punctuation">.</span><span class="token function">log<
                 下一篇&nbsp;<i class="fa fa-chevron-right"></i>
             </div>
             <div class="card">
-                <a href="/2020/07/18/前端性能监控指标介绍/">
+                <a href="/2020/07/30/采坑记录-接口联调中的精确度丢失/">
                     <div class="card-image">
                         
                         
-                        <img src="/medias/featureimages/8.jpg" class="responsive-img" alt="前端性能监控指标介绍">
+                        <img src="/medias/featureimages/5.jpg" class="responsive-img" alt="采坑记录-接口联调中的精确度丢失">
                         
-                        <span class="card-title">前端性能监控指标介绍</span>
+                        <span class="card-title">采坑记录-接口联调中的精确度丢失</span>
                     </div>
                 </a>
                 <div class="card-content article-content">
-                    <div class="summary"> 为什么要统计监控指标量化出一个页面的性能，根据不断阶段的耗时，找出其中的短板进行性能优化。
-监控指标数据window.performance APIW3C
-MDN Performance
-
-
-performance.memory 表示内存</div>
+                    <div class="summary"> 上下文先简单描述一下业务场景吧：在页面 A 里调用接口 1 新建工单，首先接口 1 是走我们前端自己的 Node 后台进行一层处理后，再调后台同学的接口。之后后台同学会返回这个新工单的 ID，再由 Node 后台把这个 ID 照样返回给浏</div>
                     <div class="publish-info">
                             <span class="publish-date">
-                                <i class="fa fa-clock-o fa-fw icon-date"></i>2020-07-18
+                                <i class="fa fa-clock-o fa-fw icon-date"></i>2020-07-30
                             </span>
                         <span class="publish-author">
                             
                             <i class="fa fa-bookmark fa-fw icon-category"></i>
                             
-                            <a href="/categories/性能监控/" class="post-category" target="_blank">
-                                    性能监控
+                            <a href="/categories/踩坑指南/" class="post-category" target="_blank">
+                                    踩坑指南
                                 </a>
                             
                             
@@ -538,12 +519,16 @@ performance.memory 表示内存</div>
                 
                 <div class="card-action article-tags">
                     
-                    <a href="/tags/性能监控/" target="_blank">
-                        <span class="chip bg-color">性能监控</span>
+                    <a href="/tags/JavaScript/" target="_blank">
+                        <span class="chip bg-color">JavaScript</span>
                     </a>
                     
-                    <a href="/tags/性能优化/" target="_blank">
-                        <span class="chip bg-color">性能优化</span>
+                    <a href="/tags/实习记录/" target="_blank">
+                        <span class="chip bg-color">实习记录</span>
+                    </a>
+                    
+                    <a href="/tags/踩坑指南/" target="_blank">
+                        <span class="chip bg-color">踩坑指南</span>
                     </a>
                     
                 </div>
