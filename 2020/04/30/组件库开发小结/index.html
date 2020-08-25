@@ -350,7 +350,7 @@
                     
                     <div class="info-break-policy">
                         <i class="fa fa-file-word-o fa-fw"></i>文章字数:&nbsp;&nbsp;
-                        1.7k
+                        1.9k
                     </div>
                     
 
@@ -418,7 +418,14 @@
 <p>以 input 组件为例，Antd 内部是这样调用的。如果我们在组件内指定了 <code>prefixCls</code> 这个 prop 的话（它重命名为了 <code>customizePrefixCls</code>），<code>getPrefixCls</code> 就会返回我们指定的类名前缀，否则就默认返回 <code>ant-{组件名}</code>。</p>
 <p><img src="/2020/04/30/组件库开发小结/3.png" alt></p>
 <h4 id="2-修改样式文件的类名"><a href="#2-修改样式文件的类名" class="headerlink" title="2. 修改样式文件的类名"></a>2. 修改样式文件的类名</h4><p>将 DOM 节点的类名前缀改为 <code>dangosky</code> 后，还需要将 less 中的类名前缀也改为 <code>dangosky</code> 才行，不然会匹配不到相应的样式。Antd 里有一个<a href="https://github.com/ant-design/ant-design/blob/master/components/style/themes/default.less" target="_blank" rel="noopener">全局的样式文件</a>，包含了一些全局的样式变量，它会在每个组件中都被引入进去。其中有一个变量是 <code>@ant-prefix</code> ，less 中的每个类名都会在前面加上 <code>@ant-prefix</code> 。所以我们可以定制新组件库的主题文件，在里面将 <code>@ant-prefix</code> 值修改成 <code>dangosky</code>，之后在每个新组件的样式文件中导入这个主题文件覆盖原来的 Antd 值就可以了。</p>
-<h4 id="3-在组件里自动引入样式文件"><a href="#3-在组件里自动引入样式文件" class="headerlink" title="3. 在组件里自动引入样式文件"></a>3. 在组件里自动引入样式文件</h4><p>在使用 Antd 组件的时候可以不用手动 <code>import</code> 进样式文件，Antd 提供了一个插件 <a href="https://github.com/ant-design/babel-plugin-import" target="_blank" rel="noopener">babel-plugin-import</a> 来自动引入样式文件。<code>babel-plugin-import</code> 插件不仅会<a href="https://3x.ant.design/docs/react/getting-started-cn#%e6%8c%89%e9%9c%80%e5%8a%a0%e8%bd%bd" target="_blank" rel="noopener">按需引入</a>指定的组件，还会再自动 <code>import</code> 进它的样式文件。从它的<a href="https://github.com/ant-design/babel-plugin-import/blob/39afe424ffd81baf80c8a8b0f573a5bd21cf0736/src/Plugin.js#L90" target="_blank" rel="noopener">源码</a>里可以看到，当在 babel 配置里设置了 <code>style: true</code> 的话，它会自动引入该组件下的 <code>style</code> 文件夹，所以就会默认引入我们写好的 <code>index.tsx</code> 文件（再在这里引入具体的样式文件）。除了取值为 true 外，还可以是 false 和一个函数，具体可以看文档。</p>
+<h4 id="3-在组件里自动引入样式文件"><a href="#3-在组件里自动引入样式文件" class="headerlink" title="3. 在组件里自动引入样式文件"></a>3. 在组件里自动引入样式文件</h4><p>在使用 Antd 组件的时候可以不用手动 <code>import</code> 进样式文件，Antd 提供了一个插件 <a href="https://github.com/ant-design/babel-plugin-import" target="_blank" rel="noopener">babel-plugin-import</a> 来实现按需加载和自动引入样式文件。</p>
+<p>我们在使用某个组件的时候，都是直接 <code>import { xxx } from &#39;antd&#39;</code>。如果不加以额外的插件辅助的话，这样的写法会导入 antd 中的所有模块，如果要只加载指定的组件的话，我们就需要使用下面这种写法了。</p>
+<pre class=" language-js"><code class="language-js"><span class="token keyword">import</span> xxx <span class="token keyword">from</span> <span class="token string">'antd/es/xxx'</span><span class="token punctuation">;</span>
+<span class="token keyword">import</span> <span class="token string">'antd/es/xxx/style'</span><span class="token punctuation">;</span>
+</code></pre>
+<p>这种写法的问题在于比较繁琐，那么有没有更简洁的方式来实现按需引入呢？我们可以使用 <a href="https://github.com/ant-design/babel-plugin-import" target="_blank" rel="noopener">babel-plugin-import</a> 插件，使用这个插件后，我们依旧可以使用 <code>import { xxx } from &#39;antd&#39;</code> 来导入我们想要的组件，这个插件背后会帮我们转换成 <code>antd/es/xxx</code>。可见<a href="https://github.com/ant-design/babel-plugin-import/blob/39afe424ffd81baf80c8a8b0f573a5bd21cf0736/src/Plugin.js#L76" target="_blank" rel="noopener">源码</a>。</p>
+<p><code>babel-plugin-import</code> 还会再自动导入进它的样式文件。从它的<a href="https://github.com/ant-design/babel-plugin-import/blob/39afe424ffd81baf80c8a8b0f573a5bd21cf0736/src/Plugin.js#L90" target="_blank" rel="noopener">源码</a>里可以看到，当在 babel 配置里设置了 <code>style: true</code> 的话，它会自动引入该组件下的 <code>style</code> 文件夹，所以就会默认引入我们写好的 <code>index.tsx</code> 文件（再在这里引入具体的样式文件）。除了取值为 true 外，还可以是 false 和一个函数，具体可以看文档。</p>
+<p><img src="/2020/04/30/组件库开发小结/5.jpg" alt></p>
 
             </div>
             <hr/>
@@ -707,7 +714,7 @@
 
             
                 &nbsp;<i class="fa fa-area-chart"></i>&nbsp;站点总字数:&nbsp;
-                <span class="white-color">102.1k</span>
+                <span class="white-color">102.5k</span>
             
 
             <!-- <p id="timeDate">DangoSky的博客诞生已经</p><p id="times">载入时分秒...</p> -->

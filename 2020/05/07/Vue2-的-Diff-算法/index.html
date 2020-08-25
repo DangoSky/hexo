@@ -348,14 +348,14 @@
                     
                     <div class="info-break-policy">
                         <i class="fa fa-file-word-o fa-fw"></i>文章字数:&nbsp;&nbsp;
-                        7.3k
+                        7.4k
                     </div>
                     
 
                     
                     <div class="info-break-policy">
                         <i class="fa fa-clock-o fa-fw"></i>阅读时长:&nbsp;&nbsp;
-                        27 分
+                        28 分
                     </div>
                     
                 
@@ -733,6 +733,14 @@ Vue<span class="token punctuation">.</span>prototype<span class="token punctuati
 <h2 id="时间复杂度分析"><a href="#时间复杂度分析" class="headerlink" title="时间复杂度分析"></a>时间复杂度分析</h2><p>我们常听到 React 和 Vue 的 Diff 算法时间复杂度从 <code>O(n^3)</code> 优化到了 <code>O(n)</code>，n 是 DOM 中节点的个数。那么这个 <code>O(n^3)</code> 和 <code>O(n)</code> 是怎么来的呢？</p>
 <p>我的理解是，在原来的 Diff 算法中，它并没有使用同层比较这个策略，而是将旧虚拟 DOM 的每个节点和新虚拟 DOM 的每个节点进行两两比较，这就已经有 <code>O(n^2)</code> 了。而找到匹配的两个节点后，又要通过移动等操作去改变真实 DOM，所以又有 <code>O(n)</code> 的消耗，所以总共就是 <code>O(n^3)</code>。</p>
 <p>而优化后的 Diff 算法，因为使用了同层比较和双端比较，所以只需要比较同层级的节点就行，并且借助首尾四个指针可以直接将节点移动、删除到指定位置上，所以就只要 <code>O(n)</code> 的时间复杂度了。</p>
+<h2 id="Vue-和-React-Diff-算法的不同点"><a href="#Vue-和-React-Diff-算法的不同点" class="headerlink" title="Vue 和 React Diff 算法的不同点"></a>Vue 和 React Diff 算法的不同点</h2><p>这一块因为我还没有深入去研究 React 的 Diff 算法，只能暂且根据在网上 Blog 看到的做一下记录。</p>
+<p>不同点：</p>
+<ol>
+<li><p>Vue 是边比对 DOM 边更新，而 React 在比对时则保存更新点得到一个 patch 树，之后再统一批量更新 DOM。</p>
+</li>
+<li><p>Vue 的列表比对，采用从两端到中间的比对方式，而 React 则采用从左到右依次比对的方式。当一个集合只是把最后一个节点移动到了第一个，React 会把前面的节点依次移动，而 Vue 只会把最后一个节点移动到第一个。</p>
+</li>
+</ol>
 <h1 id="结语"><a href="#结语" class="headerlink" title="结语"></a>结语</h1><p>至此，Vue Diff 算法的流程和相关源码都解释完了。通过把自己的理解整理并输出为一篇 Blog，也算是加深了自己的理解吧~ BTW，面试真的很喜欢问 Diff 算法啊，这几天腾讯面试，一面二面都问到了 Diff 算法。哈哈，刚好这几天都在看 Diff 算法并边整理成了 Blog，面试的时候就将这篇 Blog 写到的几个主要点说了下。理解和写 Blog 花了好几天的时间，面试问答到 Diff 算法也就那么五分钟，这可以算是养兵千日，用兵一时么？</p>
 <hr>
 <p>2020.5.18 补充，忽然想到一个问题。Vue 双向数据绑定通过数据劫持的方式，已经可以精确知道是哪个数据发生变化，发生了什么变化，那么为什么还要对虚拟 DOM 进行 Diff 差异呢？我自己没想到答案，网上一些 Blog 给出的解释是：</p>
@@ -1015,7 +1023,7 @@ Vue<span class="token punctuation">.</span>prototype<span class="token punctuati
 
             
                 &nbsp;<i class="fa fa-area-chart"></i>&nbsp;站点总字数:&nbsp;
-                <span class="white-color">102.1k</span>
+                <span class="white-color">102.5k</span>
             
 
             <!-- <p id="timeDate">DangoSky的博客诞生已经</p><p id="times">载入时分秒...</p> -->
